@@ -1,0 +1,1687 @@
+HOST: https://secure.gooddata.com/gdc
+
+--- GoodData API Documentation ---
+---
+GoodData API is based on REST principles, all you need to use it is your GoodData account. You have to be authenticated and call the simple HTTPs request on the URL specified below. 
+The following documentation covers core resources that are used to manipulate with the main entities. First of all, read basic instructions to start using the API.
+
+`Please use only your GoodData testing account credentials with the Apiary.io tool`
+
+##Allowed HTTPs requests:
+
+    POST   :   To create or update resource 
+    GET    :   Get a resource or list of resources
+    DELETE :   To delete resource
+
+
+##Description Of Usual Server Responses
+
+- 200 `OK` - the request was successful (some API calls may return 201 instead).
+- 201 `Created` - the request was successful and a resource was created.
+- 204 `No Content` - the request was successful but there is no representation to return (i.e. the response is empty).
+- 400 `Bad Request` - the request could not be understood or was missing required parameters.
+- 401 `Unauthorized` - authentication failed or user doesn't have permissions for requested operation.
+- 403 `Forbidden` - access denied.
+- 404 `Not Found` - resource was not found
+- 405 `Method Not Allowed` - requested method is not supported for resource.
+
+---
+
+--
+Login
+To login into the GoodData API, use following calls.  
+
+1. `POST` your credentials to the login resource in JSON body  
+2. **SST Token** is returned back in SetCookie header  
+3. `GET` the token resource with **SST Token** in your header to receive **TT Token**  
+4. Use the **TT Token** in your API calls header:  -cookie  
+
+`Remember` that TT Token has **limited validity**. Once you received 401 Unauthorized Response, you need to GET new TT Token in following resource with SST Token specified in call header.
+
+###Login Properties  
+- login (string)     : User's email  
+- password (string)  : User's password
+- remember (boolean) : Remember user login 
+--
+
+This resource is the first. Use it to log into the API.
+
+`Please use only your GoodData testing account credentials with the Apiary.io tool`
+
+POST /account/login
+> Content-Type: application/json
+{"postUserLogin":{"login":"user@company.com","password":"YourPassword","remember":1}}
+< 201
+< Content-Type: application/json
+< Set-Cookie: GDCAuthTT=; path=/gdc; expires=Mon, 30-Jul-2012 09:12:42 GMT; secure; HttpOnly, GDCAuthSST={super-secured-token}; path=/gdc/account; secure; HttpOnly
+{"userLogin":{"profile":"/gdc/account/profile/USER-ID","state":"/gdc/account/login/USER-ID"}}
+
+
+GET /account/profile/{user-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+
+
+You'll get the authentication token on this resource.
+GET /account/token
+> Content-Type: application/json
+> Cookie: $Version=0; GDCAuthSST={super-secured-token}; $Path=/gdc/account
+< 200
+< Content-Type: application/json
+< Set-Cookie: set-cookie: GDCAuthTT={temporary-token}; path=/gdc; secure; HttpOnly
+
+
+For logout the user
+DELETE /account/{user-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+
+
+--
+Project
+Project is one of the key entities inside GoodData. When working with GoodData, you basically create analytical projects (datamarts). Metrics, Reports and Dashboards
+are then created inside Projects.
+
+###Project Properties  
+- title (string) :   Project Title         
+- summary (string) : Project summary
+- roles (uri) : User's role in the Project
+- userPermissions (uri) : User permissions information
+- userRoles (uri) : User roles information
+- users (uri) : Project users information
+- created (date) : Date of project creation
+- updated (date) : Date of project update 
+- author (uri) : Project creator account
+- exportUsers (boolean) : export users from project true/false 
+- exportData (boolean) : export data from project true/false
+- token (string) : export Token for export/import project usage
+--
+
+To create new project, use following call. Poll the resource that you received as response until it gives you the status: **Enabled**  
+See the next API call for more details. You can create PostgreSQL based Project, which is stil in beta version.
+POST /projects
+> Content-Type: application/json
+{ "project" : {
+       "content" : { "guidedNavigation": 1, "driver" : "Pg", "authorizationToken" : "AUTH_TOKEN"},
+       "meta" : {
+       "title" : "Test Project",
+       "summary" : "Testing Project"
+       } }
+}
+
+< 201
+< Content-Type: application/json
+{
+   "uri" : "/gdc/projects/TEST_PROJECT_ID"
+}
+
+
+To show the Project information after creation or whenever you need it. Use this API request.
+GET /projects/{project-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+   "project" : {
+      "content" : {
+         "guidedNavigation" : "1",
+         "isPublic" : "0",
+         "state" : "ENABLED"
+      },
+      "links" : {
+         "roles" : "/gdc/projects/Project2/roles",
+         "ldm_thumbnail" : "/gdc/projects/Project2/ldm?thumbnail=1",
+         "connectors" : "/gdc/projects/Project2/connectors",
+         "self" : "/gdc/projects/Project2",
+         "invitations" : "/gdc/projects/Project2/invitations",
+         "users" : "/gdc/projects/Project2/users",
+         "ldm" : "/gdc/projects/Project2/ldm",
+         "publicartifacts" : "/gdc/projects/Project2/publicartifacts",
+         "metadata" : "/gdc/md/Project2",
+         "templates" : "/gdc/md/Project2/templates"
+      },
+      "meta" : {
+         "created" : "2012-05-01 23:56:01",
+         "summary" : "Quotes",
+         "updated" : "2012-05-01 23:56:01",
+         "author" : "/gdc/account/profile/17",
+         "title" : "Quotes",
+         "contributor" : "/gdc/account/profile/17"
+      }
+   }
+}
+
+
+To list all existing projects
+GET /account/profile/{profile-id}/projects
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+   "projects" : [
+      {
+         "project" : {
+            "content" : {
+               "guidedNavigation" : "1",
+               "isPublic" : "0",
+               "state" : "ENABLED"
+            },
+            "links" : {
+               "roles" : "/gdc/projects/PROJECT_ID/roles",
+               "ldm_thumbnail" : "/gdc/projects/PROJECT_ID/ldm?thumbnail=1",
+               "userPermissions" : "/gdc/projects/PROJECT_ID_/users/PROFILE_ID/permissions",
+               "userRoles" : "/gdc/projects/PROJECT_ID/users/PROFILE_ID/roles",
+               "connectors" : "/gdc/projects/PROJECT_ID/connectors",
+               "self" : "/gdc/projects/PROJECT_ID",
+               "invitations" : "/gdc/projects/PROJECT_ID/invitations",
+               "users" : "/gdc/projects/PROJECT_ID/users",
+               "ldm" : "/gdc/projects/PROJECT_ID/ldm",
+               "metadata" : "/gdc/md/PROJECT_ID",
+               "publicartifacts" : "/gdc/projects/PROJECT_ID/publicartifacts",
+               "templates" : "/gdc/md/PROJECT_ID/templates"
+            },
+            "meta" : {
+               "created" : "YYYY-MM-DD HH:MM:SS",
+               "summary" : "Project Summary",
+               "updated" : "YYYY-MM-DD HH:MM:SS",
+               "author" : "/gdc/account/profile/PROFILE_ID",
+               "title" : "Your Project Name",
+               "contributor" : "/gdc/account/profile/PROFILE_ID"
+            }
+         }
+      } ]
+}
+
+
+To Export selected Project - exportUsers and exportData field are not mandatory
+POST /md/{project-id}/maintenance/export
+> Content-Type: application/json
+{ "exportProject" : {
+     "exportUsers" : "1 | 0",
+     "exportData" : "1 | 0"
+  }
+}
+< 200
+< Content-Type: application/json
+{
+   "exportArtifact" : {
+      "status" : {
+         "uri" : "/gdc/md/PROJECT_ID/etltask/TASK_ID"
+      },
+      "token" : "EXPORT_TOKEN"
+   }
+}
+
+Use this method to import exported Project
+POST /md/{project-id}/maintenance/import
+> Content-Type: application/json
+{ 
+"importProject" : {
+  "token" : "TOKEN_STRING"
+  }
+}
+< 200
+< Content-Type: application/json
+{
+"uri" : "/gdc/md/PROJECT_ID/etltask/TASK_ID"
+}
+
+
+To create your own custom colour palette in given Project
+PUT /projects/{project-id}/styleSettings
+> Content-Type: application/json
+{"styleSettings" :
+   {"chartPalette": [ 
+      { "guid": "guid1", "fill": { "r":255, "g":255, "b":0 } }, 
+      { "guid": "guid2", "fill": { "r":255, "g":255, "b":40 } }, 
+      { "guid": "guid3", "fill": { "r":255, "g":255, "b":80 } }, 
+      { "guid": "guid4", "fill": { "r":255, "g":255, "b":120 } }, 
+      { "guid": "guid5", "fill": { "r":255, "g":255, "b":180 } }, 
+      { "guid": "guid6", "fill": { "r":255, "g":255, "b":200 } } 
+      ]
+   }
+}
+< 200
+< Content-Type: application/json
+{"styleSettings" :
+   {"chartPalette": [ 
+      { "guid": "guid1", "fill": { "r":255, "g":255, "b":0 } }, 
+      { "guid": "guid2", "fill": { "r":255, "g":255, "b":40 } }, 
+      { "guid": "guid3", "fill": { "r":255, "g":255, "b":80 } }, 
+      { "guid": "guid4", "fill": { "r":255, "g":255, "b":120 } }, 
+      { "guid": "guid5", "fill": { "r":255, "g":255, "b":180 } }, 
+      { "guid": "guid6", "fill": { "r":255, "g":255, "b":200 } } 
+      ]
+   }
+}
+
+
+To Delete/Reset your own custom colour palette in given Project
+DELETE /projects/{project-id}/styleSettings
+> Content-Type: application/json
+< 204
+< Content-Type: application/json
+
+
+--
+User
+To manage users via the User Provisioning API Resources, you need to have your own domain. If you have it, you can simply use the requests below.
+
+###User Properties  
+- login (string) : User login         
+- password (string) : User password
+- verifyPassword (string) : Password for verification
+- email : User's email for invitations, used as contact email
+- firstname (string) : User's firstname
+- lastname (string) : User's lastname
+- status : User's status, can be Enabled or Disabled
+- userRoles (uri) : Uri to the specific user roles
+- projectUsersUpdateResult : Give an array of successful/failed created users
+- companyName (string) : Name of user's company
+- country (string) : User's country
+- created (date) : Date of user creation
+- updated (date) : Date of user properties update
+- phoneNumber : User's phonenumber
+- position (string) : User's position in a company
+
+--
+
+To create new user in your domain - use this resource. The API will give you new user's uri. You have to be DOMAIN admin for provision the user to the Project.
+POST /account/domains/{domain-name}/users
+> Content-Type: application/json
+{
+ "accountSetting":{
+    "login": "user@login.com",
+    "password":"PASSWORD",
+    "email":"contact@email.com",
+    "verifyPassword":" PASSWORD ",
+    "firstName":"FirstName",
+    "lastName":"LastName",
+    "ssoProvider":"SSO-PROVIDER"
+ }
+}
+< 200
+< Content-Type: application/json
+{
+"uri" : "/gdc/account/profile/{profile-id}"
+}
+
+
+To add created User to the Project. User roles are defined by ID:  
+5 - readOnlyUserRole 
+4 - dashboardOnlyRole 
+3 - adminRole 
+2 - editorRole 
+1 - unverifiedAdminRole
+POST /projects/{project-id}/users
+> Content-Type: application/json
+{ "user" : {
+     "content" : {
+           "status":"ENABLED",
+           "userRoles":["/gdc/projects/{project-id}/roles/{role-id}"]
+                 },
+     "links"   : {
+           "self":"/gdc/account/profile/{user-id}"
+                }
+    }
+}
+< 200
+< Content-Type: application/json
+{"projectUsersUpdateResult":{
+    "successful":["/gdc/account/profile/{profile-id}"],
+    "failed":[]}
+}
+
+
+Use this resource for invite user to the Project. The invotation email will be sent.
+POST /projects/{project-id}/invitations
+> Content-Type: application/json
+{
+    "invitations": [
+        {
+            "invitation": {
+                "content": {
+                    "email": "invited.user.mail@company.com",
+                    "role": "/gdc/projects/{project-id}/roles/{role-id}",
+                    "firstname": "firstname",
+                    "lastname": "lastname",
+                    "action": {
+                        "setMessage": "You can set message here!"
+                    }
+                }
+            }
+        }
+    ]
+}
+< 200
+< Content-Type: application/json
+{
+    "createdInvitations": {
+        "uri": [
+            "/gdc/projects/{project-id}/invitations/{invitation-id}"
+        ]
+    }
+}
+
+Lists all users in a domain
+GET /account/domains/{domain-name}/users
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "accountSettings": {
+        "paging": {
+            "offset": 0,
+            "count": 14
+        },
+        "items": [
+            {
+                "accountSetting": {
+                    "companyName": "Company",
+                    "country": "cz",
+                    "created": "2011-08-10 08:37:46",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "login": "user.name@company.com",
+                    "ssoProvider":"SSO-PROVIDER",
+                    "phoneNumber": "+420724722926",
+                    "position": "",
+                    "settings": "{\"_VERSION\":\"1.1\",\"currentProjectUri\":\"/gdc/projects/{project-id}\",\"/gdc/projects/5znhmmxxrzjan0r2p1v7ofycdsrx0264\":{\"dashboard\":[\"/gdc/md/5znhmmxxrzjan0r2p1v7ofycdsrx0264/obj/15091\",\"aF3FJYXegmp7\"]},\"releaseNotice\":[\"stable_67\"],\"/gdc/projects/ca6a1r1lbfwpt2v05k36nbc0cjpu7lh9\":{\"dashboard\":[\"/gdc/md/ca6a1r1lbfwpt2v05k36nbc0cjpu7lh9/obj/200001988\",\"azBgmCJJe0mc\"]},\"/gdc/projects/uikbr0t694tnh3uje22yedukbyzyt30o\":{\"dashboard\":[\"/gdc/md/uikbr0t694tnh3uje22yedukbyzyt30o/obj/923\",\"aezS8TwAcGHp\"]},\"/gdc/projects/rgxvsmz1p995jek9ul9tlmpf6t58smrc\":{\"dashboard\":[\"/gdc/md/rgxvsmz1p995jek9ul9tlmpf6t58smrc/obj/3077\",\"akr9OnQ1eOm4\"]},\"hint-projectPage-invite-people\":false,\"/gdc/projects/j41cf2ph664i24r06zvj4f8rcpwoc7z5\":{\"dashboard\":[\"/gdc/md/j41cf2ph664i24r06zvj4f8rcpwoc7z5/obj/302\",\"acuSDRVTfsy9\"]},\"/gdc/projects/aroa0dpcaw7qde90zk28qe1g8a9yiduc\":{\"dashboard\":[\"/gdc/md/aroa0dpcaw7qde90zk28qe1g8a9yiduc/obj/1934\",\"aThZ8kBxhhOD\"]},\"/gdc/projects/als9uzqw5b3mmedep20dz079gu4l2ts4\":{\"dashboard\":[\"/gdc/md/als9uzqw5b3mmedep20dz079gu4l2ts4/obj/255\",\"acuSDRVTfsy9\"]},\"/gdc/projects/e40dze1gsyuzbiw6uo7pezb172za0g6t\":{\"dashboard\":[\"/gdc/md/e40dze1gsyuzbiw6uo7pezb172za0g6t/obj/878\",\"amDMbVxHiEpT\"]},\"/gdc/projects/qdi4csdu3cncw7cl6ytw0c08ezhjiacl\":{\"dashboard\":[\"/gdc/md/qdi4csdu3cncw7cl6ytw0c08ezhjiacl/obj/1934\",\"aae2SZzwayQc\"]},\"/gdc/projects/88w3p5nd8tjvvugg71o7alrn95brxd49\":{\"dashboard\":[\"/gdc/md/88w3p5nd8tjvvugg71o7alrn95brxd49/obj/1934\",\"aae2SZzwayQc\"]},\"/gdc/projects/1fm43ndfbq0adk6q44sv6vzjfe2mpzbf\":{\"dashboard\":[\"/gdc/md/1fm43ndfbq0adk6q44sv6vzjfe2mpzbf/obj/302\",\"acuSDRVTfsy9\"]},\"/gdc/projects/z7hy8dgakfovolhmkr0in5gab55eh8sf\":{\"dashboard\":[\"/gdc/md/z7hy8dgakfovolhmkr0in5gab55eh8sf/obj/1134\",\"axbb0wX9hWXt\"]},\"/gdc/projects/0xdgi5rf00ojg3i8buihnce9abcs0jlo\":{\"dashboard\":[\"/gdc/md/0xdgi5rf00ojg3i8buihnce9abcs0jlo/obj/1788\",\"bykyxrVPd4bK\"]},\"/gdc/projects/j411aqhpfwyfhbfcmpgp7wdv2kkadk1h\":{\"dashboard\":[\"/gdc/md/j411aqhpfwyfhbfcmpgp7wdv2kkadk1h/obj/1134\",\"axbb0wX9hWXt\"]},\"/gdc/projects/3j538qu3uaco59yqvy4f67x6r1yp2xcb\":{\"dashboard\":[\"/gdc/md/3j538qu3uaco59yqvy4f67x6r1yp2xcb/obj/928\",\"aejgJwQohyCf\"]},\"/gdc/projects/x0ihh49quilaf0cjm651nnj2hxbmfm3c\":{\"dashboard\":[\"/gdc/md/x0ihh49quilaf0cjm651nnj2hxbmfm3c/obj/1221\",\"aeMPJK0fceaH\"]},\"/gdc/projects/nb8vzlyj8sosxx0myv0tww82j0nosbql\":{\"dashboard\":[\"/gdc/md/nb8vzlyj8sosxx0myv0tww82j0nosbql/obj/975\",\"apcbnqrNem2V\"]},\"/gdc/projects/24ubdyx5m28ojz2fnf34y74vjaxw82r2\":{\"dashboard\":[\"/gdc/md/24ubdyx5m28ojz2fnf34y74vjaxw82r2/obj/4673\",\"akoz8EgNhzEx\"]},\"/gdc/projects/8thc020r46ru5mej90dewtxsdmfdmn9w\":{\"dashboard\":[\"/gdc/md/8thc020r46ru5mej90dewtxsdmfdmn9w/obj/21607\",\"aedRQW1vbS2i\"]},\"/gdc/projects/vs20w6yqnt64jaaw93wlg6osod4w0pew\":{\"dashboard\":[\"/gdc/md/vs20w6yqnt64jaaw93wlg6osod4w0pew/obj/1179\",\"aci3ZI2qg9WA\"]},\"/gdc/projects/fdybuqt6q711dk7fj0hyb17xug4occ7h\":{\"dashboard\":[\"/gdc/md/fdybuqt6q711dk7fj0hyb17xug4occ7h/obj/302\",\"acuSDRVTfsy9\"]},\"/gdc/projects/5c3eynt8oemo1tbg7r18wm1lihsbhi3w\":{\"dashboard\":[\"/gdc/md/5c3eynt8oemo1tbg7r18wm1lihsbhi3w/obj/22383\",\"aafYWrtQicJz\"]},\"/gdc/projects/o1bkm459hl3oqpfvowhc5atm8epum3n8\":{\"dashboard\":[\"/gdc/md/o1bkm459hl3oqpfvowhc5atm8epum3n8/obj/975\",\"apcbnqrNem2V\"]},\"/gdc/projects/u2sgybzl95ezxj06nxvazqryymvhd6xx\":{\"dashboard\":[\"/gdc/md/u2sgybzl95ezxj06nxvazqryymvhd6xx/obj/829\",\"aarQ2wqyh3OO\"]},\"/gdc/projects/ns1tzvr069ufw3gsvgveldbfbh6uyx8u\":{\"dashboard\":[\"/gdc/md/ns1tzvr069ufw3gsvgveldbfbh6uyx8u/obj/975\",\"apcbnqrNem2V\"]},\"/gdc/projects/fe6syz94xsf0n7indc4q4t45bt0ad68f\":{\"dashboard\":[\"/gdc/md/fe6syz94xsf0n7indc4q4t45bt0ad68f/obj/4673\",\"adLaxLMQaQ3s\"]},\"/gdc/projects/fl1tx117xb3qw2ngiuv7prud9a0qsowl\":{\"dashboard\":[\"/gdc/md/fl1tx117xb3qw2ngiuv7prud9a0qsowl/obj/245\",\"aemCHDx1ioL2\"]},\"/gdc/projects/fw1p4xvz8e99g5100wfxymzodatqbmg2\":{\"dashboard\":[\"/gdc/md/fw1p4xvz8e99g5100wfxymzodatqbmg2/obj/4673\",\"aaOGHRxOh0dl\"]},\"/gdc/projects/ic2l94mn960iyy5ycz7dnfz6mhil8php\":{\"dashboard\":[\"/gdc/md/ic2l94mn960iyy5ycz7dnfz6mhil8php/obj/4673\",\"akoz8EgNhzEx\"]},\"/gdc/projects/jusjqe0f5lz3wkpcwxoyyckzclsk2tpy\":{\"dashboard\":[\"/gdc/md/jusjqe0f5lz3wkpcwxoyyckzclsk2tpy/obj/12982\",\"aaGUiXk8hqek\"]}}",
+                    "timezone": null,
+                    "updated": "2012-02-20 16:20:28",
+                    "links": {
+                        "projects": "/gdc/account/profile/19765/projects",
+                        "self": "/gdc/account/profile/19765"
+                    }
+                }
+            },
+            {
+                "accountSetting": {
+                    "companyName": "",
+                    "country": "",
+                    "created": "2011-11-03 15:16:52",
+                    "firstName": "J",
+                    "lastName": "T",
+                    "login": "deleted-25022@gooddata.com",
+                    "phoneNumber": "",
+                    "position": "",
+                    "settings": "",
+                    "timezone": null,
+                    "ssoProvider":"SSO-PROVIDER",
+                    "updated": "2011-12-15 14:40:37",
+                    "links": {
+                        "projects": "/gdc/account/profile/25022/projects",
+                        "self": "/gdc/account/profile/25022"
+                    }
+                }
+            }
+        ]
+    }
+}
+
+
+You are able to update the User information 
+PUT /account/profile/{user-id}
+> Content-Type: application/json
+{
+    "accountSetting": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "ssoProvider": "salesforce.com",
+        "password": "area51",
+        "verifyPassword": "area51"
+    }
+}
+< 200
+< Content-Type: application/json
+
+
+To delete User from specific Domain
+DELETE /account/profile/{user-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+
+
+--
+Data Model
+The data model is the core concept of GoodData. It can be managed and validated using following API resources. Model is created/managed by using the MAQL language and script.
+
+##Model properties
+- maql : MAQL script for creating/updating logical data model
+- validateProject : IO - Input/Output, LDM - Logical Data Model, PDM - Physical Data Model
+--
+To manage Logical Data Model
+POST /md/{project-id}/ldm/manage
+> Content-Type: application/json
+{
+   "manage" : {
+      "maql" : "CREATE ATTRIBTE {my_attribute}"
+   }
+}
+< 200
+< Content-Type: application/json
+
+
+Use this method to validate Project
+POST /md/{project-id}/validate/
+> Content-Type: application/json
+{ "validateProject" : [ "IO", "LDM", "PDM" ] }
+< 201
+< Content-Type: application/json
+{"uri" : "/gdc/md/PROJECT_ID/validate/TASK_ID"}
+
+
+Here you can GET the SLI manifest. This manifest is needed to upload your data using the API directly. The SLI manifest provides column mapping between CSV file and data model.
+GET /md/{project-id}/ldm/singleloadinterface/{dataset-name}/manifest
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "dataSetSLIManifest": {
+        "parts": [
+            {
+                "columnName": "f_quotes.dt_quote_date_id",
+                "populates": [
+                    "quote.date.mdyy"
+                ],
+                "mode": "FULL",
+                "referenceKey": 1
+            },
+            {
+                "columnName": "d_quotes_sector.nm_sector",
+                "populates": [
+                    "label.quotes.sector"
+                ],
+                "mode": "FULL",
+                "referenceKey": 1
+            },
+            {
+                "columnName": "d_quotes_market.nm_market",
+                "populates": [
+                    "label.quotes.market"
+                ],
+                "mode": "FULL",
+                "referenceKey": 1
+            },
+            {
+                "columnName": "f_quotes.f_low_price",
+                "populates": [
+                    "fact.quotes.low_price"
+                ],
+                "mode": "FULL"
+            },
+            {
+                "columnName": "f_quotes.nm_id",
+                "populates": [
+                    "label.quotes.id"
+                ],
+                "mode": "FULL",
+                "referenceKey": 1
+            },
+            {
+                "columnName": "f_quotes.f_volume",
+                "populates": [
+                    "fact.quotes.volume"
+                ],
+                "mode": "FULL"
+            },
+            {
+                "columnName": "f_quotes.dt_quote_date",
+                "populates": [
+                    "dt.quotes.quote_date"
+                ],
+                "mode": "FULL"
+            },
+            {
+                "columnName": "f_quotes.f_open_price",
+                "populates": [
+                    "fact.quotes.open_price"
+                ],
+                "mode": "FULL"
+            },
+            {
+                "columnName": "d_quotes_symbol.nm_symbol",
+                "populates": [
+                    "label.quotes.symbol"
+                ],
+                "mode": "FULL",
+                "referenceKey": 1
+            },
+            {
+                "columnName": "d_quotes_symbol.nm_company",
+                "populates": [
+                    "label.quotes.symbol.company"
+                ],
+                "mode": "FULL"
+            },
+            {
+                "columnName": "f_quotes.f_high_price",
+                "populates": [
+                    "fact.quotes.high_price"
+                ],
+                "mode": "FULL"
+            },
+            {
+                "columnName": "d_quotes_industry.nm_industry",
+                "populates": [
+                    "label.quotes.industry"
+                ],
+                "mode": "FULL",
+                "referenceKey": 1
+            },
+            {
+                "columnName": "f_quotes.f_close_price",
+                "populates": [
+                    "fact.quotes.close_price"
+                ],
+                "mode": "FULL"
+            },
+            {
+                "columnName": "f_quotes.f_adjusted_close_price",
+                "populates": [
+                    "fact.quotes.adjusted_close_price"
+                ],
+                "mode": "FULL"
+            }
+        ],
+        "file": "dataset.quotes.csv",
+        "dataSet": "dataset.quotes"
+    }
+}
+
+--
+Data Upload
+The Data Upload API can be used for uploading the data directly to your Project. 
+Using the resources below, you are able to start data uplaod process with the file package stored on GoodData **WebDav Server** (secure-di.gooddata.com/uploads/). 
+The package must contain **upload-info.json** and **CSV** file for every dataset that you want to upload.
+
+##Upload properties
+- pullIntegration : path to directory where your upload package is stored
+- pullTask : asynchronous task that is created for each data upload process
+
+--
+Start data upload using this resource. As parameter, use the name of WebDav directory, where you uploaded Data. Upload archive should be named upload.zip and must contain **upload_info.json** (SLI manifest) and **CSV file** with data. See the Data Model resources to learn about SLI manifest.
+POST /md/{project-id}/etl/pull
+> Content-Type: application/json
+{"pullIntegration":"directory-with-upload-package"}
+< 200
+< Content-Type: application/json
+{
+   "pullTask" : {
+      "uri" : "/gdc/md/{project-id}/etl/task/{task-id}"
+   }    
+}
+
+
+This is resource returned by previous POST. Poll it to get the upload status.
+GET /md/{project-id}/etl/task/{task-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+   "taskStatus" : "OK | Error" 
+}
+
+
+--
+Notifications
+Notifications allow users to be informed about some specific events in the Project. Notifications are based on Channel Configuration, where user specifies
+what is the channel, where he wants to send the notification. Second step is a Subscription settings, that will subscribe the user to a specific channel
+with specific condition for triggering the notification.
+
+## Notifications properties  
+- channelConfiguration : Specifies the channel configuration configuration
+- username (string) : User's channel login for specific channel
+- password (string) : User's password for specific configuration
+- title (string) : Title of channel configuration
+- author (uri) : URI of user who creates the notification channel
+- created (date) : Date of channel configuration creation
+- updated (date) : Date of channel configuration update
+- from : Phone number of notification sender (for Twillio Channel)
+- to : Phone number of notification recipient (for Twillio Channel)
+- timerEvent (cron Expression) : Specifies the interval for notification check
+- condition : Condition that must be fulfil to send the notification
+- message : Message that is sent via specific channel as notification
+
+--
+
+To create new Salesforce Notifications channel use this method
+POST /account/profile/{profile-id}/channelConfigurations
+> Content-Type: application/json
+{
+   "channelConfiguration":{
+      "configuration":{
+         "sfdcChatterConfiguration":{
+            "username":"your@email",
+            "password":"passwordSecurityToken"
+         }
+      },
+      "meta":{
+         "title":"SFDC Channel"
+      }
+   }
+}
+< 201
+< Content-Type: application/json
+{
+    "channelConfiguration": {
+        "configuration": {
+            "sfdcChatterConfiguration": {
+                "username": "USERNAME@DOMAIN.COM"
+            }
+        },
+        "meta": {
+            "title": "Channel Name",
+            "author": "/gdc/account/profile/PROFILE_ID",
+            "category": "channelConfiguration",
+            "updated": "2011-12-20 13:43:17",
+            "created": "2011-12-20 13:43:17",
+            "uri": "/gdc/account/profile/{profile-id}/channelConfigurations/{channel-id}"
+        }
+    }
+}
+
+To create new Twillio Notifications channel use this method
+POST /account/profile/{profile-id}/channelConfigurations
+{
+   "channelConfiguration":{
+      "configuration":{
+         "twilioSmsConfiguration":{
+            "username":"username",
+            "password":"AUTH TOKEN",
+            "from":"+14086457515",
+            "to":"+420724000000"
+         }
+      },
+      "meta":{
+         "title":"Twilio Title"
+      }
+   }
+}
+< 201
+< Content-Type: application/json
+{
+    "channelConfiguration": {
+        "configuration": {
+            "twilioSmsConfiguration": {
+                "username": "USERNAME@DOMAIN.COM"
+            }
+        },
+        "meta": {
+            "title": "Channel Name",
+            "author": "/gdc/account/profile/{profile-id}",
+            "category": "channelConfiguration",
+            "updated": "2011-12-20 13:43:17",
+            "created": "2011-12-20 13:43:17",
+            "uri": "/gdc/account/profile/PROFILE_ID/channelConfigurations/CHANNEL_ID"
+        }
+    }
+}
+
+To create new Subscription, call this resource and set the timerEvent, condition expression and message that will be sent
+POST /projects/{project-id}/users/{user-id}/subscriptions
+> Content-Type: application/json
+{
+   "subscription":{
+      "triggers":[
+         {
+            "timerEvent":{
+               "cronExpression":"0 0/5 * * * *"
+            }
+         }
+      ],
+      "condition":{
+         "condition":{
+            "expression":"f:executeMetric('METRIC_URI') < 16"
+         }
+      },
+      "message":{
+         "template":{
+            "expression":"Average Chatter posts per Opportunity has fallen to ${f:executeMetric('METRIC_URI')} ..."
+         }
+      },
+      "channels":[
+         "CHANNEL_URI"
+      ],
+      "meta":{
+         "title":"Avg Posts per Oppty < 16"
+      }
+   }
+}
+< 201
+< Content-Type: application/json
+{
+    "subscription": {
+        "triggers": [
+            {
+                "timerEvent": {
+                    "cronExpression": "0 0/5 * * * *"
+                }
+            }
+        ],
+        "condition": {
+            "condition": {
+                "expression": "f:executeMetric('/gdc/md/PROJECT_ID/obj/OBJECT_ID') < 0.99"
+            }
+        },
+        "message": {
+            "template": {
+                "expression": "Custom message % ${f:executeMetric('/gdc/md/PROJECT_ID/obj/OBJECT_ID')} ..."
+            }
+        },
+        "channels": [
+            "/gdc/account/profile/USER_ID/channelConfigurations/CHANNEL_ID"
+        ],
+        "meta": {
+            "title": "TEST%",
+            "author": "/gdc/account/profile/USER_ID",
+            "category": "subscription",
+            "updated": "2011-12-20 13:59:23",
+            "created": "2011-12-20 13:59:23",
+            "uri": "/gdc/projects/PROJECT_ID_/users/USER_ID_/subscriptions/SUBSCRIPTION_ID"
+        }
+    }
+}
+
+
+--
+Report
+Reports can be also handled via API. You can use following resources for getting list of all report, execute selected reports and export it.
+
+##Report Properties
+- link (uri) : Link to specific Report
+- author (uri) : URI of Report author
+- tags : Report tags
+- created (date) : Report creation date
+- updated (date) : Report update date
+- summary (string) : Report text summary
+- report (uri) : Specific report URI
+- format : Report export format (pdf, csv, png)
+--
+
+Use this method to list all Reports in given Project
+GET /md/{project-id}/query/reports
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "query": {
+        "entries": [
+            {
+                "link": "/gdc/md/PROJECT_ID/obj/OBJECT_ID",
+                "author": "/gdc/account/profile/USER_ID",
+                "tags": "",
+                "created": "2011-11-23 15:34:18",
+                "deprecated": "0",
+                "summary": "",
+                "title": "Report Title",
+                "category": "report",
+                "updated": "2011-11-23 15:41:44",
+                "contributor": "/gdc/account/profile/USER_ID"
+            }],
+        "meta": {
+            "summary": "Metadata Query Resources for project 'PROJECT_ID'",
+            "title": "List of reports",
+            "category": "query"
+        }
+    }
+}
+
+
+Use this method to execute selected Report
+POST /xtab2/executor3
+> Content-Type: application/json
+{
+    "report_req": {
+        "reportDefinition": "/gdc/md/PROJECT_ID/obj/OBJECT_ID"
+    }
+}
+< 201
+< Content-Type: application/json
+{
+    "reportResult2": {
+        ...
+        ...
+        ...
+        "meta": {
+            "author": "/gdc/account/profile/USER_ID",
+            "uri": "/gdc/md/PROJECT_ID/obj/RESULT_OBJECT_ID",
+            "tags": "",
+            "created": "2011-12-20 15:23:20",
+            "identifier": "IDENTIFIER",
+            "deprecated": "0",
+            "summary": "",
+            "title": "TITLE",
+            "category": "reportResult2",
+            "updated": "2011-12-20 15:23:20",
+            "contributor": "/gdc/account/profile/USER_ID"
+        }
+    }
+}
+
+
+This method can be used for exporting Report
+POST /exporter/executor
+> Content-Type: application/json
+{
+    "result_req": {
+        "report":"/gdc/md/PROJECT_ID/obj/OBJECT_ID",
+        "format":"csv"
+    }
+}
+< 201
+< Content-Type: application/json
+{
+"uri":"/gdc/exporter/result/PROJECT_ID/RESULT_ID"
+}
+
+
+--
+Dashboard
+Following resources cover Project Dashboard operation. You can list all Dashboards in Project, GET Dashboard content and update it.
+--
+
+Use this method to list of all Dashboards in given Project
+GET /md/{project-id}/query/projectDashboards
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+  "query": {
+    "entries": [
+      {
+        "link": "/gdc/md/{project-id}/obj/{object-id}",
+        "author": "/gdc/account/profile/{user-id}",
+        "tags": "",
+        "created": "2012-08-15 19:41:07",
+        "deprecated": "0",
+        "summary": "",
+        "category": "projectDashboard",
+        "title": "Overview",
+        "updated": "2012-09-04 15:56:36",
+        "contributor": "/gdc/account/profile/{user-id}"
+      }
+    ],
+    "meta": {
+      "summary": "Metadata Query Resources for project '{project-id}'",
+      "title": "List of projectdashboards",
+      "category": "query"
+    }
+  }
+}
+
+Use this method to GET dashboard object content
+GET /md/{project-id}/obj/{object-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "projectDashboard": {
+        "content": {
+            "filters": [],
+            "tabs": [
+                {
+                    "title": "Dashboard Name",
+                    "identifier": "afblCPlxel0Y",
+                    "items": [
+                        {
+                            "reportItem": {
+                                "positionX": 410,
+                                "positionY": 0,
+                                "sizeX": 530,
+                                "sizeY": 310,
+                                "style": {
+                                    "background": {
+                                        "opacity": 0
+                                    }
+                                },
+                                "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                "visualization": {
+                                    "oneNumber": {
+                                        "labels": {}
+                                    },
+                                    "grid": {
+                                        "columnWidths": []
+                                    }
+                                },
+                                "filters": []
+                            }
+                        },
+                        {
+                            "headlineItem": {
+                                "positionX": 0,
+                                "positionY": 0,
+                                "sizeX": 380,
+                                "sizeY": 80,
+                                "title": "TrÅ¾by",
+                                "metric": "/gdc/md/{project-id}/obj/{object-id}",
+                                "format": "#,##0.00 KÄ \n",
+                                "filters": [],
+                                "filterAttributeDF": "/gdc/md/{project-id}/obj/{object-id}",
+                                "linkedWithExternalFilter": 0,
+                                "constraint": {
+                                    "to": 0,
+                                    "from": 0,
+                                    "type": "floating"
+                                },
+                                "trendlineConfig": {
+                                    "autoGranularity": 0,
+                                    "granularityAttributeDF": "/gdc/md/{project-id}/obj/{object-id}"
+                                }
+                            }
+                        },
+                        {
+                            "reportItem": {
+                                "positionX": 0,
+                                "positionY": 350,
+                                "sizeX": 940,
+                                "sizeY": 360,
+                                "style": {
+                                    "background": {
+                                        "opacity": 0
+                                    }
+                                },
+                                "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                "visualization": {
+                                    "oneNumber": {
+                                        "labels": {}
+                                    },
+                                    "grid": {
+                                        "columnWidths": []
+                                    }
+                                },
+                                "filters": []
+                            }
+                        },
+                        {
+                            "lineItem": {
+                                "positionX": 30,
+                                "positionY": 320,
+                                "sizeX": 880,
+                                "sizeY": 10
+                            }
+                        },
+                        {
+                            "lineItem": {
+                                "positionX": 390,
+                                "positionY": 0,
+                                "sizeX": 9,
+                                "sizeY": 310
+                            }
+                        },
+                        {
+                            "textItem": {
+                                "positionX": 100,
+                                "positionY": 130,
+                                "sizeX": 170,
+                                "sizeY": 30,
+                                "style": {
+                                    "background": {
+                                        "opacity": 0
+                                    }
+                                },
+                                "textSize": "middle",
+                                "text": "Celkem ZÃ¡kaznÃ­kÅ¯"
+                            }
+                        },
+                        {
+                            "reportItem": {
+                                "positionX": 80,
+                                "positionY": 160,
+                                "sizeX": 210,
+                                "sizeY": 140,
+                                "style": {
+                                    "background": {
+                                        "opacity": 0
+                                    }
+                                },
+                                "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                "visualization": {
+                                    "oneNumber": {
+                                        "labels": {
+                                            "description": ""
+                                        }
+                                    },
+                                    "grid": {
+                                        "columnWidths": []
+                                    }
+                                },
+                                "filters": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "meta": {
+            "uri": "/gdc/md/{project-id}/obj/{object-id}",
+            "created": "2012-08-15 19:41:07",
+            "updated": "2012-09-03 16:37:57",
+            "author": "/gdc/account/profile/{user-id}",
+            "contributor": "/gdc/account/profile/{user-id}",
+            "summary": "",
+            "title": "Overview",
+            "category": "projectDashboard",
+            "tags": "",
+            "deprecated": "0",
+            "identifier": "afalCPlxel0Y"
+        }
+    }
+}
+
+
+Use this method to update the Dashboard. If you want to change some metadata attribute, you have to send complete JSON payload with Dashboard object.
+POST /md/{project-id}/obj/{object-id}
+> Content-Type: application/json
+{
+    "projectDashboard": {
+        "content": {
+            "filters": [],
+            "tabs": [
+                {
+                    "title": "Dashboard Name",
+                    "identifier": "afblCPlxel0Y",
+                    "items": [
+                        {
+                            "reportItem": {
+                                "positionX": 410,
+                                "positionY": 0,
+                                "sizeX": 530,
+                                "sizeY": 310,
+                                "style": {
+                                    "background": {
+                                        "opacity": 0
+                                    }
+                                },
+                                "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                "visualization": {
+                                    "oneNumber": {
+                                        "labels": {}
+                                    },
+                                    "grid": {
+                                        "columnWidths": []
+                                    }
+                                },
+                                "filters": []
+                            }
+                        },
+                        {
+                            "headlineItem": {
+                                "positionX": 0,
+                                "positionY": 0,
+                                "sizeX": 380,
+                                "sizeY": 80,
+                                "title": "TrÅ¾by",
+                                "metric": "/gdc/md/{project-id}/obj/{object-id}",
+                                "format": "#,##0.00 KÄ \n",
+                                "filters": [],
+                                "filterAttributeDF": "/gdc/md/{project-id}/obj/{object-id}",
+                                "linkedWithExternalFilter": 0,
+                                "constraint": {
+                                    "to": 0,
+                                    "from": 0,
+                                    "type": "floating"
+                                },
+                                "trendlineConfig": {
+                                    "autoGranularity": 0,
+                                    "granularityAttributeDF": "/gdc/md/{project-id}/obj/{object-id}"
+                                }
+                            }
+                        },
+                        {
+                            "reportItem": {
+                                "positionX": 0,
+                                "positionY": 350,
+                                "sizeX": 940,
+                                "sizeY": 360,
+                                "style": {
+                                    "background": {
+                                        "opacity": 0
+                                    }
+                                },
+                                "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                "visualization": {
+                                    "oneNumber": {
+                                        "labels": {}
+                                    },
+                                    "grid": {
+                                        "columnWidths": []
+                                    }
+                                },
+                                "filters": []
+                            }
+                        },
+                        {
+                            "lineItem": {
+                                "positionX": 30,
+                                "positionY": 320,
+                                "sizeX": 880,
+                                "sizeY": 10
+                            }
+                        },
+                        {
+                            "lineItem": {
+                                "positionX": 390,
+                                "positionY": 0,
+                                "sizeX": 9,
+                                "sizeY": 310
+                            }
+                        },
+                        {
+                            "textItem": {
+                                "positionX": 100,
+                                "positionY": 130,
+                                "sizeX": 170,
+                                "sizeY": 30,
+                                "style": {
+                                    "background": {
+                                        "opacity": 0
+                                    }
+                                },
+                                "textSize": "middle",
+                                "text": "Celkem ZÃ¡kaznÃ­kÅ¯"
+                            }
+                        },
+                        {
+                            "reportItem": {
+                                "positionX": 80,
+                                "positionY": 160,
+                                "sizeX": 210,
+                                "sizeY": 140,
+                                "style": {
+                                    "background": {
+                                        "opacity": 0
+                                    }
+                                },
+                                "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                "visualization": {
+                                    "oneNumber": {
+                                        "labels": {
+                                            "description": ""
+                                        }
+                                    },
+                                    "grid": {
+                                        "columnWidths": []
+                                    }
+                                },
+                                "filters": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "meta": {
+            "uri": "/gdc/md/{project-id}/obj/{object-id}",
+            "created": "2012-08-15 19:41:07",
+            "updated": "2012-09-03 16:37:57",
+            "author": "/gdc/account/profile/{user-id}",
+            "contributor": "/gdc/account/profile/{user-id}",
+            "summary": "",
+            "title": "Overview",
+            "category": "projectDashboard",
+            "tags": "",
+            "deprecated": "0",
+            "identifier": "afalCPlxel0Y"
+        }
+    }
+}
+< 200
+< Content-Type: application/json
+{
+  "uri": "/gdc/md/{project-id}/obj/{object-id}"
+}
+
+--
+Metadata 
+project
+Following resources can be used for exporting/importing selected metadata objects. You will get the import token, that is used for import the metadata to other 
+project. 
+
+##Metadata Properties
+- partialMDExport (uri) : Specifies metadata objects for export
+- status (uri) : Export result URI 
+- token (string) : Export token for Import usage
+- overwriteNewer (boolean) : True/False overwrite existing objects
+- updateLDMObjects (boolean) : True/False update logical data model objects
+
+--
+
+This method is used for partial metadata export
+POST /md/{project-id}/maintenance/partialmdexport
+> Content-Type: application/json
+{
+    "partialMDExport": {
+        "uris": [
+            "/gdc/md/PROJECT_ID/obj/OBJECT_ID"
+        ]
+    }
+}
+< 200
+< Content-Type: application/json
+{
+    "partialMDArtifact": {
+        "status": {
+            "uri": "/gdc/md/PROJECT_ID/tasks/TASK_ID/status"
+        },
+        "token": "TOKEN_STRING"
+    }
+}
+
+
+Use this method to import exported metadata
+POST /md/{project-id}/maintenance/partialmdimport
+> Content-Type: application/json
+{ 
+"partialMDImport" : {
+  "token" : "TOKEN_STRING",
+   "overwriteNewer" : "BOOLEAN"
+   "updateLDMObjects" : "BOOLEAN"
+  }
+}
+< 200
+< Content-Type: application/json
+{
+"uri" : "/gdc/md/{project-id}/etltask/{task-id}"
+}
+
+
+--
+Mandatory User Filters
+Mandatory User Filters (A.K.A MUFs) are the way how you can filter specific data for specific user. It is based on attribute value identifiers and every MUF 
+can be assigned to multiple users.
+
+##MUF Properties
+- userFilter : Specifies the user filter object
+- expression : Defines user filter 
+- category : Object category
+- title : Specific filter title
+- user (uri) : URI of user, on which filter was defined
+- userFiltersUpdateResult : Successful/Failed user filters
+- created (date) : User Filter object created date
+- updated (date) : User Filter object update date
+
+--
+
+Use this method to create new Mandatory User Filter
+POST /md/{project-id}/obj
+> Content-Type: application/json
+{
+    "userFilter": {
+        "content": {
+            "expression": "[/gdc/md/{project-id}/obj/{object-id}]=[/gdc/md/{project-id}/obj/{object-id}/elements?id={element-id}]"
+        },
+        "meta": {
+            "category": "userFilter",
+            "title": "User Filter Name"
+        }
+    }
+}
+< 200
+< Content-Type: application/json
+
+
+Use this method to assign Filter to a User
+POST /md/{project-id}/userfilters
+> Content-Type: application/json
+{ 
+"userFilters": {
+        "items": [
+            {
+                "user": "/gdc/account/profile/{user-id}",
+                "userFilters": [
+                    "/gdc/md/{project-id}/obj/{user-filter-id}"
+                ]
+            }
+        ]
+    }
+}
+< 200
+< Content-Type: application/json
+{
+  "userFiltersUpdateResult": {
+      "failed": [],
+      "successful": [
+           "/gdc/account/profile/PROFILE_ID"
+        ]
+    }
+}
+
+
+Use this method to get a list of Mandatory User Filters
+GET /md/{project-id}/query/userfilters
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "query": {
+        "entries": [
+            {
+                "link": "/gdc/md/{project-id}/obj/{filter-object-id}",
+                "author": "/gdc/account/profile/{user-id}",
+                "tags": "",
+                "created": "2012-01-16 11:08:13",
+                "deprecated": "0",
+                "summary": "",
+                "title": "User Filter Name",
+                "category": "userFilter",
+                "updated": "2012-01-16 11:08:13",
+                "contributor": "/gdc/account/profile/{user-id}"
+            }
+        ],
+        "meta": {
+            "summary": "Metadata Query Resources for project 'PROJECT_ID'",
+            "title": "List of userfilters",
+            "category": "query"
+        }
+    }
+}
+
+
+To list Mandatory User Filters for selected users, use this API call. You can use multiple user URIs as a parameter. So that you can filter using ...userFilters={user-uri}&{user-uri}&...
+GET /md/{project-id}/userfilters?users={user-URI}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "userFilters": {
+        "count": 20,
+        "length": 1,
+        "offset": 0,
+        "items": [
+            {
+                "userFilters": [
+                    "/gdc/md/{project-id}/obj/{object-id}"
+                ],
+                "user": "/gdc/account/profile/{user-id}"
+            }
+        ]
+    }
+}
+
+
+To list Users for selected Mandatory User Filters, use this API call. You can use multiple MUF URIs as a parameter. So that you can use ...userFilters={muf-uri}&{muf-uri}&...
+GET /md/{project-id}/userfilters?userFilters={MUF-URI}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "userFilters": {
+        "count": 20,
+        "length": 1,
+        "offset": 0,
+        "items": [
+            {
+                "userFilters": [
+                    "/gdc/md/{project-id}/obj/{object-id}"
+                ],
+                "user": "/gdc/account/profile/{user-id}"
+            }
+        ]
+    }
+}
+
+
+To DELETE Mandatoy User Filter object
+DELETE /md/{project-id}/obj/{muf-object-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+
+
+--
+Dependency
+This API can be used to GET all objects that are used by specific object such as dashboard, report etc.
+
+--
+
+Use this method GET all objects that are used by specific object
+GET /md/{project-id}/using/{object-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+   "using" : {
+      "edges" : [
+         {
+            "to" : 5,
+            "from" : 38
+         },
+         {
+            "to" : 49,
+            "from" : 5
+         },      
+],
+     "nodes" : [
+    {
+           "link" : "/gdc/md/j41cf2ph664i24r06zvj4f8rcpwoc7z5/obj/3439",
+           "author" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+           "created" : "2011-12-22 11:04:45",
+           "deprecated" : "0",
+           "summary" : "",
+           "updated" : "2011-12-22 11:04:46",
+           "title" : "Department Salaries - Total",
+           "category" : "report",
+           "contributor" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+         },
+{
+           "link" : "/gdc/md/j41cf2ph664i24r06zvj4f8rcpwoc7z5/obj/3439",
+           "author" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+           "created" : "2011-12-22 11:04:45",
+           "deprecated" : "0",
+           "summary" : "",
+           "updated" : "2011-12-22 11:04:46",
+           "title" : "Department Salaries - Total",
+           "category" : "report",
+           "contributor" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+         }
+]
+     }
+}
+
+
+--
+Object Identifiers
+The metadata objects are uniquely identified by the URI and Identifier. You can use this API to transform Identifiers to URI or vice versa. Identifiers doesn’t change when you clone project from master to child.
+
+--
+
+Use this method transform identifier to URI
+POST /gdc/md/{project-id}/identifiers
+> Content-Type: application/json
+{
+    "identifierToUri": [
+        "aavXZuyygoTi"
+    ]
+}
+< 200
+< Content-Type: application/json
+{
+  "identifiers" : [
+    {
+      "identifier" : "aavXZuyygoTi",
+      "uri" : "/gdc/md/PROJECT_ID/obj/3439"
+    }
+  ]
+}
+
+
+Use this method transform identifier to URI
+POST /gdc/md/{project-id}/identifiers
+> Content-Type: application/json
+{
+    "uriToIdentifier": [
+        "/gdc/md/PROJECT_ID/obj/3439"
+    ]
+}
+< 200
+< Content-Type: application/json
+{
+  "identifiers" : [
+    {
+      "identifier" : "aavXZuyygoTi",
+      "uri" : "/gdc/md/{project-id}/obj/3439"
+    }
+  ]
+}
+
+
+--
+Reports and Dashboards by Email
+Using this API, you can easily schedule the Email, that will be sent to you with a defined Reports and/or Dashboards as an attachment.
+
+--
+
+Create new scheduleMail object with following this request
+POST /gdc/md/{project-id}/obj
+> Content-Type: application/json
+{
+    "scheduledMail": {
+        "meta": {
+            "title": "Scheduled report example",
+            "summary": "Daily at 12:00pm PT",
+            "tags": "",
+            "deprecated": 0
+        },
+        "content": {
+            "when": {
+                "recurrency": "0:0:0:1*12:0:0",
+                "startDate": "2012-06-05",
+                "timeZone": "America/Los_Angeles"
+            },
+            "to": [
+                "email@company.com"
+            ],
+            "subject": "Scheduled report",
+            "body": "Hey, I'm sending you new Reports and Dashboards!",
+            "attachments": [
+                {
+                    "reportAttachment": {
+                        "uri": "/gdc/md/PROJECT_ID/obj/1520",
+                        "formats": [
+                            "pdf",
+                            "xls"
+                        ]
+                    }
+                },{
+               "dashboardAttachment":{
+                  "uri":"/gdc/md/FoodMartDemo/obj/130001697",
+                  "allTabs":1,
+                  "tabs":[
+ 
+                  ]
+               }
+            },
+                {
+               "dashboardAttachment":{
+                  "uri":"/gdc/md/PROJECT_ID/obj/DASHBOARD_ID",
+                  "allTabs":0,
+                  "tabs":[
+                     "aydpARVaburu"
+                  ]
+               }
+            }                
+            ]
+        }
+    }
+}
+< 200
+< Content-Type: application/json
+{"uri":"/gdc/md/{project-id}/obj/58058"}
+
+
+List all scheduled emails with this request
+GET /gdc/md/{project-id}/query/scheduledmails
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "query": {
+        "entries": [
+            {
+                "link": "/gdc/md/{project-id}/obj/58058",
+                "author": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+                "tags": "",
+                "created": "2012-06-05 15:50:25",
+                "deprecated": "0",
+                "summary": "Daily at 12:00pm PT",
+                "category": "scheduledMail",
+                "title": "Scheduled report example",
+                "updated": "2012-06-05 15:50:25",
+                "contributor": "/gdc/account/profile/{profile-id}"
+            }
+        ],
+        "meta": {
+            "summary": "Metadata Query Resources for project 'PROJECT_ID'",
+            "title": "List of scheduledmails",
+            "category": "query"
+        }
+    }
+}
+
+
+Get specific scheduled email details
+GET /gdc/md/{project-id}/obj/{object-id}
+> Content-Type: application/json
+< 200
+< Content-Type: application/json
+{
+    "scheduledMail": {
+        "content": {
+            "body": "Hey, I'm sending you new Reports and Dashboards!",
+            "when": {
+                "timeZone": "America/Los_Angeles",
+                "recurrency": "0:0:0:1*12:0:0",
+                "startDate": "2012-06-05"
+            },
+            "attachments": [
+                {
+                    "reportAttachment": {
+                        "formats": [
+                            "pdf",
+                            "xls"
+                        ],
+                        "uri": "/gdc/md/{project-id}/obj/{report-id}"
+                    }
+                },{
+               "dashboardAttachment":{
+                  "uri":"/gdc/md/{project-id}/obj/{dashboard-object-id}",
+                  "allTabs":1,
+                  "tabs":[
+ 
+                  ]
+               }
+            },
+                {
+               "dashboardAttachment":{
+                  "uri":"/gdc/md/{project-id}/obj/{dashboard-object-id}",
+                  "allTabs":0,
+                  "tabs":[
+                     "aydpARVaburu"
+                  ]
+               }
+            }
+            ],
+            "to": [
+                "user.email@gooddata.com"
+            ],
+            "subject": "Scheduled report"
+        },
+        "meta": {
+            "author": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+            "uri": "/gdc/md/PROJECT_ID/obj/58058",
+            "tags": "",
+            "created": "2012-06-05 15:50:25",
+            "identifier": "aadDxQdneA7Y",
+            "deprecated": "0",
+            "summary": "Daily at 12:00pm PT",
+            "title": "Scheduled report example",
+            "category": "scheduledMail",
+            "updated": "2012-06-05 15:50:25",
+            "contributor": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+        }
+    }
+}
