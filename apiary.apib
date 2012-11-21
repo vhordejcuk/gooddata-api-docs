@@ -50,6 +50,7 @@ This resource is the first. Use it to log into the API.
 
 POST /account/login
 > Content-Type: application/json
+> Accept: application/json
 {"postUserLogin":{"login":"user@company.com","password":"YourPassword","remember":1}}
 < 201
 < Content-Type: application/json
@@ -59,6 +60,7 @@ POST /account/login
 
 GET /account/profile/{user-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 
@@ -66,6 +68,7 @@ GET /account/profile/{user-id}
 You'll get the authentication token on this resource.
 GET /account/token
 > Content-Type: application/json
+> Accept: application/json
 > Cookie: $Version=0; GDCAuthSST={super-secured-token}; $Path=/gdc/account
 < 200
 < Content-Type: application/json
@@ -75,6 +78,7 @@ GET /account/token
 For logout the user
 DELETE /account/{user-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 
@@ -103,6 +107,7 @@ To create new project, use following call. Poll the resource that you received a
 See the next API call for more details. You can create PostgreSQL based Project, which is stil in beta version.
 POST /projects
 > Content-Type: application/json
+> Accept: application/json
 { "project" : {
        "content" : { "guidedNavigation": 1, "driver" : "Pg", "authorizationToken" : "AUTH_TOKEN"},
        "meta" : {
@@ -110,7 +115,6 @@ POST /projects
        "summary" : "Testing Project"
        } }
 }
-
 < 201
 < Content-Type: application/json
 {
@@ -121,6 +125,7 @@ POST /projects
 To show the Project information after creation or whenever you need it. Use this API request.
 GET /projects/{project-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -157,6 +162,7 @@ GET /projects/{project-id}
 To list all existing projects
 GET /account/profile/{profile-id}/projects
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -198,6 +204,7 @@ GET /account/profile/{profile-id}/projects
 To Export selected Project - exportUsers and exportData field are not mandatory
 POST /md/{project-id}/maintenance/export
 > Content-Type: application/json
+> Accept: application/json
 { "exportProject" : {
      "exportUsers" : "1 | 0",
      "exportData" : "1 | 0"
@@ -217,6 +224,7 @@ POST /md/{project-id}/maintenance/export
 Use this method to import exported Project
 POST /md/{project-id}/maintenance/import
 > Content-Type: application/json
+> Accept: application/json
 { 
 "importProject" : {
   "token" : "TOKEN_STRING"
@@ -232,6 +240,7 @@ POST /md/{project-id}/maintenance/import
 To create your own custom colour palette in given Project
 PUT /projects/{project-id}/styleSettings
 > Content-Type: application/json
+> Accept: application/json
 {"styleSettings" :
    {"chartPalette": [ 
       { "guid": "guid1", "fill": { "r":255, "g":255, "b":0 } }, 
@@ -261,6 +270,7 @@ PUT /projects/{project-id}/styleSettings
 To Delete/Reset your own custom colour palette in given Project
 DELETE /projects/{project-id}/styleSettings
 > Content-Type: application/json
+> Accept: application/json
 < 204
 < Content-Type: application/json
 
@@ -291,6 +301,7 @@ To manage users via the User Provisioning API Resources, you need to have your o
 To create new user in your domain - use this resource. The API will give you new user's uri. You have to be DOMAIN admin for provision the user to the Project.
 POST /account/domains/{domain-name}/users
 > Content-Type: application/json
+> Accept: application/json
 {
  "accountSetting":{
     "login": "user@login.com",
@@ -317,6 +328,7 @@ To add created User to the Project. User roles are defined by ID:
 1 - unverifiedAdminRole
 POST /projects/{project-id}/users
 > Content-Type: application/json
+> Accept: application/json
 { "user" : {
      "content" : {
            "status":"ENABLED",
@@ -338,6 +350,7 @@ POST /projects/{project-id}/users
 Use this resource for invite user to the Project. The invotation email will be sent.
 POST /projects/{project-id}/invitations
 > Content-Type: application/json
+> Accept: application/json
 {
     "invitations": [
         {
@@ -368,6 +381,7 @@ POST /projects/{project-id}/invitations
 Lists all users in a domain
 GET /account/domains/{domain-name}/users
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -425,13 +439,14 @@ GET /account/domains/{domain-name}/users
 You are able to update the User information 
 PUT /account/profile/{user-id}
 > Content-Type: application/json
+> Accept: application/json
 {
     "accountSetting": {
         "firstName": "John",
         "lastName": "Doe",
         "ssoProvider": "salesforce.com",
-        "password": "area51",
-        "verifyPassword": "area51"
+        "password": "area51x",
+        "verifyPassword": "area51x"
     }
 }
 < 200
@@ -441,6 +456,7 @@ PUT /account/profile/{user-id}
 To delete User from specific Domain
 DELETE /account/profile/{user-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 
@@ -456,6 +472,7 @@ The data model is the core concept of GoodData. It can be managed and validated 
 To manage Logical Data Model
 POST /md/{project-id}/ldm/manage
 > Content-Type: application/json
+> Accept: application/json
 {
    "manage" : {
       "maql" : "CREATE ATTRIBTE {my_attribute}"
@@ -468,6 +485,7 @@ POST /md/{project-id}/ldm/manage
 Use this method to validate Project
 POST /md/{project-id}/validate/
 > Content-Type: application/json
+> Accept: application/json
 { "validateProject" : [ "IO", "LDM", "PDM" ] }
 < 201
 < Content-Type: application/json
@@ -477,6 +495,7 @@ POST /md/{project-id}/validate/
 Here you can GET the SLI manifest. This manifest is needed to upload your data using the API directly. The SLI manifest provides column mapping between CSV file and data model.
 GET /md/{project-id}/ldm/singleloadinterface/{dataset-name}/manifest
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -606,6 +625,7 @@ The package must contain **upload-info.json** and **CSV** file for every dataset
 Start data upload using this resource. As parameter, use the name of WebDav directory, where you uploaded Data. Upload archive should be named upload.zip and must contain **upload_info.json** (SLI manifest) and **CSV file** with data. See the Data Model resources to learn about SLI manifest.
 POST /md/{project-id}/etl/pull
 > Content-Type: application/json
+> Accept: application/json
 {"pullIntegration":"directory-with-upload-package"}
 < 200
 < Content-Type: application/json
@@ -619,6 +639,7 @@ POST /md/{project-id}/etl/pull
 This is resource returned by previous POST. Poll it to get the upload status.
 GET /md/{project-id}/etl/task/{task-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -651,6 +672,7 @@ with specific condition for triggering the notification.
 To create new Salesforce Notifications channel use this method
 POST /account/profile/{profile-id}/channelConfigurations
 > Content-Type: application/json
+> Accept: application/json
 {
    "channelConfiguration":{
       "configuration":{
@@ -686,6 +708,8 @@ POST /account/profile/{profile-id}/channelConfigurations
 
 To create new Twillio Notifications channel use this method
 POST /account/profile/{profile-id}/channelConfigurations
+> Content-Type: application/json
+> Accept: application/json
 {
    "channelConfiguration":{
       "configuration":{
@@ -724,6 +748,7 @@ POST /account/profile/{profile-id}/channelConfigurations
 To create new Subscription, call this resource and set the timerEvent, condition expression and message that will be sent
 POST /projects/{project-id}/users/{user-id}/subscriptions
 > Content-Type: application/json
+> Accept: application/json
 {
    "subscription":{
       "triggers":[
@@ -805,6 +830,7 @@ Reports can be also handled via API. You can use following resources for getting
 Use this method to list all Reports in given Project
 GET /md/{project-id}/query/reports
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -834,6 +860,7 @@ GET /md/{project-id}/query/reports
 Use this method to execute selected Report
 POST /xtab2/executor3
 > Content-Type: application/json
+> Accept: application/json
 {
     "report_req": {
         "reportDefinition": "/gdc/md/PROJECT_ID/obj/OBJECT_ID"
@@ -866,6 +893,7 @@ POST /xtab2/executor3
 This method can be used for exporting Report
 POST /exporter/executor
 > Content-Type: application/json
+> Accept: application/json
 {
     "result_req": {
         "report":"/gdc/md/PROJECT_ID/obj/OBJECT_ID",
@@ -887,6 +915,7 @@ Following resources cover Project Dashboard operation. You can list all Dashboar
 Use this method to list of all Dashboards in given Project
 GET /md/{project-id}/query/projectDashboards
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -916,6 +945,7 @@ GET /md/{project-id}/query/projectDashboards
 Use this method to GET dashboard object content
 GET /md/{project-id}/obj/{object-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -1076,6 +1106,7 @@ GET /md/{project-id}/obj/{object-id}
 Use this method to update the Dashboard. If you want to change some metadata attribute, you have to send complete JSON payload with Dashboard object.
 POST /md/{project-id}/obj/{object-id}
 > Content-Type: application/json
+> Accept: application/json
 {
     "projectDashboard": {
         "content": {
@@ -1253,6 +1284,7 @@ project.
 This method is used for partial metadata export
 POST /md/{project-id}/maintenance/partialmdexport
 > Content-Type: application/json
+> Accept: application/json
 {
     "partialMDExport": {
         "uris": [
@@ -1275,6 +1307,7 @@ POST /md/{project-id}/maintenance/partialmdexport
 Use this method to import exported metadata
 POST /md/{project-id}/maintenance/partialmdimport
 > Content-Type: application/json
+> Accept: application/json
 { 
 "partialMDImport" : {
   "token" : "TOKEN_STRING",
@@ -1309,6 +1342,7 @@ can be assigned to multiple users.
 Use this method to create new Mandatory User Filter
 POST /md/{project-id}/obj
 > Content-Type: application/json
+> Accept: application/json
 {
     "userFilter": {
         "content": {
@@ -1327,6 +1361,7 @@ POST /md/{project-id}/obj
 Use this method to assign Filter to a User
 POST /md/{project-id}/userfilters
 > Content-Type: application/json
+> Accept: application/json
 { 
 "userFilters": {
         "items": [
@@ -1354,6 +1389,7 @@ POST /md/{project-id}/userfilters
 Use this method to get a list of Mandatory User Filters
 GET /md/{project-id}/query/userfilters
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -1384,6 +1420,7 @@ GET /md/{project-id}/query/userfilters
 To list Mandatory User Filters for selected users, use this API call. You can use multiple user URIs as a parameter. So that you can filter using ...userFilters={user-uri}&{user-uri}&...
 GET /md/{project-id}/userfilters?users={user-URI}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -1406,6 +1443,7 @@ GET /md/{project-id}/userfilters?users={user-URI}
 To list Users for selected Mandatory User Filters, use this API call. You can use multiple MUF URIs as a parameter. So that you can use ...userFilters={muf-uri}&{muf-uri}&...
 GET /md/{project-id}/userfilters?userFilters={MUF-URI}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -1428,6 +1466,7 @@ GET /md/{project-id}/userfilters?userFilters={MUF-URI}
 To DELETE Mandatoy User Filter object
 DELETE /md/{project-id}/obj/{muf-object-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 
@@ -1441,6 +1480,7 @@ This API can be used to GET all objects that are used by specific object such as
 Use this method GET all objects that are used by specific object
 GET /md/{project-id}/using/{object-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -1492,6 +1532,7 @@ The metadata objects are uniquely identified by the URI and Identifier. You can 
 Use this method transform identifier to URI
 POST /gdc/md/{project-id}/identifiers
 > Content-Type: application/json
+> Accept: application/json
 {
     "identifierToUri": [
         "aavXZuyygoTi"
@@ -1512,6 +1553,7 @@ POST /gdc/md/{project-id}/identifiers
 Use this method transform identifier to URI
 POST /gdc/md/{project-id}/identifiers
 > Content-Type: application/json
+> Accept: application/json
 {
     "uriToIdentifier": [
         "/gdc/md/PROJECT_ID/obj/3439"
@@ -1538,6 +1580,7 @@ Using this API, you can easily schedule the Email, that will be sent to you with
 Create new scheduleMail object with following this request
 POST /gdc/md/{project-id}/obj
 > Content-Type: application/json
+> Accept: application/json
 {
     "scheduledMail": {
         "meta": {
@@ -1571,7 +1614,6 @@ POST /gdc/md/{project-id}/obj
                   "uri":"/gdc/md/FoodMartDemo/obj/130001697",
                   "allTabs":1,
                   "tabs":[
- 
                   ]
                }
             },
@@ -1592,10 +1634,10 @@ POST /gdc/md/{project-id}/obj
 < Content-Type: application/json
 {"uri":"/gdc/md/{project-id}/obj/58058"}
 
-
 List all scheduled emails with this request
 GET /gdc/md/{project-id}/query/scheduledmails
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -1622,10 +1664,10 @@ GET /gdc/md/{project-id}/query/scheduledmails
     }
 }
 
-
 Get specific scheduled email details
 GET /gdc/md/{project-id}/obj/{object-id}
 > Content-Type: application/json
+> Accept: application/json
 < 200
 < Content-Type: application/json
 {
@@ -1651,7 +1693,6 @@ GET /gdc/md/{project-id}/obj/{object-id}
                   "uri":"/gdc/md/{project-id}/obj/{dashboard-object-id}",
                   "allTabs":1,
                   "tabs":[
- 
                   ]
                }
             },
