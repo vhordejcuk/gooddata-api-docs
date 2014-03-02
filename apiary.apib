@@ -2975,150 +2975,12 @@ Get specific scheduled email details
             }
         }
 
-# Group CloudConnect Processes
+# Group Data Loading Processes
 <a id="cc-processes" ></a>
 
-## /gdc/projects/{project-id}/dataload/processes
-### POST
-Use this API to create new data loading process. Before doing this request, you have to archive (.zip) all your CloudConnect Project files (workspace.prm...) 
-and folders (graph, meta, ...) and upload the **archive** file to the WebDav server (https://na1-di.gooddata.com/uploads/).
+## Processes [/gdc/projects/{project-id}/dataload/processes]
 
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-                "process":
-                {
-                    "name":"name",
-                    "path":"/uploads/path-to-zip-file.zip"
-                }
-            }
-
-+ Response 201 (application/json)
-
-        {
-            "process":{
-                "name":"name",
-                "graphs":[
-                    "graph/simple.grf",
-                    "graph/simpleNoParam.grf"
-                ],
-                "links":{
-                    "self":"/gdc/projects/{project-id}/dataload/processes/{process-id}",
-                    "executions":"/gdc/{project-id}/dataload/processes/{process-id}/executions"
-                }
-            }
-        }
-
-## /gdc/projects/{project-id}/dataload/processes 
-### GET
-To GET all deployed processes use this API call
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-+ Response 200
-
-        {
-            "processes" : {
-                "items" : [ {
-                    "process" : {
-                        "name" : "some_transformation",
-                        "graphs" : [ "graph/downloader.grf", "graph/gd_load.grf", "graph/jsons_parser.grf", "graph/run.grf", "graph/transform.grf" ],
-                        "links" : {
-                            "self" : "/gdc/projects/{project-id}/dataload/processes/{process-id}",
-                            "executions" : "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions"
-                        }
-                    }
-                } ]
-            }
-        }
-
-## /gdc/projects/{project-id}/dataload/processes/{process-id}/executions
-### POST
-To Execute specific data loading process
-
-+ Request (application/json)
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-                "execution":{
-                    "graph":"graph/run.grf",
-                    "params": {
-                        "PARAM1_NAME" : "PARAM1_VALUE",
-                        "PARAM2_NAME" : "PARAM2_VALUE"
-                    }
-                }  
-            }
-
-+ Response 201 (application/json)
-
-        {
-            "executionTask":{
-                "link":{
-                    "poll":"/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}"
-                }
-            }
-        }
-
-## /gdc/projects/{project-id}/dataload/processes/{process-id}
-### PUT
-To Update deployed data loading process
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-                "process":
-                {
-                    "name":"name",
-                    "path":"/uploads/path-to-zip-file.zip"
-                }
-            }
-
-+ Response 201
-
-        {
-            "process":{
-                "name":"name",
-                "graphs":[
-                    "graph/simple.grf",
-                    "graph/simpleNoParam.grf"
-                ],
-                "links":{
-                    "self":"/gdc/projects/{project-id}/dataload/processes/{process-id}",
-                    "executions":"/gdc/{project-id}/dataload/processes/{process-id}/executions"
-                }
-            }
-        }
-
-### DELETE
-To DELETE deployed process
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-+ Response 204
-
-## /gdc/account/profile/{user-id}/dataload/processes
-### GET
-To list user specific processes
+### List Processes in a project [GET]
 
 + Request
     + Headers
@@ -3128,39 +2990,326 @@ To list user specific processes
 + Response 200 (application/json)
 
         {
-            "processes": {
+            "processes" : {
+                "items" : [ {
+                    "process" : {
+                        "name" : "some_transformation",
+                        "executables" : [ "graph/downloader.grf", "graph/gd_load.grf", "graph/jsons_parser.grf", "graph/run.grf", "graph/transform.grf" ],
+                        "links" : {
+                            "self" : "/gdc/projects/{project-id}/dataload/processes/{process-id}",
+                            "executions" : "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions"
+                        }
+                    }
+                } ]
+            }
+        }
+
+### Create new Process [POST]
+Use this resource to create new data loading process. Before doing this request, you have to archive (.zip) all your CloudConnect Project files (workspace.prm...) 
+and folders (graph, meta, ...) and upload the **archive** file to the WebDAV server (https://na1-di.gooddata.com/uploads/).
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+                "process" : {
+                    "name" : "Process Name",
+                    "path" : "/uploads/path-to-uploaded-process-archive.zip"
+                }
+            }
+
++ Response 201 (application/json)
+
+        {
+            "process" : {
+                "name" : "Process Name",
+                "executables" : [
+                    "graph/simple.grf",
+                    "graph/simpleNoParam.grf"
+                ],
+                "links" : {
+                    "self" : "/gdc/projects/{project-id}/dataload/processes/{process-id}",
+                    "executions" : "/gdc/{project-id}/dataload/processes/{process-id}/executions"
+                }
+            }
+        }
+
+## User Processes [/gdc/account/profile/{user-id}/dataload/processes]
+
+### List Processes of the given User in all Projects [GET]
+
++ Request
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+        {
+            "processes" : {
+                "items" : [ {
+                    "process" : {
+                        "name" : "some_transformation",
+                        "executables" : [ "graph/downloader.grf", "graph/gd_load.grf", "graph/jsons_parser.grf", "graph/run.grf", "graph/transform.grf" ],
+                        "links" : {
+                            "self" : "/gdc/projects/{project-id}/dataload/processes/{process-id}",
+                            "executions" : "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions"
+                        }
+                    }
+                } ],
+                "links": {
+                    "self": "/gdc/account/profile/{user-id}/dataload/processes"
+                }
+            }
+        }
+        
+## Process [/gdc/projects/{project-id}/dataload/processes/{process-id}]
+
+### Get Process metatada [GET]
+
++ Request
+    + Headers
+
+            Accept: application/json
+            
++ Response 201 (application/json)
+
+        {
+            "process" : {
+                "name" : "name",
+                "executables" : [
+                    "graph/simple.grf",
+                    "graph/simpleNoParam.grf"
+                ],
+                "links" : {
+                    "self" : "/gdc/projects/{project-id}/dataload/processes/{process-id}",
+                    "executions" : "/gdc/{project-id}/dataload/processes/{process-id}/executions"
+                }
+            }
+        }
+
+### Update Process [PUT]
+The workflow to update existing data loading process is the same as when you're creating new one. This resource requires updated process archive to
+be already uploaded to WebDAV.
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+                "process":
+                {
+                    "name" : "Process Name",
+                    "path" : "/uploads/path-to-uploaded-process-archive.zip"
+                }
+            }
+
++ Response 201 (application/json)
+
+        {
+            "process":{
+                "name" : "Process Name",
+                "executables" : [
+                    "graph/simple.grf",
+                    "graph/simpleNoParam.grf"
+                ],
+                "links" : {
+                    "self" : "/gdc/projects/{project-id}/dataload/processes/{process-id}",
+                    "executions" : "/gdc/{project-id}/dataload/processes/{process-id}/executions"
+                }
+            }
+        }
+
+### Remove Process [DELETE]
+
++ Response 204
+
+## Process Source [/gdc/projects/{project-id}/dataload/processes/{process-id}/source]
+
+### Download Process archive [GET]
+
++ Response 303
+    + Headers
+    
+            Location: {url-from-which-process-archive-can-be-downloaded}
+
+## Process Executions [/gdc/projects/{project-id}/dataload/processes/{process-id}/executions{?offset,limit}]
+
+### List Executions of a Process [GET]
+
++ Parameters
+    
+    + offset = `0`   (optional, int) ... offset of the first record
+    + limit  = `100` (optional, int) ... maximal number of records
+
++ Request
+    + Headers
+
+            Accept: application/json
+        
++ Response 200 (application/json)
+
+        {
+            "executions": {
+                "paging": {
+                    "offset": 0,
+                    "count": 2
+                },
                 "items": [
                     {
-                        "process": {
-                            "name": "Reporting - GoodData",
-                            "graphs": [
-                                "Box Reporting - GoodData/graph/Graph2.grf",
-                                "Box Reporting - GoodData/graph/Graph1.grf"
-                            ],
+                        "executionDetail": {
+                            "status": "OK",
+                            "created": "2014-02-27T08:25:40.327Z",
+                            "started": "2014-02-27T08:25:51.490Z",
+                            "updated": "2014-02-27T08:37:50.768Z",
+                            "finished": "2014-02-27T08:37:50.640Z",
                             "links": {
-                                "self": "/gdc/projects/dr6p6hksxg7h2myy8rns5ayyjxxs3sfr/dataload/processes/7fa22f0a-0754-40c3-9727-5bf2333aa6c5",
-                                "executions": "/gdc/projects/dr6p6hksxg7h2myy8rns5ayyjxxs3sfr/dataload/processes/7fa22f0a-0754-40c3-9727-5bf2333aa6c5/executions"
+                                "poll": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}",
+                                "self": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/detail",
+                                "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log"
                             }
                         }
                     },
                     {
-                        "process": {
-                            "name": "Getting Started with CC",
-                            "graphs": [
-                                "Getting Started with CC/graph/quotes.grf"
-                            ],
+                        "executionDetail": {
+                            "status": "ERROR",
+                            "created": "2014-02-24T19:00:35.999Z",
+                            "started": "2014-02-24T19:00:39.155Z",
+                            "updated": "2014-02-24T19:26:13.197Z",
+                            "finished": "2014-02-24T19:26:13.060Z",
+                            "error" : {
+                                "errorCode" : "executor.error",
+                                "message" : "Error message with some placeholders for parameters - like %s.",
+                                "parameters" : [ "this one" ]
+                            }
                             "links": {
-                                "self": "/gdc/projects/g9pkzebsm83djrijlv5695yazd7p5fea/dataload/processes/023bb49e-5ecd-482f-bc1d-34588256d671",
-                                "executions": "/gdc/projects/g9pkzebsm83djrijlv5695yazd7p5fea/dataload/processes/023bb49e-5ecd-482f-bc1d-34588256d671/executions"
+                                "poll": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}",
+                                "self": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/detail",
+                                "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
+                                "data": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/data"
                             }
                         }
                     }
-                ],
+                ]
+            }
+        }
+        
+### Execute Process [POST]
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+                "execution" : {
+                    "executable" : "graph/run.grf",
+                    "params" : {
+                        "PARAM1" : "PARAM1_VALUE",
+                        "PARAM2" : "PARAM2_VALUE"
+                    },
+                    "hiddenParams" : {
+                        "HIDDEN_PARAM1" : "SENSITIVE_VALUE1",
+                        "HIDDEN_PARAM2" : "SENSITIVE_VALUE2"
+                    }
+                }  
+            }
+
++ Response 201 (application/json)
+    + Headers
+    
+            Location: /gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}
+
+    + Body
+    
+            {
+                "executionTask" : {
+                    "link" : {
+                        "poll" : "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}",
+                        "detail" : "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/detail"
+                    }
+                }
+            }
+
+## Process Execution [/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}]
+
+### Poll for basic Execution status [GET]
+Returns status code ``202 Accepted`` if execution is still running and ``204 No Content`` if it has already finished.
+            
++ Response 204
+
++ Response 202
+
+### Stop running Execution [DELETE]
+Can be used to stop execution that's  currently in progress.
+            
++ Response 204
+
+## Process Execution Detail [/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/detail]
+
+### Get Execution metadata [GET]
+
++ Request
+    + Headers
+
+            Accept: application/json
+            
++ Response 200 (application/json)
+        
+        {
+            "executionDetail": {
+                "status": "OK",
+                "created": "2014-02-27T08:25:40.327Z",
+                "started": "2014-02-27T08:25:51.490Z",
+                "updated": "2014-02-27T08:37:50.768Z",
+                "finished": "2014-02-27T08:37:50.640Z",
                 "links": {
-                    "self": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d/dataload/processes"
+                    "poll": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}",
+                    "self": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/detail",
+                    "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log"
                 }
             }
         }
+
+## Process Execution Log [/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log]
+
+### Get Execution log [GET]
+Supports range requests that retrieve only part of execution log. If no range is given, the response status is ``200 OK`` and response body contains full log.
+
++ Request
+    + Headers
+
+            Accept: text/plain
+            Range: 0-999
+
++ Response 206 (text/plain)
+    + Headers
+    
+            Content-Length: 1000
+            Content-Range: 0-999/6971
+
+    + Body
+    
+            The first 1000 bytes of execution log in text/plain
+            
+## Process Execution Data [/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/data]
+
+### Download Execution data [GET]
+Allows you to download data (both executables and any locally downloaded data) of a failed execution for inspection & debugging.
+
++ Response 302
+    + Headers
+    
+            Location: {url-from-which-execution-data-can-be-downloaded}
 
 # Group CloudConnect Schedules
 <a id="cc-schedules" ></a>
