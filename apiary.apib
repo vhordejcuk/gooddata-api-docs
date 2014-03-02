@@ -3311,19 +3311,22 @@ Allows you to download data (both executables and any locally downloaded data) o
     
             Location: {url-from-which-execution-data-can-be-downloaded}
 
-# Group CloudConnect Schedules
+# Group Schedules
 <a id="cc-schedules" ></a>
 
-## /gdc/projects/{project-id}/schedules
-### GET
-To GET a list of Schedules.
+## Schedules [/gdc/projects/{project-id}/schedules{?offset,limit}]
+### List Project Schedules [GET]
+
++ Parameters
+    + offset = `0`   (optional, int) ... offset of the first record
+    + limit  = `100` (optional, int) ... maximal number of records
 
 + Request
     + Headers
 
             Accept: application/json
 
-+ Response 201
++ Response 200 (application/json)
 
         {
             "schedules": {
@@ -3339,7 +3342,7 @@ To GET a list of Schedules.
                             "state": "ENABLED",
                             "params": {
                                 "PROCESS_ID": "cb91f23d-d5a4-4485-a6de-b92f55285d9e",
-                                "GRAPH": "Twitter/graph/twitter.grf"
+                                "EXECUTABLE": "Twitter/graph/twitter.grf"
                             },
                             "cron": "0 0 * * *",
                             "timezone": "UTC",
@@ -3348,11 +3351,11 @@ To GET a list of Schedules.
                                 "execution": {
                                     "startTime": "2013-11-15T00:00:40.355Z",
                                     "endTime": "2013-11-15T00:00:49.030Z",
-                                    "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                                    "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
                                     "status": "OK",
                                     "trigger": "CRON",
                                     "links": {
-                                        "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                                        "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{schedule-execution-id}"
                                     }
                                 }
                             },
@@ -3360,11 +3363,11 @@ To GET a list of Schedules.
                                 "execution": {
                                     "startTime": "2013-11-15T00:00:40.355Z",
                                     "endTime": "2013-11-15T00:00:49.030Z",
-                                    "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                                    "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
                                     "status": "OK",
                                     "trigger": "CRON",
                                     "links": {
-                                        "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                                        "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{schedule-execution-id}"
                                     }
                                 }
                             },
@@ -3379,24 +3382,25 @@ To GET a list of Schedules.
             }
         }
 
-### POST
-To schedule data loading process. Learn more about scheduling in [following article](http://developer.gooddata.com/article/scheduling-and-notifications#cron-expression).
+### Schedule a Process [POST]
+To schedule Data Loading Process. Learn more about scheduling in [following article](http://developer.gooddata.com/article/scheduling-and-notifications#cron-expression).
 
 + Request
     + Headers
-
+            
+            Content-Type: application/json
             Accept: application/json
 
     + Body
 
             {
-             "schedule" : {
+                "schedule" : {
                     "type" : "MSETL",
                     "timezone" : "UTC",
                     "cron" : "0 15 27 7 *",
                     "params": {
-                        "PROCESS_ID" : "…",
-                        "GRAPH" : "…",
+                        "PROCESS_ID" : "{process-id}",
+                        "EXECUTABLE" : "graph/run.grf",
                         "PARAM1_NAME" : "PARAM1_VALUE",
                         "PARAM2_NAME" : "PARAM2_VALUE"
                     },
@@ -3409,73 +3413,243 @@ To schedule data loading process. Learn more about scheduling in [following arti
 
 + Response 201
 
-## /gdc/projects/{project-id}/schedules/{schedule-id}/executions
-### POST
-Executing this POST request, **schedule** will be placed in execution queue and will **run as soon as possible**.
+## Schedule [/gdc/projects/{project-id}/schedules/{schedule-id}]
+
+### Get Schedule [GET]
+
++ Request
+    + Headers
+    
+            Accept: application/json
+
+    + Response 200 (application/json)
+
+            { 
+                "schedule": {
+                    "type": "MSETL",
+                    "state": "ENABLED",
+                    "params": {
+                        "PROCESS_ID": "cb91f23d-d5a4-4485-a6de-b92f55285d9e",
+                        "EXECUTABLE": "Twitter/graph/twitter.grf"
+                    },
+                    "cron": "0 0 * * *",
+                    "timezone": "UTC",
+                    "nextExecutionTime": "2013-11-16T00:00:00.000Z",
+                    "lastSuccessful": {
+                        "execution": {
+                            "startTime": "2013-11-15T00:00:40.355Z",
+                            "endTime": "2013-11-15T00:00:49.030Z",
+                            "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                            "status": "OK",
+                            "trigger": "CRON",
+                            "links": {
+                                "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                            }
+                        }
+                    },
+                    "lastExecution": {
+                        "execution": {
+                            "startTime": "2013-11-15T00:00:40.355Z",
+                            "endTime": "2013-11-15T00:00:49.030Z",
+                            "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                            "status": "OK",
+                            "trigger": "CRON",
+                            "links": {
+                                "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                            }
+                        }
+                    },
+                    "consecutiveFailedExecutionCount": 0,
+                    "links": {
+                        "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549",
+                        "executions": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions"
+                    }
+                }
+            }
+
+### Update Schedule [PUT]
 
 + Request
     + Headers
 
+            Content-Type: application/json
+            Accept: application/json
+
+    + Body
+
+            {
+                "schedule" : {
+                    "type" : "MSETL",
+                    "timezone" : "UTC",
+                    "cron" : "0 15 27 7 *",
+                    "params": {
+                        "PROCESS_ID" : "{process-id}",
+                        "EXECUTABLE" : "graph/run.grf",
+                        "PARAM1_NAME" : "PARAM1_VALUE",
+                        "PARAM2_NAME" : "PARAM2_VALUE"
+                    },
+                    "hiddenParams" : {
+                        "HPARAM1_NAME" : "HPARAM1_VALUE",
+                        "HPARAM2_NAME" : "HPARAM2_VALUE"
+                    }
+                }
+            }
+
++ Response 200 (application/json)
+
+        { 
+            "schedule": {
+                "type": "MSETL",
+                "state": "ENABLED",
+                "params": {
+                    "PROCESS_ID" : "{process-id}",
+                    "EXECUTABLE" : "graph/run.grf",
+                    "PARAM1_NAME" : "PARAM1_VALUE",
+                    "PARAM2_NAME" : "PARAM2_VALUE"
+                },
+                "cron": "0 15 27 7 *",
+                "timezone": "UTC",
+                "nextExecutionTime": "2013-11-16T00:00:00.000Z",
+                "lastSuccessful": {
+                    "execution": {
+                        "startTime": "2013-11-15T00:00:40.355Z",
+                        "endTime": "2013-11-15T00:00:49.030Z",
+                        "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                        "status": "OK",
+                        "trigger": "CRON",
+                        "links": {
+                            "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                        }
+                    }
+                },
+                "lastExecution": {
+                    "execution": {
+                        "startTime": "2013-11-15T00:00:40.355Z",
+                        "endTime": "2013-11-15T00:00:49.030Z",
+                        "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                        "status": "OK",
+                        "trigger": "CRON",
+                        "links": {
+                            "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                        }
+                    }
+                },
+                "consecutiveFailedExecutionCount": 0,
+                "links": {
+                    "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549",
+                    "executions": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions"
+                }
+            }
+        }
+
+## Schedule Executions [/gdc/projects/{project-id}/schedules/{schedule-id}/executions{?offset,limit}]
+
+### List Schedule Executions [GET]
+
++ Parameters
+    + offset = `0`   (optional, int) ... offset of the first record
+    + limit  = `100` (optional, int) ... maximal number of records
+
++ Request
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+        {
+            "executions": {
+                "paging": {
+                    "offset": 0,
+                    "count": 2,
+                    "next": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions?offset=2&limit=2"
+                },
+                "items": [
+                    {
+                        "execution": {
+                            "startTime": "2014-03-02T16:00:21.093Z",
+                            "endTime": "2014-03-02T16:00:24.460Z",
+                            "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{schedule-execution-id}/log",
+                            "status": "OK",
+                            "trigger": "CRON",
+                            "links": {
+                                "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{schedule-execution-id}"
+                            },
+                            "createdTime": "2014-03-02T16:00:18.963Z"
+                        }
+                    },
+                    {
+                        "execution": {
+                            "startTime": "2014-03-02T15:00:20.184Z",
+                            "endTime": "2014-03-02T15:00:23.320Z",
+                            "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
+                            "status": "OK",
+                            "trigger": "CRON",
+                            "links": {
+                                "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{execution-id}"
+                            },
+                            "createdTime": "2014-03-02T15:00:18.410Z"
+                        }
+                    }
+                ]
+            }
+        }
+
+### Execute Schedule [POST]
+``Schedule`` will be placed in execution queue and will **run as soon as possible**.
+
++ Request
+    + Headers
+
+            Content-Type: application/json
             Accept: application/json
 
     + Body
 
             {
                 "execution": {}
-                }
+            }
 
-+ Response 200
++ Response 200 (application/json)
 
         {
             "execution": {
                 "status": "SCHEDULED",
                 "trigger": "MANUAL",
                 "links": {
-                    "self": "/gdc/projects/yujfhbaosnobqr0mdog4ohgdpx0z6w4s/schedules/5131e8e0e4b0d3837937cc74/executions/51c83c40e4b07a86b239d888"
+                    "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{schedule-execution-id}"
                 }
             }
         }
 
-## /gdc/projects/{project-id}/schedules/{schedule-id}
-### PUT
-To update scheduled process
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-             "schedule" : {
-                    "type" : "MSETL",
-                    "timezone" : "UTC",
-                    "cron" : "0 15 27 7 *",
-                    "params": {
-                        "PROCESS_ID" : "…",
-                        "GRAPH" : "…",
-                        "PARAM1_NAME" : "PARAM1_VALUE",
-                        "PARAM2_NAME" : "PARAM2_VALUE"
-                    },
-                    "hiddenParams" : {
-                        "HPARAM1_NAME" : "HPARAM1_VALUE",
-                        "HPARAM2_NAME" : "HPARAM2_VALUE"
-                    }
-                }
-            }
-
-+ Response 201
-
-### DELETE
-To DELETE created schedule
-
-+ Request
-    + Headers
-
-            Accept: application/json
+### Delete Schedule [DELETE]
 
 + Response 204
+
+## Schedule Execution [/gdc/projects/{project-id}/schedules/{schedule-id}/execution]
+
+### Get Execution [GET]
+
++ Request
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+        {
+            "execution": {
+                "startTime": "2014-03-02T15:00:20.184Z",
+                "endTime": "2014-03-02T15:00:23.320Z",
+                "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
+                "status": "OK",
+                "trigger": "CRON",
+                "links": {
+                    "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{execution-id}"
+                },
+                "createdTime": "2014-03-02T15:00:18.410Z"
+            }
+        }
 
 # Group CloudConnect Zendesk Connector
 <a id="cc-zendesk-connector" ></a>
