@@ -786,6 +786,9 @@ Types of object for which the given property is applicable are included in paren
     * ``references`` - array of identifiers of other datasets and names of date dimensions; if dataset _Employee_ has a _reference_ to dataset _Department_, then you can use attributes of _Department_ in reports based on facts of _Employee_
 * __DateDimension__
     * ``name`` _required_ - identifies the date dimension; rules for ``identifier``s apply (must be unique, limited characters)
+* __Attribute__
+    * ``defaultLabel`` - identifier of the label that contains default visual representation of attribute's value
+    * ``sortOrder`` - defines how attribute values should be ordered; you must specify label to sort by and direction - sample value: ``{ "attributeSortOrder" : { "label" : "label.person.id.name", "direction" : "ASC" } }``
 * __Label__
     * ``type`` - type of label; defaults to ``GDC.text``; supported values:
         * ``GDC.text`` - normal label, presented as plain text in the UI
@@ -884,6 +887,13 @@ Poll to obtain assembled project model.
                                                                 "title": "Employee Name",
                                                                 "dataType": "VARCHAR(128)",
                                                                 "type": "GDC.text"
+                                                            }
+                                                        },
+                                                        "defaultLabel": "label.employee.employee.name",
+                                                        "sortOrder": { 
+                                                            "attributeSortOrder" : { 
+                                                                "label" : "label.employee.employee.name",
+                                                                "direction" : "ASC"
                                                             }
                                                         }
                                                     ]
@@ -1006,7 +1016,14 @@ Post desired target LDM state to start the MAQL generation process. Returns link
                                                             "type": "GDC.text"
                                                         }
                                                     }
-                                                ]
+                                                ],
+                                                "defaultLabel": "label.employee.employee.name",
+                                                "sortOrder": { 
+                                                    "attributeSortOrder" : { 
+                                                        "label" : "label.employee.employee.name",
+                                                        "direction" : "ASC"
+                                                    }
+                                                }
                                             }
                                         },
                                         "facts": [
