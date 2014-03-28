@@ -3107,6 +3107,52 @@ and folders (graph, meta, ...) and upload the **archive** file to the WebDAV ser
             }
         }
 
+### Create new Process - multipart upload [POST]
+Use this resource to create new data loading process with one single multipart http request.
+You have to archive (.zip) whole CloudConnect Project and send both metadata (json) and data as separated parts of the same request.
+
++ Request
+    + Headers
+
+            Accept: application/json
+            Content-Type: multipart/form-data; boundary=boundary_string
+
+    + Body
+
+        --boundary_string
+            Content-Disposition: form-data; name="process";
+            Content-Type: application/json
+
+            {
+                "process" : {
+                    "name" : "Process Name",
+                }
+            }
+
+        --boundary_string
+            Content-Type: application/zip
+            Content-Disposition: form-data; name="data"; filename="uploaded-process-archive.zip"
+
+            Binary data goes here.
+
+        --boundary_string--
+
++ Response 201 (application/json)
+
+        {
+            "process" : {
+                "name" : "Process Name",
+                "executables" : [
+                    "graph/simple.grf",
+                    "graph/simpleNoParam.grf"
+                ],
+                "links" : {
+                    "self" : "/gdc/projects/{project-id}/dataload/processes/{process-id}",
+                    "executions" : "/gdc/{project-id}/dataload/processes/{process-id}/executions"
+                }
+            }
+        }
+
 ## User Processes [/gdc/account/profile/{user-id}/dataload/processes]
 
 ### List Processes of the given User in all Projects [GET]
@@ -3195,6 +3241,37 @@ be already uploaded to WebDAV.
                 }
             }
         }
+
+### Update Process - multipart upload [POST]
+Use this resource update existing data loading process with one single multipart http request.
+You have to archive (.zip) whole CloudConnect Project and send both metadata (json) and data as separated parts of the same request.
+Note: notice the use of POST method instead of PUT - POST is the only one supported for multipart uploads.
+
++ Request
+    + Headers
+
+            Accept: application/json
+            Content-Type: multipart/form-data; boundary=boundary_string
+
+    + Body
+
+        --boundary_string
+            Content-Disposition: form-data; name="process";
+            Content-Type: application/json
+
+            {
+                "process" : {
+                    "name" : "Updated Process Name",
+                }
+            }
+
+        --boundary_string
+            Content-Type: application/zip
+            Content-Disposition: form-data; name="data"; filename="uploaded-process-archive.zip"
+
+            Binary data goes here.
+
+        --boundary_string--
 
 ### Remove Process [DELETE]
 
