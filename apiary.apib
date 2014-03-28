@@ -29,6 +29,7 @@ The following documentation covers core resources that are used to manipulate wi
 - 404 `Not Found` - resource was not found.
 - 405 `Method Not Allowed` - requested method is not supported for resource.
 - 429 `Too Many Requests` - exceeded GoodData API limits. Pause requests, wait up to one minute, and try again. 
+- 503 `Service Unavailable` - service is temporary unavailable (e.g. scheduled Platform Maintenance). Try again later.
 
 # Group Login 
 <a id="login" ></a>
@@ -108,8 +109,19 @@ For logout the user
 # Group Project
 <a id="project" ></a>
 
-Project is one of the key entities inside GoodData. When working with GoodData, you basically create analytical projects (datamarts). Metrics, Reports and Dashboards
-are then created inside Projects.
+Project is one of the key entities inside GoodData. When working with GoodData, you basically create projects (datamarts). Metrics, Reports and Dashboards
+are then created inside Projects. Project may be in one of the following states. First two states are key for you and your integrations:
+
+- **ENABLED** - project is ready and available
+- **DELETED** - something is wrong
+
+Once you create a Project with a `POST` request shown below, [poll the returned url](#get-%2Fgdc%2Fprojects%2F%7Bproject-id%7D) and check the Project `state` value until it is **ENABLED** or **DELETED**. Find out more information about how to create a [project programatically on this discussion thread](http://stackoverflow.com/questions/22647479/gooddata-how-to-create-a-project-through-api). Other states that project can be in:
+
+- PREPARING 
+- LOADING
+- PREPARED
+- DISABLED
+- ARCHIVED
 
 ###Project Properties  
 - title (string) :   Project Title         
@@ -127,8 +139,8 @@ are then created inside Projects.
 
 ## /gdc/projects
 ### POST
-To create new project, use following call. Poll the resource that you received as response until it gives you the status: **Enabled**  
-See the next API call for more details. You can create PostgreSQL based Project, which is stil in beta version.
+To create new project, use following call. Poll the resource that you received as response until it gives you the status: **ENABLED** or **DELETED** 
+See the next API call for more details. 
 
 + Request (application/json)
     + Headers
@@ -154,7 +166,7 @@ See the next API call for more details. You can create PostgreSQL based Project,
 
 ## /gdc/projects/{project-id}
 ### GET
-To show the Project information after creation or whenever you need it. Use this API request.
+To show the Project information after creation or whenever you need it. While creating a new project, poll this resource until the `state` is **ENABLED** or **DELETED**.
 
 + Request 
     + Headers
@@ -497,7 +509,6 @@ To manage users via the User Provisioning API Resources, you need to have your o
 - email : User's email for invitations, used as contact email
 - firstname (string) : User's firstname
 - lastname (string) : User's lastname
-- status : User's status, can be Enabled or Disabled
 - userRoles (uri) : Uri to the specific user roles
 - projectUsersUpdateResult : Give an array of successful/failed created users
 - companyName (string) : Name of user's company
@@ -602,7 +613,6 @@ Lists all users in a domain
 To GET all users in Project
 
 **Paging:** This resource _optionally_ allows paging. Use _offset_ and _limit_ parameters on the end of the URI. example: **users?offset=1&limit=3**
-
 + Request
     + Headers
 
@@ -645,6 +655,50 @@ To GET all users in Project
               }
            ]
         }
+        
+## /gdc/account/{domain-name}/users?login={some-encoded-login}
+### GET
+To GET all users in Project
+
+**Login parameter:** You can use _login_ parameter that will return exactly one user object specify by email that is [encoded](http://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters). Example  
+login: _user@gooddata.com_ will be encoded as _?login=user%40gooddata.com_
+
++ Request
+    + Headers
+
+            Accept: application/json
+
++ Response 200
+
+         {
+              "accountSettings": {
+              "paging": {
+              "offset": 0,
+              "count": 1
+        },
+        "items": [
+            {
+                "accountSetting": {
+                    "companyName": null,
+                    "country": null,
+                    "created": "2014-02-24 18:51:53",
+                    "firstName": "Zendesk",
+                    "lastName": "Uploader",
+                    "login": "support+zendesk-upload@gooddata.com",
+                    "phoneNumber": null,
+                    "position": null,
+                    "timezone": null,
+                    "updated": "2014-02-24 18:51:53",
+                    "links": {
+                        "projects": "/gdc/account/profile/a5e0aa8f6758c4b7cb48ec1d75262903/projects",
+                        "self": "/gdc/account/profile/a5e0aa8f6758c4b7cb48ec1d75262903"
+                    },
+                    "email": "support+zendesk-upload@gooddata.com"
+                    }
+                }
+                ]
+            }
+         }
 
 ## /gdc/projects/{project-id}/users
 ### POST
@@ -1724,7 +1778,7 @@ Use this method to list all Reports in given Project
             "query": {
                 "entries": [
                     {
-                        "link": "/gdc/md/PROJECT_ID/obj/OBJECT_ID",
+                        "link": "/gdc/md/{PROJECT_ID}/obj/{OBJECT_ID}",
                         "author": "/gdc/account/profile/USER_ID",
                         "tags": "",
                         "created": "2011-11-23 15:34:18",
@@ -1733,7 +1787,7 @@ Use this method to list all Reports in given Project
                         "title": "Report Title",
                         "category": "report",
                         "updated": "2011-11-23 15:41:44",
-                        "contributor": "/gdc/account/profile/USER_ID"
+                        "contributor": "/gdc/account/profile/{USER_ID}"
                     }],
                 "meta": {
                     "summary": "Metadata Query Resources for project 'PROJECT_ID'",
@@ -1742,6 +1796,98 @@ Use this method to list all Reports in given Project
                 }
             }
         }
+
+
+## /gdc/md/{project-id}/obj
+### POST
+You need to create Report Definition using this resource first, then save it as a Report by following API call.
+
++ Request
+    + Headers
+
+            Accept: application/json
+            Content-Type: application/json
+
+    + Body
+
+            {
+             "reportDefinition": {
+                "content": {
+                "filters": [],
+                "format": "grid",
+                "grid": {
+                    "rows": [],
+                    "columns": [
+                        "metricGroup"
+                    ],
+                    "sort": {
+                        "columns": [],
+                        "rows": []
+                    },
+                    "columnWidths": [],
+                    "metrics": [
+                        {
+                            "uri": "/gdc/md/{project-id}/obj/255",
+                            "alias": ""
+                        }
+                    ]
+                }
+            },
+            "meta": {
+                "title": "Untitled report definition",
+                "summary": "",
+                "tags": "",
+                "deprecated": 0,
+                "category": "reportDefinition"
+                }
+              }
+            }
+
+
++ Response 201
+
+        {
+           "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/{created-object-id}"
+        }
+
+
+## /gdc/md/{project-id}/obj
+### POST
+This resource will allow you to save Report Definition as a Report (visible from UI). You need to POST the Report Definition.
+
++ Request
+    + Headers
+
+            Accept: application/json
+            Content-Type: application/json
+
+    + Body
+
+            
+            {
+            "report": {
+                "content": {
+                    "domains": [],
+                    "definitions": [
+                      "/gdc/md/{project-id}/obj/{report-definition-object-id}"
+                  ]
+                },
+            "meta": {
+                "title": "Test Report",
+                "summary": "",
+                "tags": "",
+                "deprecated": 0
+                    }
+              }
+            }
+
+
++ Response 201
+
+        {
+           "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/{created-report-object-id}"
+        }
+        
 
 ## /gdc/xtab2/executor3
 ### POST
@@ -1843,100 +1989,6 @@ Use this method to execute selected Report
            }
         }
 
-## /gdc/md/{project-id}/obj
-### POST
-This resource will allow you to create a Report Via API. You need to POST the Report Definition.
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-               "reportDefinition" : {
-                  "content" : {
-                     "chart" : {
-                        "styles" : {
-                           "global" : {}
-                        },
-                        "buckets" : {
-                           "y" : [
-                              {
-                                 "id" : "yui_3_10_0_1_1371536597440_95903",
-                                 "uri" : "metric"
-                              }
-                           ],
-                           "color" : [],
-                           "x" : [
-                              {
-                                 "id" : "yui_3_10_0_1_1371536597440_95904",
-                                 "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/86"
-                              }
-                           ],
-                           "angle" : []
-                        },
-                        "type" : "area"
-                     },
-                     "grid" : {
-                        "sort" : {
-                           "columns" : [],
-                           "rows" : []
-                        },
-                        "columnWidths" : [],
-                        "columns" : [
-                           "metricGroup"
-                        ],
-                        "metrics" : [
-                           {
-                              "alias" : "",
-                              "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/1722"
-                           }
-                        ],
-                        "rows" : [
-                           {
-                              "attribute" : {
-                                 "alias" : "",
-                                 "totals" : [
-                                    []
-                                 ],
-                                 "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/86"
-                              }
-                           }
-                        ]
-                     },
-                     "oneNumber" : {
-                        "labels" : {}
-                     },
-                     "format" : "chart",
-                     "filters" : []
-                  },
-                  "links" : {
-                     "explain2" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/1737/explain2",
-                     "explain" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/1737/explain"
-                  },
-                  "meta" : {
-                     "author" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
-                     "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/1737",
-                     "tags" : "",
-                     "created" : "2013-06-18 09:30:16",
-                     "identifier" : "aQ2gedlQb757",
-                     "deprecated" : "0",
-                     "summary" : "",
-                     "title" : "Untitled report definition",
-                     "category" : "reportDefinition",
-                     "updated" : "2013-06-18 09:30:16",
-                     "contributor" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
-                  }
-               }
-            }
-
-+ Response 201
-
-        {
-           "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/1979"
-        }
 
 ## /gdc/exporter/executor
 ### POST
@@ -2272,7 +2324,7 @@ Use this method to GET dashboard object content
         }
 
 ### POST
-Use this method to update the Dashboard. If you want to change some metadata attribute, you have to send complete JSON payload with Dashboard object.
+Use this method to create Dashboard object. To Update the Dashboard object, use `PUT` with the same payload which represents the final state.
 
 + Request
     + Headers
@@ -3668,6 +3720,7 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
             }
         }
 
+
 # Group CloudConnect Zendesk Connector
 <a id="cc-zendesk-connector" ></a>
 ### Download task properties
@@ -4043,6 +4096,202 @@ To create new integration process
             }
 
 + Response 201
+
+# Group Zendesk 4 Connector
+<a id="zendesk-4"></a>
+
+## /gdc/projects/{projectName}/connectors/zendesk4/integration
+### POST
+Create integration resource
+
++ Request
+    + Headers
+    
+            Accept: application/json
+            Content-Type: application/json
+
+    + Body
+    
+            {
+                "integration" : {
+                    "projectTemplate" : "/projectTemplates/ZendeskAnalytics/10",
+                    "active" : true
+                }
+            }
+
++ Response 201
+    + Body
+    
+            {
+                "integration" : {
+                    "projectTemplate" : "/projectTemplates/ZendeskAnalytics/10",
+                    "active" : true,
+                    "lastFinishedProcess" : null,
+                    "lastSuccessfulProcess" : null,
+                    "runningProcess" : null,
+                    "links" : {
+                        "self" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration",
+                        "processes" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/processes",
+                        "settings" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/settings",
+                    },
+                    "ui" : { }
+                }
+            }
+
+        
+### GET
+Retrieve integration resource
+
++ Request
+    + Headers
+    
+            Accept: application/json
+
++ Response 200
+
+    + Body
+    
+            {
+                "integration" : {
+                    "projectTemplate" : "/projectTemplates/ZendeskAnalytics/10",
+                    "active" : true,
+                    "lastFinishedProcess" : null,
+                    "lastSuccessfulProcess" : null,
+                    "runningProcess" : null,
+                    "links" : {
+                        "self" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration",
+                        "processes" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/processes",
+                        "settings" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/settings"
+                    },
+                    "ui" : { }
+                }
+            }
+        
+### PUT
+Update integration resource
+
++ Request
+    + Headers
+    
+            Accept: application/json
+            Content-Type: application/json
+
+    + Body
+    
+            {
+                "integration" : {
+                    "projectTemplate" : "/projectTemplates/ZendeskAnalytics/10",
+                    "active" : true
+                }
+            }
+
++ Response 200
+    + Body
+    
+            {
+                "integration" : {
+                    "projectTemplate" : "/projectTemplates/ZendeskAnalytics/10",
+                    "active" : true,
+                    "lastFinishedProcess" : null,
+                    "lastSuccessfulProcess" : null,
+                    "runningProcess" : null,
+                    "links" : {
+                        "self" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration",
+                        "processes" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/processes",
+                        "settings" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/settings",
+                    },
+                    "ui" : { }
+                }
+            }
+
+## /gdc/projects/{projectName}/connectors/zendesk4/integration/processes
+### POST
+Create integration process
+
++ Request
+    + Headers
+    
+            Accept: application/json
+            Content-Type: application/json
+
+    + Body
+    
+            {
+                "process" : {}
+            }
+            
+            {
+                "process" : {
+                    "ticketsStartDate": "2014-03-11T23:42:53.630Z",
+                    "organizationsStartDate": "2014-03-11T23:42:53.630Z",
+                    "usersStartDate": "2014-03-11T23:42:53.630Z",
+                    "ticketEventsStartDate": "2014-03-11T23:42:53.630Z",
+                    "incremental": true
+                }
+            }
+            
+
++ Response 201
+
+    + Body
+    
+            {
+                "uri": "/gdc/projects/r8ay5frvkns4e2ty9qetkrk0q5nhvo/connectors/zendesk4/integration/processes/sd345r4et45t5"
+            }
+
+## /gdc/projects/{projectName}/connectors/zendesk4/integration/settings
+### GET
+Retrieve integration settings
+
++ Request
+    + Headers
+    
+            Accept: application/json
+
+
++ Response 200
+    + Headers
+    
+            Content-Type: application/json
+
+    + Body
+    
+            {
+                "settings": {
+                    "apiUrl": "https://gooddata.zendesk.com",
+                    "syncTime": "10am",
+                    "syncTimeZone": "Europe/Prague",
+                    "type": "plus"
+                }
+            }
+            
+            {
+                "settings": {
+                    "apiUrl": "https://gooddata.zendesk.com",
+                    "type": "enterprise"
+                }
+            }
+            
+            
+### PUT
+Update integration settings
+
++ Request
+    + Headers
+    
+            Accept: application/json
+            Content-Type: application/json
+
+    + Body
+            
+            {
+                "settings": {
+                    "apiUrl": "https://gooddata.zendesk.com"
+                }
+            }
+          
++ Response 204
+
 
 # Group White Labeling
 <a id="white-labeling" ></a>
