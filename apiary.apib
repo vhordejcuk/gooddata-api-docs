@@ -737,6 +737,41 @@ These roles don't have fixed ID. You need to GET the information from diferent A
             "failed":[]}
         }
 
+
+## /gdc/account/profile/current
+### GET
+You can get information about your currently logged in user. 
+
++ Request (application/json)
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "accountSetting": {
+                  "country": "cz",
+                  "firstName": "George",
+                  "ssoProvider": null,
+                  "timezone": null,
+                  "position": "",
+                  "companyName": "GoodData",
+                  "login": "user@gooddata.com",
+                  "email": "user@gooddata.com",
+                  "created": "2011-08-10 08:37:46",
+                  "updated": "2014-03-17 14:02:40",
+                  "lastName": "Smith",
+                  "phoneNumber": "724722926",
+                   "links": {
+                     "projects": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d/projects"
+                  }
+                }
+              }
+
++ Response 200
+
+
 ## /gdc/projects/{project-id}/invitations
 ### POST
 Use this resource for invite user to the Project. The invitation email will be sent.
