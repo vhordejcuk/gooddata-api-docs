@@ -517,6 +517,7 @@ To manage users via the User Provisioning API Resources, you need to have your o
 - updated (date) : Date of user properties update
 - phoneNumber : User's phonenumber
 - position (string) : User's position in a company
+- authenticationModes (array of strings) : an optional field specifying authentication modes (SSO, PASSWORD) allowed for this user. The value of this field overrides the global settings for the domain.
 
 ## /gdc/account/domains/{organization-name}/users
 ### POST
