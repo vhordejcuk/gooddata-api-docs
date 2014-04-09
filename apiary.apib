@@ -3021,61 +3021,64 @@ Get specific scheduled email details
 + Response 200
 
         {
-            "scheduledMail": {
-                "content": {
-                    "body": "Hey, I'm sending you new Reports and Dashboards!",
-                    "when": {
-                        "timeZone": "America/Los_Angeles",
-                        "recurrency": "0:0:0:1*12:0:0",
-                        "startDate": "2012-06-05"
-                    },
-                    "attachments": [
-                        {
-                            "reportAttachment": {
-                                "formats": [
-                                    "pdf",
-                                    "xls"
-                                ],
-                                "uri": "/gdc/md/{project-id}/obj/{report-id}"
-                            }
-                        },{
-                       "dashboardAttachment":{
-                          "uri":"/gdc/md/{project-id}/obj/{dashboard-object-id}",
-                          "allTabs":1,
-                          "tabs":[
-                          ]
-                       }
-                    },
-                        {
-                       "dashboardAttachment":{
-                          "uri":"/gdc/md/{project-id}/obj/{dashboard-object-id}",
-                          "allTabs":0,
-                          "tabs":[
-                             "aydpARVaburu"
-                          ]
-                       }
+    "scheduledMail": {
+        "content": {
+            "body": "Hey, I'm sending you new Reports and Dashboards!",
+            "when": {
+                "timeZone": "America/Los_Angeles",
+                "recurrency": "0:0:0:1*12:0:0",
+                "startDate": "2012-06-05"
+            },
+            "attachments": [
+                {
+                    "reportAttachment": {
+                        "exportOptions": {
+                            "pageOrientation": "landscape"
+                        },
+                        "formats": [
+                            "pdf",
+                            "xls"
+                        ],
+                        "uri": "/gdc/md/{project-id}/obj/{report-id}"
                     }
-                    ],
-                    "to": [
-                        "user.email@gooddata.com"
-                    ],
-                    "subject": "Scheduled report"
                 },
-                "meta": {
-                    "author": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
-                    "uri": "/gdc/md/PROJECT_ID/obj/58058",
-                    "tags": "",
-                    "created": "2012-06-05 15:50:25",
-                    "identifier": "aadDxQdneA7Y",
-                    "deprecated": "0",
-                    "summary": "Daily at 12:00pm PT",
-                    "title": "Scheduled report example",
-                    "category": "scheduledMail",
-                    "updated": "2012-06-05 15:50:25",
-                    "contributor": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+                {
+                    "dashboardAttachment": {
+                        "uri": "/gdc/md/{project-id}/obj/{dashboard-object-id}",
+                        "allTabs": 1,
+                        "tabs": []
+                    }
+                },
+                {
+                    "dashboardAttachment": {
+                        "uri": "/gdc/md/{project-id}/obj/{dashboard-object-id}",
+                        "allTabs": 0,
+                        "tabs": [
+                            "aydpARVaburu"
+                        ]
+                    }
                 }
-            }
+            ],
+            "to": [
+                "user.email@gooddata.com"
+            ],
+            "subject": "Scheduled report"
+        },
+        "meta": {
+            "author": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+            "uri": "/gdc/md/PROJECT_ID/obj/58058",
+            "tags": "",
+            "created": "2012-06-05 15:50:25",
+            "identifier": "aadDxQdneA7Y",
+            "deprecated": "0",
+            "summary": "Daily at 12:00pm PT",
+            "title": "Scheduled report example",
+            "category": "scheduledMail",
+            "updated": "2012-06-05 15:50:25",
+            "contributor": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
         }
+    }
+}
 
 # Group Data Loading Processes
 <a id="cc-processes" ></a>
