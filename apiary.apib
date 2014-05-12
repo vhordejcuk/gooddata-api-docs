@@ -46,7 +46,7 @@ Remember that TT Token has **limited validity**. Once you received 401 Unauthori
 
 ## /gdc/account/login
 ### POST
-This resource is the first. Use it to log into the API.
+This resource is the first that you will need. Use it to log into the API.
 
 `Please use your GoodData account credentials for API calls.`
 
@@ -57,7 +57,13 @@ This resource is the first. Use it to log into the API.
 
     + Body
 
-            {"postUserLogin":{"login":"user@company.com","password":"YourPassword","remember":1}}
+            {
+                "postUserLogin":{
+                    "login":"user@company.com",
+                    "password":"YourPassword",
+                    "remember":1
+                }
+            }
 
 + Response 200 (application/json)
     + Headers
@@ -66,16 +72,12 @@ This resource is the first. Use it to log into the API.
 
     + Body
 
-            {"userLogin":{"profile":"/gdc/account/profile/USER-ID","state":"/gdc/account/login/USER-ID"}}
-
-## /gdc/account/profile/{user-id}
-### GET
-+ Request 
-    + Headers
-
-            Accept: application/json
-
-+ Response 200 
+            {
+                "userLogin":{
+                    "profile":"/gdc/account/profile/{user-id}",
+                    "state":"/gdc/account/login/{user-id}"
+                }
+            }
 
 ## /gdc/account/token
 ### GET
@@ -91,6 +93,43 @@ You'll get the authentication token on this resource.
     + Headers
 
             Set-Cookie: set-cookie: GDCAuthTT={temporary-token}; path=/gdc; secure; HttpOnly
+
+
+## /gdc/account/profile/{user-id}
+### GET
+You can GET your user details using this resource. It is returned after successful authentication.
+
++ Request 
+    + Headers
+
+            Accept: application/json
+
++ Response 200 
+
+    + Body
+    
+              {
+                 "accountSetting" : {
+                   "country" : "cz",
+                   "firstName" : "Name",
+                   "ssoProvider" : null,
+                   "timezone" : null,
+                   "position" : "",
+                   "authenticationModes" : [],
+                   "companyName" : "GoodData",
+                   "login" : "email@gooddata.com",
+                   "email" : "email@gooddata.com",
+                   "created" : "2011-08-10 08:37:46",
+                   "updated" : "2014-04-11 01:18:07",
+                   "lastName" : "Lastname",
+                   "phoneNumber" : "7755441225",
+                    "links" : {
+                        "self" : "/gdc/account/profile/{profile-id}",
+                        "projects" : "/gdc/account/profile/{profile-id}/projects"
+                              }
+                        }
+                }
+                
 
 ## /gdc/account/login/{user-id}
 ### DELETE
@@ -151,14 +190,14 @@ See the next API call for more details.
                    "meta" : {
                    "title" : "Test Project",
                    "summary" : "Testing Project",
-                   "projectTemplate" : "/projectTemplates/{templateName}/{version}"
+                   "projectTemplate" : "/projectTemplates/{template-name}/{template-version}"
                    } }
             }
 
 + Response 201 (application/json)
 
         {
-           "uri" : "/gdc/projects/TEST_PROJECT_ID"
+           "uri" : "/gdc/projects/{project-id}"
         }
 
 ## /gdc/projects/{project-id}
@@ -180,24 +219,24 @@ To show the Project information after creation or whenever you need it. While cr
                  "state" : "ENABLED"
               },
               "links" : {
-                 "roles" : "/gdc/projects/Project2/roles",
-                 "ldm_thumbnail" : "/gdc/projects/Project2/ldm?thumbnail=1",
-                 "connectors" : "/gdc/projects/Project2/connectors",
-                 "self" : "/gdc/projects/Project2",
-                 "invitations" : "/gdc/projects/Project2/invitations",
-                 "users" : "/gdc/projects/Project2/users",
-                 "ldm" : "/gdc/projects/Project2/ldm",
-                 "publicartifacts" : "/gdc/projects/Project2/publicartifacts",
-                 "metadata" : "/gdc/md/Project2",
-                 "templates" : "/gdc/md/Project2/templates"
+                 "roles" : "/gdc/projects/{project-id}/roles",
+                 "ldm_thumbnail" : "/gdc/projects/{project-id}/ldm?thumbnail=1",
+                 "connectors" : "/gdc/projects/{project-id}/connectors",
+                 "self" : "/gdc/projects/{project-id}",
+                 "invitations" : "/gdc/projects/{project-id}/invitations",
+                 "users" : "/gdc/projects/{project-id}/users",
+                 "ldm" : "/gdc/projects/{project-id}/ldm",
+                 "publicartifacts" : "/gdc/projects/{project-id}/publicartifacts",
+                 "metadata" : "/gdc/md/{project-id}",
+                 "templates" : "/gdc/md/{project-id}/templates"
               },
               "meta" : {
                  "created" : "2012-05-01 23:56:01",
-                 "summary" : "Quotes",
+                 "summary" : "Project Summary",
                  "updated" : "2012-05-01 23:56:01",
-                 "author" : "/gdc/account/profile/17",
-                 "title" : "Quotes",
-                 "contributor" : "/gdc/account/profile/17"
+                 "author" : "/gdc/account/profile/{user-id}",
+                 "title" : "Project Name",
+                 "contributor" : "/gdc/account/profile/{user-id}"
               }
            }
         }
@@ -214,7 +253,7 @@ This API call will DELETE your defined project. Only Project ADMIN can do this a
 
         {}
 
-## /gdc/account/profile/{profile-id}/projects
+## /gdc/account/profile/{user-id}/projects
 ### GET
 To list all existing projects
 
@@ -235,26 +274,26 @@ To list all existing projects
                        "state" : "ENABLED"
                     },
                     "links" : {
-                       "roles" : "/gdc/projects/PROJECT_ID/roles",
-                       "ldm_thumbnail" : "/gdc/projects/PROJECT_ID/ldm?thumbnail=1",
-                       "userPermissions" : "/gdc/projects/PROJECT_ID_/users/PROFILE_ID/permissions",
-                       "userRoles" : "/gdc/projects/PROJECT_ID/users/PROFILE_ID/roles",
-                       "connectors" : "/gdc/projects/PROJECT_ID/connectors",
-                       "self" : "/gdc/projects/PROJECT_ID",
-                       "invitations" : "/gdc/projects/PROJECT_ID/invitations",
-                       "users" : "/gdc/projects/PROJECT_ID/users",
-                       "ldm" : "/gdc/projects/PROJECT_ID/ldm",
-                       "metadata" : "/gdc/md/PROJECT_ID",
-                       "publicartifacts" : "/gdc/projects/PROJECT_ID/publicartifacts",
-                       "templates" : "/gdc/md/PROJECT_ID/templates"
+                       "roles" : "/gdc/projects/{project-id}/roles",
+                       "ldm_thumbnail" : "/gdc/projects/{project-id}/ldm?thumbnail=1",
+                       "userPermissions" : "/gdc/projects/{project-id}/users/{user-id}/permissions",
+                       "userRoles" : "/gdc/projects/{project-id}/users/{user-id}/roles",
+                       "connectors" : "/gdc/projects/{project-id}/connectors",
+                       "self" : "/gdc/projects/{project-id}",
+                       "invitations" : "/gdc/projects/{project-id}/invitations",
+                       "users" : "/gdc/projects/{project-id}/users",
+                       "ldm" : "/gdc/projects/{project-id}/ldm",
+                       "metadata" : "/gdc/md/{project-id}",
+                       "publicartifacts" : "/gdc/projects/{project-id}/publicartifacts",
+                       "templates" : "/gdc/md/{project-id}/templates"
                     },
                     "meta" : {
                        "created" : "YYYY-MM-DD HH:MM:SS",
                        "summary" : "Project Summary",
                        "updated" : "YYYY-MM-DD HH:MM:SS",
-                       "author" : "/gdc/account/profile/PROFILE_ID",
-                       "title" : "Your Project Name",
-                       "contributor" : "/gdc/account/profile/PROFILE_ID"
+                       "author" : "/gdc/account/profile/{user-id}",
+                       "title" : "Project Name",
+                       "contributor" : "/gdc/account/profile/{user-id}"
                     }
                  }
               } ]
@@ -282,7 +321,7 @@ To Export selected Project - exportUsers and exportData field are not mandatory.
         {
            "exportArtifact" : {
               "status" : {
-                 "uri" : "/gdc/md/PROJECT_ID/etltask/TASK_ID"
+                 "uri" : "/gdc/md/{project-id}/etltask/{task-id}"
               },
               "token" : "EXPORT_TOKEN"
            }
@@ -308,7 +347,7 @@ Use this method to import exported Project. Input is the Token exported from pre
 + Response 200 (application/json)
 
         {
-        "uri" : "/gdc/md/PROJECT_ID/etltask/TASK_ID"
+        "uri" : "/gdc/md/{project-id}/etltask/{task-id}"
         }
 
 ## /gdc/projects/{project-id}/styleSettings
@@ -382,9 +421,6 @@ To GET User roles for given project. Use following API call. There are 6 default
         {
             "projectRoles": {
                 "roles": [
-                    "/gdc/projects/{project-id}/roles/{role-id}",
-                    "/gdc/projects/{project-id}/roles/{role-id}",
-                    "/gdc/projects/{project-id}/roles/{role-id}",
                     "/gdc/projects/{project-id}/roles/{role-id}",
                     "/gdc/projects/{project-id}/roles/{role-id}"
                 ],
@@ -481,16 +517,16 @@ To GET details about specific project role, use this API call.
                     "canCreateAnnotation": "0"
                 },
                 "links": {
-                    "roleUsers": "/gdc/projects/{project-id}/roles/4/users"
+                    "roleUsers": "/gdc/projects/{project-id}/roles/{role-id}/users"
                 },
                 "meta": {
                     "created": "2012-07-25 11:28:52",
                     "identifier": "dashboardOnlyRole",
                     "summary": "dashboard only",
-                    "author": "/gdc/account/profile/{user-profile}",
+                    "author": "/gdc/account/profile/{user-id}",
                     "updated": "2012-07-25 11:28:52",
                     "title": "Embedded Dashboard Only",
-                    "contributor": "/gdc/account/profile/{user-profile}"
+                    "contributor": "/gdc/account/profile/{user-id}"
                 }
             }
         }
@@ -573,12 +609,12 @@ Lists all users in a domain
                             "ssoProvider":"SSO-PROVIDER",
                             "phoneNumber": "+420724722926",
                             "position": "",
-                            "settings": "{\"_VERSION\":\"1.1\",\"currentProjectUri\":\"/gdc/projects/{project-id}\",\"/gdc/projects/5znhmmxxrzjan0r2p1v7ofycdsrx0264\":{\"dashboard\":[\"/gdc/md/5znhmmxxrzjan0r2p1v7ofycdsrx0264/obj/15091\",\"aF3FJYXegmp7\"]},\"releaseNotice\":[\"stable_67\"],\"/gdc/projects/ca6a1r1lbfwpt2v05k36nbc0cjpu7lh9\":{\"dashboard\":[\"/gdc/md/ca6a1r1lbfwpt2v05k36nbc0cjpu7lh9/obj/200001988\",\"azBgmCJJe0mc\"]},\"/gdc/projects/uikbr0t694tnh3uje22yedukbyzyt30o\":{\"dashboard\":[\"/gdc/md/uikbr0t694tnh3uje22yedukbyzyt30o/obj/923\",\"aezS8TwAcGHp\"]},\"/gdc/projects/rgxvsmz1p995jek9ul9tlmpf6t58smrc\":{\"dashboard\":[\"/gdc/md/rgxvsmz1p995jek9ul9tlmpf6t58smrc/obj/3077\",\"akr9OnQ1eOm4\"]},\"hint-projectPage-invite-people\":false,\"/gdc/projects/j41cf2ph664i24r06zvj4f8rcpwoc7z5\":{\"dashboard\":[\"/gdc/md/j41cf2ph664i24r06zvj4f8rcpwoc7z5/obj/302\",\"acuSDRVTfsy9\"]},\"/gdc/projects/aroa0dpcaw7qde90zk28qe1g8a9yiduc\":{\"dashboard\":[\"/gdc/md/aroa0dpcaw7qde90zk28qe1g8a9yiduc/obj/1934\",\"aThZ8kBxhhOD\"]},\"/gdc/projects/als9uzqw5b3mmedep20dz079gu4l2ts4\":{\"dashboard\":[\"/gdc/md/als9uzqw5b3mmedep20dz079gu4l2ts4/obj/255\",\"acuSDRVTfsy9\"]},\"/gdc/projects/e40dze1gsyuzbiw6uo7pezb172za0g6t\":{\"dashboard\":[\"/gdc/md/e40dze1gsyuzbiw6uo7pezb172za0g6t/obj/878\",\"amDMbVxHiEpT\"]},\"/gdc/projects/qdi4csdu3cncw7cl6ytw0c08ezhjiacl\":{\"dashboard\":[\"/gdc/md/qdi4csdu3cncw7cl6ytw0c08ezhjiacl/obj/1934\",\"aae2SZzwayQc\"]},\"/gdc/projects/88w3p5nd8tjvvugg71o7alrn95brxd49\":{\"dashboard\":[\"/gdc/md/88w3p5nd8tjvvugg71o7alrn95brxd49/obj/1934\",\"aae2SZzwayQc\"]},\"/gdc/projects/1fm43ndfbq0adk6q44sv6vzjfe2mpzbf\":{\"dashboard\":[\"/gdc/md/1fm43ndfbq0adk6q44sv6vzjfe2mpzbf/obj/302\",\"acuSDRVTfsy9\"]},\"/gdc/projects/z7hy8dgakfovolhmkr0in5gab55eh8sf\":{\"dashboard\":[\"/gdc/md/z7hy8dgakfovolhmkr0in5gab55eh8sf/obj/1134\",\"axbb0wX9hWXt\"]},\"/gdc/projects/0xdgi5rf00ojg3i8buihnce9abcs0jlo\":{\"dashboard\":[\"/gdc/md/0xdgi5rf00ojg3i8buihnce9abcs0jlo/obj/1788\",\"bykyxrVPd4bK\"]},\"/gdc/projects/j411aqhpfwyfhbfcmpgp7wdv2kkadk1h\":{\"dashboard\":[\"/gdc/md/j411aqhpfwyfhbfcmpgp7wdv2kkadk1h/obj/1134\",\"axbb0wX9hWXt\"]},\"/gdc/projects/3j538qu3uaco59yqvy4f67x6r1yp2xcb\":{\"dashboard\":[\"/gdc/md/3j538qu3uaco59yqvy4f67x6r1yp2xcb/obj/928\",\"aejgJwQohyCf\"]},\"/gdc/projects/x0ihh49quilaf0cjm651nnj2hxbmfm3c\":{\"dashboard\":[\"/gdc/md/x0ihh49quilaf0cjm651nnj2hxbmfm3c/obj/1221\",\"aeMPJK0fceaH\"]},\"/gdc/projects/nb8vzlyj8sosxx0myv0tww82j0nosbql\":{\"dashboard\":[\"/gdc/md/nb8vzlyj8sosxx0myv0tww82j0nosbql/obj/975\",\"apcbnqrNem2V\"]},\"/gdc/projects/24ubdyx5m28ojz2fnf34y74vjaxw82r2\":{\"dashboard\":[\"/gdc/md/24ubdyx5m28ojz2fnf34y74vjaxw82r2/obj/4673\",\"akoz8EgNhzEx\"]},\"/gdc/projects/8thc020r46ru5mej90dewtxsdmfdmn9w\":{\"dashboard\":[\"/gdc/md/8thc020r46ru5mej90dewtxsdmfdmn9w/obj/21607\",\"aedRQW1vbS2i\"]},\"/gdc/projects/vs20w6yqnt64jaaw93wlg6osod4w0pew\":{\"dashboard\":[\"/gdc/md/vs20w6yqnt64jaaw93wlg6osod4w0pew/obj/1179\",\"aci3ZI2qg9WA\"]},\"/gdc/projects/fdybuqt6q711dk7fj0hyb17xug4occ7h\":{\"dashboard\":[\"/gdc/md/fdybuqt6q711dk7fj0hyb17xug4occ7h/obj/302\",\"acuSDRVTfsy9\"]},\"/gdc/projects/5c3eynt8oemo1tbg7r18wm1lihsbhi3w\":{\"dashboard\":[\"/gdc/md/5c3eynt8oemo1tbg7r18wm1lihsbhi3w/obj/22383\",\"aafYWrtQicJz\"]},\"/gdc/projects/o1bkm459hl3oqpfvowhc5atm8epum3n8\":{\"dashboard\":[\"/gdc/md/o1bkm459hl3oqpfvowhc5atm8epum3n8/obj/975\",\"apcbnqrNem2V\"]},\"/gdc/projects/u2sgybzl95ezxj06nxvazqryymvhd6xx\":{\"dashboard\":[\"/gdc/md/u2sgybzl95ezxj06nxvazqryymvhd6xx/obj/829\",\"aarQ2wqyh3OO\"]},\"/gdc/projects/ns1tzvr069ufw3gsvgveldbfbh6uyx8u\":{\"dashboard\":[\"/gdc/md/ns1tzvr069ufw3gsvgveldbfbh6uyx8u/obj/975\",\"apcbnqrNem2V\"]},\"/gdc/projects/fe6syz94xsf0n7indc4q4t45bt0ad68f\":{\"dashboard\":[\"/gdc/md/fe6syz94xsf0n7indc4q4t45bt0ad68f/obj/4673\",\"adLaxLMQaQ3s\"]},\"/gdc/projects/fl1tx117xb3qw2ngiuv7prud9a0qsowl\":{\"dashboard\":[\"/gdc/md/fl1tx117xb3qw2ngiuv7prud9a0qsowl/obj/245\",\"aemCHDx1ioL2\"]},\"/gdc/projects/fw1p4xvz8e99g5100wfxymzodatqbmg2\":{\"dashboard\":[\"/gdc/md/fw1p4xvz8e99g5100wfxymzodatqbmg2/obj/4673\",\"aaOGHRxOh0dl\"]},\"/gdc/projects/ic2l94mn960iyy5ycz7dnfz6mhil8php\":{\"dashboard\":[\"/gdc/md/ic2l94mn960iyy5ycz7dnfz6mhil8php/obj/4673\",\"akoz8EgNhzEx\"]},\"/gdc/projects/jusjqe0f5lz3wkpcwxoyyckzclsk2tpy\":{\"dashboard\":[\"/gdc/md/jusjqe0f5lz3wkpcwxoyyckzclsk2tpy/obj/12982\",\"aaGUiXk8hqek\"]}}",
+                            "settings": "{\"_VERSION\":\"1.1\",\"currentProjectUri\":\"/gdc/projects/{project-id}\",\"/gdc/projects/{project-id}\":{\"dashboard\":[\"/gdc/md/{project-id}/obj/{obj-id}\",\"abcdef\"]},\"releaseNotice\":[\"stable_67\"],\"/gdc/projects/{project-id}\":{\"dashboard\":[\"/gdc/md/{project-id}/obj/{obj-id}\",\"ghchijk\"]},\"hint-projectPage-invite-people\":false,\"/gdc/projects/{project-id}\":{\"dashboard\":[\"/gdc/md/{project-id}/obj/{obj-id}\",\"lmnopq\"]}}",
                             "timezone": null,
                             "updated": "2012-02-20 16:20:28",
                             "links": {
-                                "projects": "/gdc/account/profile/19765/projects",
-                                "self": "/gdc/account/profile/19765"
+                                "projects": "/gdc/account/profile/{user-id}/projects",
+                                "self": "/gdc/account/profile/{user-id}"
                             }
                         }
                     },
@@ -587,9 +623,9 @@ Lists all users in a domain
                             "companyName": "",
                             "country": "",
                             "created": "2011-11-03 15:16:52",
-                            "firstName": "J",
-                            "lastName": "T",
-                            "login": "deleted-25022@gooddata.com",
+                            "firstName": "Alice",
+                            "lastName": "Wonderland",
+                            "login": "example@company.com",
                             "phoneNumber": "",
                             "position": "",
                             "settings": "",
@@ -597,14 +633,60 @@ Lists all users in a domain
                             "ssoProvider":"SSO-PROVIDER",
                             "updated": "2011-12-15 14:40:37",
                             "links": {
-                                "projects": "/gdc/account/profile/25022/projects",
-                                "self": "/gdc/account/profile/25022"
+                                "projects": "/gdc/account/profile/{user-id}/projects",
+                                "self": "/gdc/account/profile/{user-id}"
                             }
                         }
                     }
                 ]
             }
         }
+
+
+## /gdc/account/domains/{organization-name}/users?login={some-encoded-login}
+### GET
+To GET specific user in Organization that fits the login parameter.
+
+**Login parameter:** You can use _login_ parameter that will return exactly one user object specify by email that is [encoded](http://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters). Example  
+login: _user@gooddata.com_ will be encoded as _?login=user%40gooddata.com_
+
++ Request
+    + Headers
+
+            Accept: application/json
+
++ Response 200
+
+         {
+              "accountSettings": {
+                  "paging": {
+                      "offset": 0,
+                      "count": 1
+                },
+                "items": [
+                    {
+                        "accountSetting": {
+                            "companyName": null,
+                            "country": null,
+                            "created": "2014-02-24 18:51:53",
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "login": "example@company.com",
+                            "phoneNumber": null,
+                            "position": null,
+                            "timezone": null,
+                            "updated": "2014-02-24 18:51:53",
+                            "links": {
+                                "projects": "/gdc/account/profile/{user-id}/projects",
+                                "self": "/gdc/account/profile/{user-id}"
+                            },
+                            "email": "example@company.com"
+                        }
+                    }
+                ]
+            }
+         }
+
 
 ## /gdc/projects/{project-id}/users?offset=0&limit=5
 ### GET
@@ -626,77 +708,36 @@ To GET all users in Project
                        "email" : "user@domain.com",
                        "firstname" : "John",
                        "userRoles" : [
-                          "/gdc/projects/{project_id}/roles/2"
+                          "/gdc/projects/{project_id}/roles/{role-id}"
                        ],
                        "phonenumber" : "+777777777",
                        "status" : "ENABLED",
-                       "lastname" : "Dow",
+                       "lastname" : "Doe",
                        "login" : "user@domain.com"
                     },
                     "links" : {
-                       "roles" : "/gdc/projects/{project_id}/users/2f35048619b7b0ff03f408d2c4b6390d/roles",
-                       "permissions" : "/gdc/projects/{project_id}/users/2f35048619b7b0ff03f408d2c4b6390d/permissions",
-                       "groups" : "/gdc/projects/{project_id}/users/2f35048619b7b0ff03f408d2c4b6390d/groups",
+                       "roles" : "/gdc/projects/{project_id}/users/{user-id}/roles",
+                       "permissions" : "/gdc/projects/{project_id}/users/{user-id}/permissions",
+                       "groups" : "/gdc/projects/{project_id}/users/{user-id}/groups",
                        "self" : "/gdc/account/profile/{project_id}",
                        "invitations" : "/gdc/account/profile/{project_id}/invitations",
                        "projects" : "/gdc/account/profile/{project_id}/projects",
-                       "projectRelUri" : "/gdc/projects/{project_id}/users/2f35048619b7b0ff03f408d2c4b6390d"
+                       "projectRelUri" : "/gdc/projects/{project_id}/users/{user-id}"
                     },
                     "meta" : {
                        "created" : "2011-08-10 08:37:46",
                        "updated" : "2013-05-27 11:08:09",
-                       "author" : "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
-                       "title" : "John Dow",
-                       "contributor" : "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                       "author" : "/gdc/account/profile/{user-id}",
+                       "title" : "Jane Doe",
+                       "contributor" : "/gdc/account/profile/{user-id}"
                     }
                  }
               }
            ]
         }
         
-## /gdc/account/{domain-name}/users?login={some-encoded-login}
-### GET
-To GET all users in Project
 
-**Login parameter:** You can use _login_ parameter that will return exactly one user object specify by email that is [encoded](http://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters). Example  
-login: _user@gooddata.com_ will be encoded as _?login=user%40gooddata.com_
 
-+ Request
-    + Headers
-
-            Accept: application/json
-
-+ Response 200
-
-         {
-              "accountSettings": {
-              "paging": {
-              "offset": 0,
-              "count": 1
-        },
-        "items": [
-            {
-                "accountSetting": {
-                    "companyName": null,
-                    "country": null,
-                    "created": "2014-02-24 18:51:53",
-                    "firstName": "Zendesk",
-                    "lastName": "Uploader",
-                    "login": "support+zendesk-upload@gooddata.com",
-                    "phoneNumber": null,
-                    "position": null,
-                    "timezone": null,
-                    "updated": "2014-02-24 18:51:53",
-                    "links": {
-                        "projects": "/gdc/account/profile/a5e0aa8f6758c4b7cb48ec1d75262903/projects",
-                        "self": "/gdc/account/profile/a5e0aa8f6758c4b7cb48ec1d75262903"
-                    },
-                    "email": "support+zendesk-upload@gooddata.com"
-                    }
-                }
-                ]
-            }
-         }
 
 ## /gdc/projects/{project-id}/users
 ### POST
@@ -731,7 +772,7 @@ These roles don't have fixed ID. You need to GET the information from diferent A
 + Response 200
 
         {"projectUsersUpdateResult":{
-            "successful":["/gdc/account/profile/{profile-id}"],
+            "successful":["/gdc/account/profile/{user-id}"],
             "failed":[]}
         }
 
@@ -760,10 +801,11 @@ You can get information about your currently logged in user.
                   "created": "2011-08-10 08:37:46",
                   "updated": "2014-03-17 14:02:40",
                   "lastName": "Smith",
-                  "phoneNumber": "724722926",
-                   "links": {
-                     "projects": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d/projects"
-                  }
+                  "phoneNumber": "123456789",
+                  "links" : {
+                        "self" : "/gdc/account/profile/{user-id}",
+                        "projects" : "/gdc/account/profile/{user-id}/projects"
+                            }
                 }
               }
 
@@ -1237,11 +1279,34 @@ Poll to get resulting diff & MAQL.
 Resources to execute MAQL DDL to create/update project's model to the desired target state. 
 
 ## POST /gdc/md/{project-id}/ldm/manage
-To manage Logical Data Model
+**WARNING!** - This resource **will be deprecated**. Please use [ldm/manage2](#manage2) instead.
 
-+ Request (application/json)
++ Request
+    
     + Headers
+    
+            Content-Type: application/json
 
+    + Body
+
+            {
+               "manage" : {
+                  "maql" : "CREATE ATTRIBTE {my_attribute}"
+               }
+            }
+
++ Response 200
+
+
+## POST /gdc/md/{project-id}/ldm/manage2
+<a id="manage2" ></a>
+Resource for executing MAQL DDL Scripts for data model management. The resource is asynchronous, you have to poll the returned URL to get the result. Follow the [instructions in the article](https://developer.gooddata.com/article/creating-analytical-project-with-maql-ddl) to learn more details about Data Model Creation.
+
++ Request
+    
+    + Headers
+    
+            Content-Type: application/json
             Accept: application/json
 
     + Body
@@ -1253,6 +1318,49 @@ To manage Logical Data Model
             }
 
 + Response 200
+
+    + Headers
+
+            Content-Type: application/json
+        
+    + Body
+    
+            {
+            "entries" : [
+                 {
+                     "link" : "/gdc/md/{project-id}/tasks/{task-id}/status",
+                     "category" : "tasks-status"
+                 }
+                        ]
+            }
+
+
+## GET /gdc/md/{project-id}/tasks/{task-id}/status
+Resource for retrieving the asynchronous task status.
+
++ Request
+    
+    + Headers
+    
+            Accept: application/json
+
+    + Body
+
++ Response 200
+
+    + Headers
+
+            Content-Type: application/json
+        
+    + Body
+    
+            {
+             "wTaskStatus" : {
+                "poll" : "/gdc/md/{project-id}/tasks/{task-id}/status",
+                "status" : "OK"
+                    }
+            }
+
 
 ## POST /gdc/md/{project-id}/validate/
 Use this method to validate Project
@@ -1268,7 +1376,7 @@ Use this method to validate Project
 
 + Response 201
 
-        {"uri" : "/gdc/md/PROJECT_ID/validate/TASK_ID"}
+        {"uri" : "/gdc/md/{project-id}/validate/{task-id}"}
 
 ## GET /gdc/md/{project-id}/ldm/singleloadinterface/{dataset-name}/manifest
 Here you can GET the SLI manifest. This manifest is needed to upload your data using the API directly. The SLI manifest provides column mapping between CSV file and data model.
@@ -1458,12 +1566,12 @@ This resource gives you status of data uploads for specific dataset. You need to
                     "dataUpload" : {
                        "warnings" : [],
                        "msg" : null,
-                       "etlInterface" : "/gdc/md/{project-id}/obj/174",
+                       "etlInterface" : "/gdc/md/{project-id}/obj/{obj-id}",
                        "progress" : "1.000",
                        "status" : "OK",
                        "file" : "upload_info.json",
                        "fullUpload" : 1,
-                       "uri" : "/gdc/md/{project-id}/data/upload/5",
+                       "uri" : "/gdc/md/{project-id}/data/upload/{upload-id}",
                        "createdAt" : "2012-12-14 13:40:36",
                        "fileSize" : 155649,
                        "processedAt" : "2012-12-14 13:40:38"
@@ -1473,12 +1581,12 @@ This resource gives you status of data uploads for specific dataset. You need to
                     "dataUpload" : {
                        "warnings" : [],
                        "msg" : null,
-                       "etlInterface" : "/gdc/md/{project-id}/obj/174",
+                       "etlInterface" : "/gdc/md/{project-id}/obj/{obj-id}",
                        "progress" : "1.000",
                        "status" : "OK",
                        "file" : "upload_info.json",
                        "fullUpload" : 1,
-                       "uri" : "/gdc/md/{project-id}/data/upload/4",
+                       "uri" : "/gdc/md/{project-id}/data/upload/{upload-id}",
                        "createdAt" : "2012-12-14 13:33:39",
                        "fileSize" : 78957,
                        "processedAt" : "2012-12-14 13:33:40"
@@ -1488,12 +1596,12 @@ This resource gives you status of data uploads for specific dataset. You need to
                     "dataUpload" : {
                        "warnings" : [],
                        "msg" : null,
-                       "etlInterface" : "/gdc/md/{project-id}/obj/174",
+                       "etlInterface" : "/gdc/md/{project-id}/obj/{obj-id}",
                        "progress" : "1.000",
                        "status" : "OK",
                        "file" : "upload_info.json",
                        "fullUpload" : 1,
-                       "uri" : "/gdc/md/{project-id}/data/upload/3",
+                       "uri" : "/gdc/md/{project-id}/data/upload/{upload-id}",
                        "createdAt" : "2012-12-14 09:24:42",
                        "fileSize" : 144,
                        "processedAt" : "2012-12-14 09:24:59"
@@ -1503,12 +1611,12 @@ This resource gives you status of data uploads for specific dataset. You need to
                     "dataUpload" : {
                        "warnings" : [],
                        "msg" : null,
-                       "etlInterface" : "/gdc/md/{project-id}/obj/174",
+                       "etlInterface" : "/gdc/md/{project-id}/obj/{obj-id}",
                        "progress" : "1.000",
                        "status" : "OK",
                        "file" : "upload_info.json",
                        "fullUpload" : 1,
-                       "uri" : "/gdc/md/{project-id}/data/upload/2",
+                       "uri" : "/gdc/md/{project-id}/data/upload/{upload-id}",
                        "createdAt" : "2012-12-13 17:06:11",
                        "fileSize" : 144,
                        "processedAt" : "2012-12-13 17:06:17"
@@ -1534,8 +1642,8 @@ This resource helps you identify datasets in your project. You can easily identi
             "query": {
                 "entries": [
                     {
-                        "link": "/gdc/md/{project-id}/obj/14000300",
-                        "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2009-07-03 14:52:50",
                         "deprecated": "0",
@@ -1543,11 +1651,11 @@ This resource helps you identify datasets in your project. You can easily identi
                         "category": "dataSet",
                         "title": "Initially Assigned Date",
                         "updated": "2009-07-03 14:52:50",
-                        "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     },
                     {
-                        "link": "/gdc/md/{project-id}/obj/161",
-                        "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2010-06-16 01:11:00",
                         "deprecated": "0",
@@ -1555,11 +1663,11 @@ This resource helps you identify datasets in your project. You can easily identi
                         "category": "dataSet",
                         "title": "Zendesk Tickets",
                         "updated": "2011-02-18 19:38:40",
-                        "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     },
                     {
-                        "link": "/gdc/md/{project-id}/obj/241",
-                        "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2010-06-16 01:11:04",
                         "deprecated": "0",
@@ -1567,11 +1675,11 @@ This resource helps you identify datasets in your project. You can easily identi
                         "category": "dataSet",
                         "title": "Zendesk Tags",
                         "updated": "2011-02-10 16:07:11",
-                        "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     },
                     {
-                        "link": "/gdc/md/{project-id}/obj/16000300",
-                        "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2009-07-03 14:52:50",
                         "deprecated": "0",
@@ -1579,11 +1687,11 @@ This resource helps you identify datasets in your project. You can easily identi
                         "category": "dataSet",
                         "title": "Last Updated Date",
                         "updated": "2009-07-03 14:52:50",
-                        "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     },
                     {
-                        "link": "/gdc/md/{project-id}/obj/13000300",
-                        "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2009-07-03 14:52:50",
                         "deprecated": "0",
@@ -1591,11 +1699,11 @@ This resource helps you identify datasets in your project. You can easily identi
                         "category": "dataSet",
                         "title": "Assigned Date",
                         "updated": "2009-07-03 14:52:50",
-                        "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     },
                     {
-                        "link": "/gdc/md/{project-id}/obj/12000300",
-                        "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2009-07-03 14:52:50",
                         "deprecated": "0",
@@ -1603,11 +1711,11 @@ This resource helps you identify datasets in your project. You can easily identi
                         "category": "dataSet",
                         "title": "Solved Date",
                         "updated": "2009-07-03 14:52:50",
-                        "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     },
                     {
-                        "link": "/gdc/md/{project-id}/obj/15000300",
-                        "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2009-07-03 14:52:50",
                         "deprecated": "0",
@@ -1615,11 +1723,11 @@ This resource helps you identify datasets in your project. You can easily identi
                         "category": "dataSet",
                         "title": "Due Date",
                         "updated": "2009-07-03 14:52:50",
-                        "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     },
                     {
-                        "link": "/gdc/md/{project-id}/obj/10000300",
-                        "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2009-07-03 14:52:50",
                         "deprecated": "0",
@@ -1627,7 +1735,7 @@ This resource helps you identify datasets in your project. You can easily identi
                         "category": "dataSet",
                         "title": "Created Date",
                         "updated": "2009-07-03 14:52:50",
-                        "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     }
                 ],
                 "meta": {
@@ -1694,11 +1802,11 @@ To create new Salesforce Notifications channel use this method
                 },
                 "meta": {
                     "title": "Channel Name",
-                    "author": "/gdc/account/profile/PROFILE_ID",
+                    "author": "/gdc/account/profile/{user-id}",
                     "category": "channelConfiguration",
                     "updated": "2011-12-20 13:43:17",
                     "created": "2011-12-20 13:43:17",
-                    "uri": "/gdc/account/profile/{profile-id}/channelConfigurations/{channel-id}"
+                    "uri": "/gdc/account/profile/{user-id}/channelConfigurations/{channel-id}"
                 }
             }
         }
@@ -1760,24 +1868,24 @@ To create new Subscription, call this resource and set the timerEvent, condition
                 ],
                 "condition": {
                     "condition": {
-                        "expression": "f:executeMetric('/gdc/md/PROJECT_ID/obj/OBJECT_ID') < 0.99"
+                        "expression": "f:executeMetric('/gdc/md/{project-id}/obj/{obj-id}') < 0.99"
                     }
                 },
                 "message": {
                     "template": {
-                        "expression": "Custom message % ${f:executeMetric('/gdc/md/PROJECT_ID/obj/OBJECT_ID')} ..."
+                        "expression": "Custom message % ${f:executeMetric('/gdc/md/{project-id}/obj/{obj-id}')} ..."
                     }
                 },
                 "channels": [
-                    "/gdc/account/profile/USER_ID/channelConfigurations/CHANNEL_ID"
+                    "/gdc/account/profile/{user-id}/channelConfigurations/{channel-id}"
                 ],
                 "meta": {
                     "title": "TEST%",
-                    "author": "/gdc/account/profile/USER_ID",
+                    "author": "/gdc/account/profile/{user-id}",
                     "category": "subscription",
                     "updated": "2011-12-20 13:59:23",
                     "created": "2011-12-20 13:59:23",
-                    "uri": "/gdc/projects/PROJECT_ID_/users/USER_ID_/subscriptions/SUBSCRIPTION_ID"
+                    "uri": "/gdc/projects/{project-id}/users/{user-id}/subscriptions/{subscription-id}"
                 }
             }
         }
@@ -1811,8 +1919,8 @@ Use this method to list all Reports in given Project
             "query": {
                 "entries": [
                     {
-                        "link": "/gdc/md/{PROJECT_ID}/obj/{OBJECT_ID}",
-                        "author": "/gdc/account/profile/USER_ID",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2011-11-23 15:34:18",
                         "deprecated": "0",
@@ -1820,10 +1928,10 @@ Use this method to list all Reports in given Project
                         "title": "Report Title",
                         "category": "report",
                         "updated": "2011-11-23 15:41:44",
-                        "contributor": "/gdc/account/profile/{USER_ID}"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     }],
                 "meta": {
-                    "summary": "Metadata Query Resources for project 'PROJECT_ID'",
+                    "summary": "Metadata Query Resources for project '{project-id}'",
                     "title": "List of reports",
                     "category": "query"
                 }
@@ -1860,7 +1968,7 @@ You need to create Report Definition using this resource first, then save it as 
                     "columnWidths": [],
                     "metrics": [
                         {
-                            "uri": "/gdc/md/{project-id}/obj/255",
+                            "uri": "/gdc/md/{project-id}/obj/{user-id}",
                             "alias": ""
                         }
                     ]
@@ -1880,7 +1988,7 @@ You need to create Report Definition using this resource first, then save it as 
 + Response 201
 
         {
-           "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/{created-object-id}"
+           "uri" : "/gdc/md/{project-id}/obj/{created-object-id}"
         }
 
 
@@ -1918,7 +2026,7 @@ This resource will allow you to save Report Definition as a Report (visible from
 + Response 201
 
         {
-           "uri" : "/gdc/md/nkgwx0onlkq0xrwoadd3fzv9gz2rxzhn/obj/{created-report-object-id}"
+           "uri" : "/gdc/md/{project-id}/obj/{created-report-object-id}"
         }
         
 
@@ -1935,7 +2043,7 @@ Use this method to execute selected Report
 
             {
                 "report_req": {
-                    "reportDefinition": "/gdc/md/PROJECT_ID/obj/OBJECT_ID"
+                    "reportDefinition": "/gdc/md/{project-id}/obj/{obj-id}"
                 }
             }
 
@@ -1951,7 +2059,7 @@ Use this method to execute selected Report
                           "colorMapping" : [
                              {
                                 "guid" : "guid8",
-                                "uri" : "/gdc/md/{project-id}/obj/199"
+                                "uri" : "/gdc/md/{project-id}/obj/{obj-id}"
                              }
                           ]
                        },
@@ -1975,7 +2083,7 @@ Use this method to execute selected Report
                        "x" : [
                           {
                              "id" : "yui_3_7_1_1_1355414981915_32707",
-                             "uri" : "/gdc/md/{project-id}/obj/72"
+                             "uri" : "/gdc/md/{project-id}/obj/{obj-id}"
                           }
                        ],
                        "angle" : []
@@ -1996,13 +2104,13 @@ Use this method to execute selected Report
                  "format" : "chart",
                  "columns" : [
                     {
-                       "drillDownStepAttributeDF" : "/gdc/md/{project-id}/obj/62",
+                       "drillDownStepAttributeDF" : "/gdc/md/{project-id}/obj/{obj-id}",
                        "sort" : "pk",
-                       "displayFormId" : "/gdc/md/{project-id}/obj/72",
+                       "displayFormId" : "/gdc/md/{project-id}/obj/{obj-id}",
                        "attributeTitle" : "Month (Date)",
-                       "baseElementURI" : "/gdc/md/{project-id}/obj/71/elements?id=",
+                       "baseElementURI" : "/gdc/md/{project-id}/obj/{obj-id}/elements?id=",
                        "title" : "Month (Date)",
-                       "attributeId" : "/gdc/md/{project-id}/obj/71",
+                       "attributeId" : "/gdc/md/{project-id}/obj/{obj-id}",
                        "totals" : [
                           []
                        ]
@@ -2013,12 +2121,12 @@ Use this method to execute selected Report
                     {
                        "format" : "#,##0.00",
                        "title" : "Mean Temperature [Min]",
-                       "metricId" : "/gdc/md/{project-id}/obj/199"
+                       "metricId" : "/gdc/md/{project-id}/obj/{obj-id}"
                     }
                  ]
               },
-              "reportDefinition" : "/gdc/md/{project-id}/obj/234",
-              "dataResult" : "/gdc/md/{project-id}/dataResult/1468045646021328640"
+              "reportDefinition" : "/gdc/md/{project-id}/obj/{obj-id}",
+              "dataResult" : "/gdc/md/{project-id}/dataResult/{result-id}"
            }
         }
 
@@ -2049,7 +2157,7 @@ This method can be used for exporting Report. The content of **result** part is 
                                             "colorMapping": [
                                                 {
                                                     "guid": "guid8",
-                                                    "uri": "/gdc/md/{project-id}/obj/199"
+                                                    "uri": "/gdc/md/{project-id}/obj/{obj-id}"
                                                 }
                                             ]
                                         },
@@ -2073,7 +2181,7 @@ This method can be used for exporting Report. The content of **result** part is 
                                         "x": [
                                             {
                                                 "id": "yui_3_7_1_1_1355414981915_32707",
-                                                "uri": "/gdc/md/{project-id}/obj/72"
+                                                "uri": "/gdc/md/{project-id}/obj/{obj-id}"
                                             }
                                         ],
                                         "angle": []
@@ -2095,13 +2203,13 @@ This method can be used for exporting Report. The content of **result** part is 
                                 "format": "chart",
                                 "columns": [
                                     {
-                                        "drillDownStepAttributeDF": "/gdc/md/{project-id}/obj/62",
+                                        "drillDownStepAttributeDF": "/gdc/md/{project-id}/obj/{obj-id}",
                                         "sort": "pk",
-                                        "displayFormId": "/gdc/md/{project-id}/obj/72",
+                                        "displayFormId": "/gdc/md/{project-id}/obj/{obj-id}",
                                         "attributeTitle": "Month (Date)",
-                                        "baseElementURI": "/gdc/md/{project-id}/obj/71/elements?id=",
+                                        "baseElementURI": "/gdc/md/{project-id}/obj/{obj-id}/elements?id=",
                                         "title": "Month (Date)",
-                                        "attributeId": "/gdc/md/{project-id}/obj/71",
+                                        "attributeId": "/gdc/md/{project-id}/obj/{obj-id}",
                                         "totals": [
                                             []
                                         ]
@@ -2112,12 +2220,12 @@ This method can be used for exporting Report. The content of **result** part is 
                                     {
                                         "format": "#,##0.00",
                                         "title": "Mean Temperature [Min]",
-                                        "metricId": "/gdc/md/{project-id}/obj/199"
+                                        "metricId": "/gdc/md/{project-id}/obj/{obj-id}"
                                     }
                                 ]
                             },
-                            "reportDefinition": "/gdc/md/{project-id}/obj/234",
-                            "dataResult": "/gdc/md/{project-id}/dataResult/1468045646021328640"
+                            "reportDefinition": "/gdc/md/{project-id}/obj/{obj-id}",
+                            "dataResult": "/gdc/md/{project-id}/dataResult/{result-id}"
                         }
                     }
                 }
@@ -2126,10 +2234,10 @@ This method can be used for exporting Report. The content of **result** part is 
 + Response 201
 
         {
-        "uri":"/gdc/exporter/result/PROJECT_ID/RESULT_ID"
+        "uri":"/gdc/exporter/result/{project-id}/{result-id}"
         }
 
-## /gdc/app/projects/project_id/execute/raw/
+## /gdc/app/projects/{project-id}/execute/raw/
 ### POST
 This is API resource for Export big Reports that cannot be computed on the UI. 
 
@@ -2142,14 +2250,14 @@ This is API resource for Export big Reports that cannot be computed on the UI.
 
             {
                 "report_req": {
-                    "reportDefinition":"/gdc/md/tywaryfht8k81ferrsqpuf3mcuqg9qgc/obj/1913470"
+                    "reportDefinition":"/gdc/md/{project-id}/obj/{obj-id}"
                     }
             }
 
 + Response 201
 
         {
-            "uri":"/gdc/projects/eg9r9fvuyhljjyb2b7wy3h39tkwtfdck/execute/raw/{IDENTIFIER-OF-YOUR-REPORT}"
+            "uri":"/gdc/projects/{project-id}/execute/raw/{id-of-your-report}"
         }
 
 # Group Dashboard
@@ -2171,7 +2279,7 @@ Use this method to list of all Dashboards in given Project
           "query": {
             "entries": [
               {
-                "link": "/gdc/md/{project-id}/obj/{object-id}",
+                "link": "/gdc/md/{project-id}/obj/{obj-id}",
                 "author": "/gdc/account/profile/{user-id}",
                 "tags": "",
                 "created": "2012-08-15 19:41:07",
@@ -2191,7 +2299,7 @@ Use this method to list of all Dashboards in given Project
           }
         }
 
-## /gdc/md/{project-id}/obj/{object-id}
+## /gdc/md/{project-id}/obj/{obj-id}
 ### GET
 Use this method to GET dashboard object content
 
@@ -2209,7 +2317,7 @@ Use this method to GET dashboard object content
                     "tabs": [
                         {
                             "title": "Dashboard Name",
-                            "identifier": "afblCPlxel0Y",
+                            "identifier": "abcdefg",
                             "items": [
                                 {
                                     "reportItem": {
@@ -2222,7 +2330,7 @@ Use this method to GET dashboard object content
                                                 "opacity": 0
                                             }
                                         },
-                                        "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                        "obj": "/gdc/md/{project-id}/obj/{obj-id}",
                                         "visualization": {
                                             "oneNumber": {
                                                 "labels": {}
@@ -2240,11 +2348,11 @@ Use this method to GET dashboard object content
                                         "positionY": 0,
                                         "sizeX": 380,
                                         "sizeY": 80,
-                                        "title": "TrÅ¾by",
-                                        "metric": "/gdc/md/{project-id}/obj/{object-id}",
-                                        "format": "#,##0.00 KÄ \n",
+                                        "title": "Sales",
+                                        "metric": "/gdc/md/{project-id}/obj/{obj-id}",
+                                        "format": "#,##0.00 Kc \n",
                                         "filters": [],
-                                        "filterAttributeDF": "/gdc/md/{project-id}/obj/{object-id}",
+                                        "filterAttributeDF": "/gdc/md/{project-id}/obj/{obj-id}",
                                         "linkedWithExternalFilter": 0,
                                         "constraint": {
                                             "to": 0,
@@ -2253,7 +2361,7 @@ Use this method to GET dashboard object content
                                         },
                                         "trendlineConfig": {
                                             "autoGranularity": 0,
-                                            "granularityAttributeDF": "/gdc/md/{project-id}/obj/{object-id}"
+                                            "granularityAttributeDF": "/gdc/md/{project-id}/obj/{obj-id}"
                                         }
                                     }
                                 },
@@ -2268,7 +2376,7 @@ Use this method to GET dashboard object content
                                                 "opacity": 0
                                             }
                                         },
-                                        "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                        "obj": "/gdc/md/{project-id}/obj/{obj-id}",
                                         "visualization": {
                                             "oneNumber": {
                                                 "labels": {}
@@ -2308,7 +2416,7 @@ Use this method to GET dashboard object content
                                             }
                                         },
                                         "textSize": "middle",
-                                        "text": "Celkem ZÃ¡kaznÃ­kÅ¯"
+                                        "text": "# Customers"
                                     }
                                 },
                                 {
@@ -2322,7 +2430,7 @@ Use this method to GET dashboard object content
                                                 "opacity": 0
                                             }
                                         },
-                                        "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                        "obj": "/gdc/md/{project-id}/obj/{obj-id}",
                                         "visualization": {
                                             "oneNumber": {
                                                 "labels": {
@@ -2341,7 +2449,7 @@ Use this method to GET dashboard object content
                     ]
                 },
                 "meta": {
-                    "uri": "/gdc/md/{project-id}/obj/{object-id}",
+                    "uri": "/gdc/md/{project-id}/obj/{obj-id}",
                     "created": "2012-08-15 19:41:07",
                     "updated": "2012-09-03 16:37:57",
                     "author": "/gdc/account/profile/{user-id}",
@@ -2351,7 +2459,7 @@ Use this method to GET dashboard object content
                     "category": "projectDashboard",
                     "tags": "",
                     "deprecated": "0",
-                    "identifier": "afalCPlxel0Y"
+                    "identifier": "abcdefg"
                 }
             }
         }
@@ -2373,7 +2481,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                         "tabs": [
                             {
                                 "title": "Dashboard Name",
-                                "identifier": "afblCPlxel0Y",
+                                "identifier": "abcdefg",
                                 "items": [
                                     {
                                         "reportItem": {
@@ -2386,7 +2494,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                                                     "opacity": 0
                                                 }
                                             },
-                                            "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                            "obj": "/gdc/md/{project-id}/obj/{obj-id}",
                                             "visualization": {
                                                 "oneNumber": {
                                                     "labels": {}
@@ -2404,11 +2512,11 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                                             "positionY": 0,
                                             "sizeX": 380,
                                             "sizeY": 80,
-                                            "title": "TrÅ¾by",
-                                            "metric": "/gdc/md/{project-id}/obj/{object-id}",
-                                            "format": "#,##0.00 KÄ \n",
+                                            "title": "Sales",
+                                            "metric": "/gdc/md/{project-id}/obj/{obj-id}",
+                                            "format": "#,##0.00 Kc \n",
                                             "filters": [],
-                                            "filterAttributeDF": "/gdc/md/{project-id}/obj/{object-id}",
+                                            "filterAttributeDF": "/gdc/md/{project-id}/obj/{obj-id}",
                                             "linkedWithExternalFilter": 0,
                                             "constraint": {
                                                 "to": 0,
@@ -2417,7 +2525,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                                             },
                                             "trendlineConfig": {
                                                 "autoGranularity": 0,
-                                                "granularityAttributeDF": "/gdc/md/{project-id}/obj/{object-id}"
+                                                "granularityAttributeDF": "/gdc/md/{project-id}/obj/{obj-id}"
                                             }
                                         }
                                     },
@@ -2432,7 +2540,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                                                     "opacity": 0
                                                 }
                                             },
-                                            "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                            "obj": "/gdc/md/{project-id}/obj/{obj-id}",
                                             "visualization": {
                                                 "oneNumber": {
                                                     "labels": {}
@@ -2472,7 +2580,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                                                 }
                                             },
                                             "textSize": "middle",
-                                            "text": "Celkem ZÃ¡kaznÃ­kÅ¯"
+                                            "text": "# Customers"
                                         }
                                     },
                                     {
@@ -2486,7 +2594,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                                                     "opacity": 0
                                                 }
                                             },
-                                            "obj": "/gdc/md/{project-id}/obj/{object-id}",
+                                            "obj": "/gdc/md/{project-id}/obj/{obj-id}",
                                             "visualization": {
                                                 "oneNumber": {
                                                     "labels": {
@@ -2505,7 +2613,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                         ]
                     },
                     "meta": {
-                        "uri": "/gdc/md/{project-id}/obj/{object-id}",
+                        "uri": "/gdc/md/{project-id}/obj/{obj-id}",
                         "created": "2012-08-15 19:41:07",
                         "updated": "2012-09-03 16:37:57",
                         "author": "/gdc/account/profile/{user-id}",
@@ -2515,7 +2623,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
                         "category": "projectDashboard",
                         "tags": "",
                         "deprecated": "0",
-                        "identifier": "afalCPlxel0Y"
+                        "identifier": "abcdefg"
                     }
                 }
             }
@@ -2523,7 +2631,7 @@ Use this method to create Dashboard object. To Update the Dashboard object, use 
 + Response 200
 
         {
-          "uri": "/gdc/md/{project-id}/obj/{object-id}"
+          "uri": "/gdc/md/{project-id}/obj/{obj-id}"
         }
 
 # Group Metadata 
@@ -2553,7 +2661,7 @@ This method is used for partial metadata export
             {
                 "partialMDExport": {
                     "uris": [
-                        "/gdc/md/PROJECT_ID/obj/OBJECT_ID"
+                        "/gdc/md/{project-id}/obj/{obj-id}"
                     ]
                 }
             }
@@ -2563,7 +2671,7 @@ This method is used for partial metadata export
         {
             "partialMDArtifact": {
                 "status": {
-                    "uri": "/gdc/md/PROJECT_ID/tasks/TASK_ID/status"
+                    "uri": "/gdc/md/{project-id}/tasks/{task-id}/status"
                 },
                 "token": "TOKEN_STRING"
             }
@@ -2623,7 +2731,7 @@ Use this method to create new Mandatory User Filter
             {
                 "userFilter": {
                     "content": {
-                        "expression": "[/gdc/md/{project-id}/obj/{object-id}]=[/gdc/md/{project-id}/obj/{object-id}/elements?id={element-id}]"
+                        "expression": "[/gdc/md/{project-id}/obj/{obj-id}]=[/gdc/md/{project-id}/obj/{obj-id}/elements?id={element-id}]"
                     },
                     "meta": {
                         "category": "userFilter",
@@ -2664,7 +2772,7 @@ Use this method to assign Filter to a User
           "userFiltersUpdateResult": {
               "failed": [],
               "successful": [
-                   "/gdc/account/profile/PROFILE_ID"
+                   "/gdc/account/profile/{user-id}"
                 ]
             }
         }
@@ -2697,7 +2805,7 @@ Use this method to get a list of Mandatory User Filters
                     }
                 ],
                 "meta": {
-                    "summary": "Metadata Query Resources for project 'PROJECT_ID'",
+                    "summary": "Metadata Query Resources for project '{project-id}'",
                     "title": "List of userfilters",
                     "category": "query"
                 }
@@ -2723,7 +2831,7 @@ To list Mandatory User Filters for selected users, use this API call. You can us
                 "items": [
                     {
                         "userFilters": [
-                            "/gdc/md/{project-id}/obj/{object-id}"
+                            "/gdc/md/{project-id}/obj/{obj-id}"
                         ],
                         "user": "/gdc/account/profile/{user-id}"
                     }
@@ -2750,7 +2858,7 @@ To list Users for selected Mandatory User Filters, use this API call. You can us
                 "items": [
                     {
                         "userFilters": [
-                            "/gdc/md/{project-id}/obj/{object-id}"
+                            "/gdc/md/{project-id}/obj/{obj-id}"
                         ],
                         "user": "/gdc/account/profile/{user-id}"
                     }
@@ -2773,7 +2881,7 @@ To DELETE Mandatoy User Filter object
 <a id="object-dependency" ></a>
 This API can be used to GET all objects that are used by specific object such as dashboard, report etc.
 
-## /gdc/md/{project-id}/usedby/{object-id}
+## /gdc/md/{project-id}/usedby/{obj-id}
 ### GET
 Use this method GET all objects that use your given object (specified in the request URI)
 
@@ -2798,32 +2906,32 @@ Use this method GET all objects that use your given object (specified in the req
         ],
              "nodes" : [
             {
-                   "link" : "/gdc/md/j41cf2ph664i24r06zvj4f8rcpwoc7z5/obj/3439",
-                   "author" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+                   "link" : "/gdc/md/{project-id}/obj/{obj-id}",
+                   "author" : "/gdc/account/profile/{user-id}",
                    "created" : "2011-12-22 11:04:45",
                    "deprecated" : "0",
                    "summary" : "",
                    "updated" : "2011-12-22 11:04:46",
                    "title" : "Department Salaries - Total",
                    "category" : "report",
-                   "contributor" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+                   "contributor" : "/gdc/account/profile/{user-id}"
                  },
         {
-                   "link" : "/gdc/md/j41cf2ph664i24r06zvj4f8rcpwoc7z5/obj/3439",
-                   "author" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+                   "link" : "/gdc/md/{project-id}/obj/{obj-id}",
+                   "author" : "/gdc/account/profile/{user-id}",
                    "created" : "2011-12-22 11:04:45",
                    "deprecated" : "0",
                    "summary" : "",
                    "updated" : "2011-12-22 11:04:46",
                    "title" : "Department Salaries - Total",
                    "category" : "report",
-                   "contributor" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+                   "contributor" : "/gdc/account/profile/{user-id}"
                  }
         ]
              }
         }
 
-## /gdc/md/{project-id}/using/{object-id}
+## /gdc/md/{project-id}/using/{obj-id}
 ### GET
 Use this method GET all objects that are used by specific object
 
@@ -2848,26 +2956,26 @@ Use this method GET all objects that are used by specific object
         ],
              "nodes" : [
             {
-                   "link" : "/gdc/md/j41cf2ph664i24r06zvj4f8rcpwoc7z5/obj/3439",
-                   "author" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+                   "link" : "/gdc/md/{project-id}/obj/{obj-id}",
+                   "author" : "/gdc/account/profile/{user-id}",
                    "created" : "2011-12-22 11:04:45",
                    "deprecated" : "0",
                    "summary" : "",
                    "updated" : "2011-12-22 11:04:46",
                    "title" : "Department Salaries - Total",
                    "category" : "report",
-                   "contributor" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+                   "contributor" : "/gdc/account/profile/{user-id}"
                  },
         {
-                   "link" : "/gdc/md/j41cf2ph664i24r06zvj4f8rcpwoc7z5/obj/3439",
-                   "author" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+                   "link" : "/gdc/md/{project-id}/obj/{obj-id}",
+                   "author" : "/gdc/account/profile/{user-id}",
                    "created" : "2011-12-22 11:04:45",
                    "deprecated" : "0",
                    "summary" : "",
                    "updated" : "2011-12-22 11:04:46",
                    "title" : "Department Salaries - Total",
                    "category" : "report",
-                   "contributor" : "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+                   "contributor" : "/gdc/account/profile/{user-id}"
                  }
         ]
              }
@@ -2890,7 +2998,7 @@ Use this method transform **identifier** to **URI**. See the proper payload.
 
             {
                 "identifierToUri": [
-                    "aavXZuyygoTi"
+                    "abcdefg"
                 ]
             }
 
@@ -2899,8 +3007,8 @@ Use this method transform **identifier** to **URI**. See the proper payload.
         {
           "identifiers" : [
             {
-              "identifier" : "aavXZuyygoTi",
-              "uri" : "/gdc/md/PROJECT_ID/obj/3439"
+              "identifier" : "abcdefg",
+              "uri" : "/gdc/md/{project-id}/obj/{obj-id}"
             }
           ]
         }
@@ -2942,7 +3050,7 @@ Create new scheduleMail object with following this request
                         "attachments": [
                             {
                                 "reportAttachment": {
-                                    "uri": "/gdc/md/PROJECT_ID/obj/1520",
+                                    "uri": "/gdc/md/{project-id}/obj/{obj-id}",
                                     "formats": [
                                         "pdf",
                                         "xls"
@@ -2950,7 +3058,7 @@ Create new scheduleMail object with following this request
                                 }
                             },{
                            "dashboardAttachment":{
-                              "uri":"/gdc/md/FoodMartDemo/obj/130001697",
+                              "uri":"/gdc/md/{project-id}/obj/{dashboard-id}",
                               "allTabs":1,
                               "tabs":[
                               ]
@@ -2958,10 +3066,10 @@ Create new scheduleMail object with following this request
                         },
                             {
                            "dashboardAttachment":{
-                              "uri":"/gdc/md/PROJECT_ID/obj/DASHBOARD_ID",
+                              "uri":"/gdc/md/{project-id}/obj/{dashboard-id}",
                               "allTabs":0,
                               "tabs":[
-                                 "aydpARVaburu"
+                                 "abcdefg"
                               ]
                            }
                         }                
@@ -2972,7 +3080,7 @@ Create new scheduleMail object with following this request
 
 + Response 200
 
-        {"uri":"/gdc/md/{project-id}/obj/58058"}
+        {"uri":"/gdc/md/{project-id}/obj/{obj-id}"}
 
 ## /gdc/md/{project-id}/query/scheduledmails
 ### GET
@@ -2989,8 +3097,8 @@ List all scheduled emails with this request
             "query": {
                 "entries": [
                     {
-                        "link": "/gdc/md/{project-id}/obj/58058",
-                        "author": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
+                        "link": "/gdc/md/{project-id}/obj/{obj-id}",
+                        "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2012-06-05 15:50:25",
                         "deprecated": "0",
@@ -2998,18 +3106,18 @@ List all scheduled emails with this request
                         "category": "scheduledMail",
                         "title": "Scheduled report example",
                         "updated": "2012-06-05 15:50:25",
-                        "contributor": "/gdc/account/profile/{profile-id}"
+                        "contributor": "/gdc/account/profile/{user-id}"
                     }
                 ],
                 "meta": {
-                    "summary": "Metadata Query Resources for project 'PROJECT_ID'",
+                    "summary": "Metadata Query Resources for project '{project-id}'",
                     "title": "List of scheduledmails",
                     "category": "query"
                 }
             }
         }
 
-## /gdc/md/{project-id}/obj/{object-id}
+## /gdc/md/{project-id}/obj/{obj-id}
 ### GET
 Get specific scheduled email details
 
@@ -3065,17 +3173,17 @@ Get specific scheduled email details
               "subject": "Scheduled report"
                },
                "meta": {
-                  "author": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d",
-                  "uri": "/gdc/md/PROJECT_ID/obj/58058",
+                  "author": "/gdc/account/profile/{user-id}",
+                  "uri": "/gdc/md/{project-id}/obj/{obj-id}",
                   "tags": "",
                     "created": "2012-06-05 15:50:25",
-                    "identifier": "aadDxQdneA7Y",
+                    "identifier": "abcdefg",
                  "deprecated": "0",
                  "summary": "Daily at 12:00pm PT",
                  "title": "Scheduled report example",
                     "category": "scheduledMail",
                     "updated": "2012-06-05 15:50:25",
-                 "contributor": "/gdc/account/profile/2f35048619b7b0ff03f408d2c4b6390d"
+                 "contributor": "/gdc/account/profile/{user-id}"
                   }
               }
             }
@@ -3524,7 +3632,7 @@ Allows you to download data (both executables and any locally downloaded data) o
                             "type": "MSETL",
                             "state": "ENABLED",
                             "params": {
-                                "PROCESS_ID": "cb91f23d-d5a4-4485-a6de-b92f55285d9e",
+                                "PROCESS_ID": "{process-id}",
                                 "EXECUTABLE": "Twitter/graph/twitter.grf"
                             },
                             "cron": "0 0 * * *",
@@ -3556,8 +3664,8 @@ Allows you to download data (both executables and any locally downloaded data) o
                             },
                             "consecutiveFailedExecutionCount": 0,
                             "links": {
-                                "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549",
-                                "executions": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions"
+                                "self": "/gdc/projects/{project-id}/schedules/{schedule-id}",
+                                "executions": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions"
                             }
                         }
                     }
@@ -3612,7 +3720,7 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
                     "type": "MSETL",
                     "state": "ENABLED",
                     "params": {
-                        "PROCESS_ID": "cb91f23d-d5a4-4485-a6de-b92f55285d9e",
+                        "PROCESS_ID": "{process-id}",
                         "EXECUTABLE": "Twitter/graph/twitter.grf"
                     },
                     "cron": "0 0 * * *",
@@ -3622,11 +3730,11 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
                         "execution": {
                             "startTime": "2013-11-15T00:00:40.355Z",
                             "endTime": "2013-11-15T00:00:49.030Z",
-                            "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                            "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
                             "status": "OK",
                             "trigger": "CRON",
                             "links": {
-                                "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                                "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{schedule-execution-id}"
                             }
                         }
                     },
@@ -3634,18 +3742,18 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
                         "execution": {
                             "startTime": "2013-11-15T00:00:40.355Z",
                             "endTime": "2013-11-15T00:00:49.030Z",
-                            "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                            "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
                             "status": "OK",
                             "trigger": "CRON",
                             "links": {
-                                "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                                "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{schedule-execution-id}"
                             }
                         }
                     },
                     "consecutiveFailedExecutionCount": 0,
                     "links": {
-                        "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549",
-                        "executions": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions"
+                        "self": "/gdc/projects/{project-id}/schedules/{schedule-id}",
+                        "executions": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions"
                     }
                 }
             }
@@ -3697,11 +3805,11 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
                     "execution": {
                         "startTime": "2013-11-15T00:00:40.355Z",
                         "endTime": "2013-11-15T00:00:49.030Z",
-                        "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                        "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
                         "status": "OK",
                         "trigger": "CRON",
                         "links": {
-                            "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                            "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{schedule-execution-id}"
                         }
                     }
                 },
@@ -3709,18 +3817,18 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
                     "execution": {
                         "startTime": "2013-11-15T00:00:40.355Z",
                         "endTime": "2013-11-15T00:00:49.030Z",
-                        "log": "/gdc/projects/{project-id}/dataload/processes/cb91f23d-d5a4-4485-a6de-b92f55285d9e/executions/263bf8b6e63810c081a124ab1110839700000142590f38f00000009a/log",
+                        "log": "/gdc/projects/{project-id}/dataload/processes/{process-id}/executions/{execution-id}/log",
                         "status": "OK",
                         "trigger": "CRON",
                         "links": {
-                            "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions/52856427e4b081f4cf4a5c08"
+                            "self": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions/{schedule-execution-id}"
                         }
                     }
                 },
                 "consecutiveFailedExecutionCount": 0,
                 "links": {
-                    "self": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549",
-                    "executions": "/gdc/projects/{project-id}/schedules/521f2fd4e4b0c7fc25afa549/executions"
+                    "self": "/gdc/projects/{project-id}/schedules/{schedule-id}",
+                    "executions": "/gdc/projects/{project-id}/schedules/{schedule-id}/executions"
                 }
             }
         }
@@ -3910,7 +4018,7 @@ Create download task
             {
                 "googleAnalyticsDownloadTask": {
                     "credentials": {
-                        "username": "John doe",
+                        "username": "John Doe",
                         "password": "123abc"
                     },
                     "definition": {
@@ -3979,7 +4087,7 @@ Using this request, you can create a new Facebook token request
 
 + Response 201
 
-        {"uri":"/gdc/projects/Project5/dataload/download/facebook/tokens/TokenABC"}
+        {"uri":"/gdc/projects/{project-id}/dataload/download/facebook/tokens/{token-id}"}
 
 ### GET
 Obtain all Facebook tokens for a particular project
@@ -3989,8 +4097,8 @@ Obtain all Facebook tokens for a particular project
         {
           "facebookTokens" : {
             "items" : [
-              "/gdc/projects/Project5/dataload/download/facebook/tokens/TokenA",
-              "/gdc/projects/Project5/dataload/download/facebook/tokens/TokenB" ]
+              "/gdc/projects/{project-id}/dataload/download/facebook/tokens/{token-id}",
+              "/gdc/projects/{project-id}/dataload/download/facebook/tokens/{token-id}" ]
           }
         }
 
@@ -4002,7 +4110,7 @@ Obtain a specific Facebook token
 
         {
           "facebookToken" : {
-            "id" : "/gdc/projects/Project5/dataload/download/facebook/tokens/TokenABC",
+            "id" : "/gdc/projects/{project-id}/dataload/download/facebook/tokens/{token-id}",
             "email" : "example@example.com",
             "label" : "Facebook account A",
             "facebookAccountId" : "xxffaa5",
@@ -4083,9 +4191,9 @@ This Resource gives you existing integration
             "lastSuccessfulProcess" : null,
             "runningProcess" : null,
             "links" : {
-              "self" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk3/integration",
-              "processes" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk3/integration/processes",
-              "config" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk3/integration/config"
+              "self" : "/gdc/projects/{project-id}/connectors/zendesk3/integration",
+              "processes" : "/gdc/projects/{project-id}/connectors/zendesk3/integration/processes",
+              "config" : "/gdc/projects/{project-id}/connectors/zendesk3/integration/config"
             },
             "ui" : { }
           }
@@ -4109,9 +4217,9 @@ To update the existing integration
                 "lastSuccessfulProcess" : null,
                 "runningProcess" : null,
                 "links" : {
-                  "self" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk3/integration",
-                  "processes" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk3/integration/processes",
-                  "config" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk3/integration/config"
+                  "self" : "/gdc/projects/{project-id}/connectors/zendesk3/integration",
+                  "processes" : "/gdc/projects/{project-id}/connectors/zendesk3/integration/processes",
+                  "config" : "/gdc/projects/{project-id}/connectors/zendesk3/integration/config"
                 },
                 "ui" : { }
               }
@@ -4142,7 +4250,7 @@ To get the navigation structure for existing integration
 
         {
           "config" : {
-            "settingsLink" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk3/integration/config/settings"
+            "settingsLink" : "/gdc/projects/{project-id}/connectors/zendesk3/integration/config/settings"
           }
         }
 
@@ -4244,9 +4352,9 @@ Create integration resource
                     "lastSuccessfulProcess" : null,
                     "runningProcess" : null,
                     "links" : {
-                        "self" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration",
-                        "processes" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/processes",
-                        "settings" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/settings",
+                        "self" : "/gdc/projects/{project-id}/connectors/zendesk4/integration",
+                        "processes" : "/gdc/projects/{project-id}/connectors/zendesk4/integration/processes",
+                        "settings" : "/gdc/projects/{project-id}/connectors/zendesk4/integration/settings",
                     },
                     "ui" : { }
                 }
@@ -4273,9 +4381,9 @@ Retrieve integration resource
                     "lastSuccessfulProcess" : null,
                     "runningProcess" : null,
                     "links" : {
-                        "self" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration",
-                        "processes" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/processes",
-                        "settings" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/settings"
+                        "self" : "/gdc/projects/{project-id}/connectors/zendesk4/integration",
+                        "processes" : "/gdc/projects/{project-id}/connectors/zendesk4/integration/processes",
+                        "settings" : "/gdc/projects/{project-id}/connectors/zendesk4/integration/settings"
                     },
                     "ui" : { }
                 }
@@ -4310,9 +4418,9 @@ Update integration resource
                     "lastSuccessfulProcess" : null,
                     "runningProcess" : null,
                     "links" : {
-                        "self" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration",
-                        "processes" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/processes",
-                        "settings" : "/gdc/projects/r8ay5xfrvkns4e2ty9qetkrk0q5nhvo5/connectors/zendesk4/integration/settings",
+                        "self" : "/gdc/projects/{project-id}/connectors/zendesk4/integration",
+                        "processes" : "/gdc/projects/{project-id}/connectors/zendesk4/integration/processes",
+                        "settings" : "/gdc/projects/{project-id}/connectors/zendesk4/integration/settings",
                     },
                     "ui" : { }
                 }
@@ -4350,7 +4458,7 @@ Create integration process
     + Body
     
             {
-                "uri": "/gdc/projects/r8ay5frvkns4e2ty9qetkrk0q5nhvo/connectors/zendesk4/integration/processes/sd345r4et45t5"
+                "uri": "/gdc/projects/{project-id}/connectors/zendesk4/integration/processes/{process-id}"
             }
 
 ## /gdc/projects/{projectName}/connectors/zendesk4/integration/settings
@@ -4372,7 +4480,7 @@ Retrieve integration settings
     
             {
                 "settings": {
-                    "apiUrl": "https://gooddata.zendesk.com",
+                    "apiUrl": "https://somedomain.zendesk.com",
                     "syncTime": "10am",
                     "syncTimeZone": "Europe/Prague",
                     "type": "plus"
@@ -4381,7 +4489,7 @@ Retrieve integration settings
             
             {
                 "settings": {
-                    "apiUrl": "https://gooddata.zendesk.com",
+                    "apiUrl": "https://somedomain.zendesk.com",
                     "type": "enterprise"
                 }
             }
@@ -4400,7 +4508,7 @@ Update integration settings
             
             {
                 "settings": {
-                    "apiUrl": "https://gooddata.zendesk.com"
+                    "apiUrl": "https://somedomain.zendesk.com"
                 }
             }
           
@@ -4423,37 +4531,37 @@ To GET current Whitelabeling settings
 + Response 200
 
         {
-        "settings":{
-        "mailSettings":{
-        "noReplyEmail":"1noreply@gdc.com",
-        "registrationEmail":"2reg@gdc.com",
-        "invitationEmail":"3inv@gdc.com",
-        "bccEmail":"4bcc@gdc.com",
-        "supportEmail":"5support@gdc.com",
-        "supportPhone":"+420 123 456 789"
-        },
-        "portalSettings":{
-        "applicationTitle":"Custom analytics",
-        "faviconUrl":"/favicon",
-        "organizationName":"My organization",
-        "displayFlashNews":false,
-        "logoUrl":"http://www.website.com/mynewlogo.jpg",
-        "displayProjects":false,
-        "displayAccountPage":true,
-        "supportEmail":"support@bear.com",
-        "supportForumUrl":"/link/to/support/forums",
-        "privacyPolicyUrl":"/privacyPolicy",
-        "documentationUrl":"/help/link",
-        "securityStatementUrl":"/security",
-        "termsOfUseUrl":"/tos",
-        "trustUrl":"/trust",
-        "headerBackgroundUrl":"http://www.website.com/mynewlogo.jpg",
-        "appleTouchIconUrl":"/icon.png",
-        "applicationBackgroundColor":"#999",
-        "hideRegistration":"true | false",
-        "applicationBackgroundUrl":"http://www.fws.gov/home/feature/2006/polar_bear_scott_schliebe_usfws.jpg"
-          }
-         }
+            "settings":{
+                "mailSettings":{
+                    "noReplyEmail":"1noreply@example.com",
+                    "registrationEmail":"2reg@example.com",
+                    "invitationEmail":"3inv@example.com",
+                    "bccEmail":"4bcc@example.com",
+                    "supportEmail":"5support@example.com",
+                    "supportPhone":"+420 123 456 789"
+                },
+                "portalSettings":{
+                    "applicationTitle":"Custom analytics",
+                    "faviconUrl":"/favicon",
+                    "organizationName":"My organization",
+                    "displayFlashNews":false,
+                    "logoUrl":"http://www.website.com/mynewlogo.jpg",
+                    "displayProjects":false,
+                    "displayAccountPage":true,
+                    "supportEmail":"support@example.com",
+                    "supportForumUrl":"/link/to/support/forums",
+                    "privacyPolicyUrl":"/privacyPolicy",
+                    "documentationUrl":"/help/link",
+                    "securityStatementUrl":"/security",
+                    "termsOfUseUrl":"/tos",
+                    "trustUrl":"/trust",
+                    "headerBackgroundUrl":"http://www.website.com/mynewlogo.jpg",
+                    "appleTouchIconUrl":"/icon.png",
+                    "applicationBackgroundColor":"#999",
+                    "hideRegistration":"true | false",
+                    "applicationBackgroundUrl":"http://www.fws.gov/home/feature/2006/polar_bear_scott_schliebe_usfws.jpg"
+                  }
+             }
         }
 
 ### PUT
@@ -4467,37 +4575,37 @@ To Update current Whitelabeling settings
     + Body
 
             {
-            "settings":{
-            "mailSettings":{
-            "noReplyEmail":"1noreply@gdc.com",
-            "registrationEmail":"2reg@gdc.com",
-            "invitationEmail":"3inv@gdc.com",
-            "bccEmail":"4bcc@gdc.com",
-            "supportEmail":"5support@gdc.com",
-            "supportPhone":"+420 123 456 789"
-            },
-            "portalSettings":{
-            "applicationTitle":"Custom analytics",
-            "faviconUrl":"/favicon",
-            "organizationName":"My organization",
-            "displayFlashNews":false,
-            "logoUrl":"http://www.website.com/mynewlogo.jpg",
-            "displayProjects":false,
-            "displayAccountPage":true,
-            "supportEmail":"support@bear.com",
-            "supportForumUrl":"/link/to/support/forums",
-            "privacyPolicyUrl":"/privacyPolicy",
-            "documentationUrl":"/help/link",
-            "securityStatementUrl":"/security",
-            "termsOfUseUrl":"/tos",
-            "trustUrl":"/trust",
-            "headerBackgroundUrl":"http://www.website.com/mynewlogo.jpg",
-            "appleTouchIconUrl":"/icon.png",
-            "applicationBackgroundColor":"#999",
-            "hideRegistration":"true | false",
-            "applicationBackgroundUrl":"http://www.fws.gov/home/feature/2006/polar_bear_scott_schliebe_usfws.jpg"
-              }
-             }
+                "settings":{
+                    "mailSettings":{
+                        "noReplyEmail":"1noreply@example.com",
+                        "registrationEmail":"2reg@example.com",
+                        "invitationEmail":"3inv@example.com",
+                        "bccEmail":"4bcc@example.com",
+                        "supportEmail":"5support@example.com",
+                        "supportPhone":"+420 123 456 789"
+                    },
+                    "portalSettings":{
+                        "applicationTitle":"Custom analytics",
+                        "faviconUrl":"/favicon",
+                        "organizationName":"My organization",
+                        "displayFlashNews":false,
+                        "logoUrl":"http://www.website.com/mynewlogo.jpg",
+                        "displayProjects":false,
+                        "displayAccountPage":true,
+                        "supportEmail":"support@example.com",
+                        "supportForumUrl":"/link/to/support/forums",
+                        "privacyPolicyUrl":"/privacyPolicy",
+                        "documentationUrl":"/help/link",
+                        "securityStatementUrl":"/security",
+                        "termsOfUseUrl":"/tos",
+                        "trustUrl":"/trust",
+                        "headerBackgroundUrl":"http://www.website.com/mynewlogo.jpg",
+                        "appleTouchIconUrl":"/icon.png",
+                        "applicationBackgroundColor":"#999",
+                        "hideRegistration":"true | false",
+                        "applicationBackgroundUrl":"http://www.fws.gov/home/feature/2006/polar_bear_scott_schliebe_usfws.jpg"
+                      }
+                 }
             }
 
 + Response 204
