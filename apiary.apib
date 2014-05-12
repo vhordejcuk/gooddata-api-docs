@@ -3602,6 +3602,7 @@ Allows you to download data (both executables and any locally downloaded data) o
     
             Location: {url-from-which-execution-data-can-be-downloaded}
 
+
 # Group Schedules
 <a id="cc-schedules" ></a>
 
@@ -4609,4 +4610,239 @@ To Update current Whitelabeling settings
             }
 
 + Response 204
+
+
+# Group Data Storage Service
+<a id="dss"></a>
+DSS is a Data Warehouse as a Service fully hosted by GoodData. Using the DSS API you are able to list, create and update the DSS Instances.
+Remember that you need a special `authorization token` to create new DSS instance.
+
+## GET /gdc/dss/instances
+API resource for retrieving the list of all available DSS instances.
+
++ Request 
+      
+    + Headers
+          
+            Accept: application/json
+
++ Response 200 (application/json)
+     
+    + Headers
+    
+            Accept: application/json
+
+    + Body
+
+            {
+              "dssInstances" : {
+                "items" : [ {
+                  "dssInstance" : {
+                    "title" : "Storage",
+                    "description" : "Testing Storage",
+                    "status" : "ENABLED",
+                    "authorizationToken" : “token",
+                    "created" : "2014-03-17T13:02:39.000Z",
+                    "updated" : "2014-03-17T13:02:41.000Z",
+                    "createdBy" : "/gdc/account/profile/{profile-id}",
+                    "updatedBy" : "/gdc/account/profile/{profile-id}",
+                    "links" : {
+                      "self" : "/gdc/dss/instances/{instance-id}",
+                      "parent" : "/gdc/dss/instances",
+                      "users" : "/gdc/dss/instances/{instance-id}/users",
+                      "jdbc" : "/gdc/dss/instances/{instance-id}/jdbc"
+                    }
+                  }
+                }, {
+                  "dssInstance" : {
+                    "title" : "Salesforce",
+                    "description" : "Test",
+                    "status" : "ENABLED",
+                    "authorizationToken" : “token",
+                    "created" : "2014-04-09T22:10:26.000Z",
+                    "updated" : "2014-04-09T22:10:26.000Z",
+                    "createdBy" : "/gdc/account/profile/{profile-id}",
+                    "updatedBy" : "/gdc/account/profile/{profile-id}",
+                    "links" : {
+                      "self" : "/gdc/dss/instances/{instance-id}",
+                      "parent" : "/gdc/dss/instances",
+                      "users" : "/gdc/dss/instances/{instance-id}/users",
+                      "jdbc" : "/gdc/dss/instances/{instance-id}/jdbc"
+                    }
+                  }
+                } ],
+                "links" : {
+                  "parent" : "/gdc/dss",
+                  "self" : "/gdc/dss/instances"
+                }
+              }
+            }
+
+
+## POST /gdc/dss/instances
+Resource to create new DSS Instance. Use the following payload. You need to have DSS Token that allows you to create a DSS Instance.
+
++ Request 
+      
+     + Headers
+          
+            Content-Type: application/json
+            Accept: application/json
+
+     + Body
+
+              {
+                "dssInstance": {
+                    "title": "New DSS",
+                    "authorizationToken": "Your-DSS-Token",
+                    "description": "DSS Description"
+                }
+                }
+
++ Response 202 (application/json)
+     
+     + Headers
+
+            Accept: application/json     
+
+     + Body
+
+                     {
+              "asyncTask" : {
+                "links" : {
+                  "poll" : "/gdc/dss/executions/{execution-id}"
+                    }
+                    }
+                    }
+
+
+## GET /gdc/dss/instances/{instance-id}
+Retrieve details about specific DSS instance.
+
++ Request
+
+    + Headers
+    
+            Accept: application/json
+        
+    + Body
+    
++ Response 200 (application/json)
+
+    + Headers
+    
+            Content-type: application/json
+    
+    + Body
+    
+                {
+                  "dssInstance" : {
+                    "title" : "Test",
+                    "description" : "Storage",
+                    "status" : "ENABLED",
+                    "authorizationToken" : "{Token}",
+                    "created" : "2014-05-05T08:27:33.000Z",
+                    "updated" : "2014-05-05T08:27:34.000Z",
+                    "createdBy" : "/gdc/account/profile/{profile-id}",
+                    "updatedBy" : "/gdc/account/profile/{profile-id}",
+                    "links" : {
+                      "self" : "/gdc/dss/instances/{instance-id}",
+                      "parent" : "/gdc/dss/instances",
+                      "users" : "/gdc/dss/instances/{instance-id}/users",
+                      "jdbc" : "/gdc/dss/instances/{instance-id}/jdbc"
+                    }
+                  }
+                }
+
+
+## PUT /gdc/dss/instances/{instance-id}
+Resource for updating the DSS Instance.
+
++ Request
+
+    + Headers
+
+            Content-Type: application/json
+            Accept: application/json
+
+    + Body
+    
+            {
+              "dssInstance" : {
+                "title" : "Test",
+                "description" : "Storage",
+                "status" : "ENABLED",
+                "authorizationToken" : "{Token}",
+                "created" : "2014-05-05T08:27:33.000Z",
+                "updated" : "2014-05-05T08:27:34.000Z",
+                "createdBy" : "/gdc/account/profile/{profile-id}",
+                "updatedBy" : "/gdc/account/profile/{profile-id}",
+                "links" : {
+                  "self" : "/gdc/dss/instances/{instance-id}",
+                  "parent" : "/gdc/dss/instances",
+                  "users" : "/gdc/dss/instances/{instance-id}/users",
+                  "jdbc" : "/gdc/dss/instances/{instance-id}/jdbc"
+                }
+              }
+            }
+        
++ Response 204
+
+
+## DELETE /gdc/dss/instances/{instance-id}
+Use this resource to DELETE given DSS Instance 
+
++ Request 
+    + Headers
+
+            Accept: application/json
+
++ Response 204
+
+
+## GET /gdc/dss/executions/{taskId}
+Poll this resource to GET the DSS instance creation task detail
+
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 202 (application/json)
+
+    + Headers
+    
+            Content-type: application/json
+
+    + Body
+
+            {
+              "asyncTask" : {
+                "links" : {
+                  "poll" : "/gdc/dss/executions/{execution-id}"
+                }
+              }
+            }
+
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Content-type: application/json
+
+    + Body
+
+
+            {
+                "asyncTask": {
+                            "links": {
+                                "dssInstance": "/gdc/dss/instances/{instance-id}”,
+                                “user”: “user URI”,
+                                “users”: “URI of users in DSS Instance"
+                            }
+                     }
+              } 
 
