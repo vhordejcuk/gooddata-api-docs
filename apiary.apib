@@ -777,6 +777,36 @@ These roles don't have fixed ID. You need to GET the information from diferent A
         }
 
 
+## /gdc/projects/{project-id}/users
+### POST
+To **disable** user in the Project use similar call as for provisioning. But use the DISABLED key word instead  
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            { "user" : {
+                 "content" : {
+                       "status":"DISABLED",
+                       "userRoles":["/gdc/projects/{project-id}/roles/{role-id}"]
+                             },
+                 "links"   : {
+                       "self":"/gdc/account/profile/{user-id}"
+                            }
+                }
+            }
+
++ Response 200
+
+        {"projectUsersUpdateResult":{
+            "successful":["/gdc/account/profile/{user-id}"],
+            "failed":[]}
+        }
+        
+
 ## /gdc/account/profile/current
 ### GET
 You can get information about your currently logged in user. 
