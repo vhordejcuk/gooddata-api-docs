@@ -2734,6 +2734,47 @@ Use this method to import exported metadata
         {
         "uri" : "/gdc/md/{project-id}/etltask/{task-id}"
         }
+        
+        
+## /gdc/internal/projects/{project-id}/objects/setPermissions
+### POST
+This request allow you to set the object specific permissions. You need to list all objects that you want to set the permissions to, specify following options:
+
+- "lock": true|false - specify whether the object is locked (can be edited only by Project Admin)
+- "listed": true|false - specify the object visibility on UI
+
+If you lock Dashboard, the lock will be applied also for all Reports and Metrics that are part of this dashboard.
+
++ Request
+    + Headers
+
+            Content-Type: application/json
+            Accept: application/json
+
+    + Body
+
+            {
+                "permissions":{
+                    "lock":true,
+                    "listed":true,
+                    "items":[
+                    "/gdc/md/{project-id}/obj/{object-id}",
+                    "/gdc/md/{project-id}/obj/{object-id}"
+                    ]
+                }
+            }
+
++ Response 200
+
+            {
+                "permissions": {
+                    "items": [
+                        "/gdc/md/{project-id}/obj/{object-id}",
+                        "/gdc/md/{project-id}/obj/{object-id}"
+                    ]
+                }
+            }
+
 
 # Group Mandatory User Filters
 <a id="mufs" ></a>
