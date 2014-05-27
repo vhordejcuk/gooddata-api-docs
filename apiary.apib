@@ -4023,7 +4023,6 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
 ### Download task properties
 - startDate (DATETIMEISO), download all tickets from this date on
 - zendeskDomain (uri),  Zendesk's endpoint
-- outputFile (string), resulting file on WebDAV
 
 ## /gdc/projects/{project-id}/dataload/download/zendesk/downloadTasks
 ### POST
@@ -4039,8 +4038,7 @@ To create download task
             {
                 "zendeskDownload": {
                     "startDate":"2012-03-01T00:00:00.000Z",
-                    "zendeskDomain":"http://somedomain.zendesk.com",
-                    "outputFile":"/uploads/csvFile.csv"
+                    "zendeskDomain":"http://somedomain.zendesk.com"
                 }
             }
 
@@ -4077,7 +4075,6 @@ To get download task (task running)
     * dimensions - list of comma-separated dimensions
     * filters - dimension and metric filters that restricts data returned for user request
     * segment - segments the data for user's request
-    * output file - output file on WebDAV (/uploads/...), required field
 
 ## /gdc/projects/{project-id}/dataload/download/googleanalytics/downloadTasks
 ### POST
@@ -4103,8 +4100,7 @@ Create download task
                         "metrics": ["ga:metric1","ga:metric2"],
                         "dimensions": ["ga:dimension1", "ga:dimension2"],
                         "filters": ["ga:filter1", "ga:filter2"],
-                        "segment": "sampleSegment",
-                        "outputFile": "/uploads/result.csv"
+                        "segment": "sampleSegment"
                     }
                 }
             }
