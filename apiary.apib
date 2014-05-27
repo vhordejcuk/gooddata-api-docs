@@ -52,6 +52,12 @@ Resource for checking the Platform availability.
 
 
 + Response 204
+
++ Response 503
+
+    + Body 
+    
+            Scheduled maintenance in progress. Please try again later.  
     
 + Response 503
 
@@ -64,7 +70,7 @@ Resource for checking the Platform availability.
             {"error":{
                 "message": "Internal server error. Please fill in bug report with request_id='{error-id}'"
             }}
-    
+
 
 # Group Login 
 <a id="login" ></a>
