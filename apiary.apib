@@ -28,6 +28,44 @@ The following documentation covers core resources that are used to manipulate wi
 - 429 `Too Many Requests` - exceeded GoodData API limits. Pause requests, wait up to one minute, and try again. 
 - 503 `Service Unavailable` - service is temporary unavailable (e.g. scheduled Platform Maintenance). Try again later.
 
+
+# Group Platform Availability 
+<a id="available" ></a>
+
+If The GoodData Platform is in the scheduled maintenance REST API Returns **503** error code and following message in the response body:
+
+
+            Scheduled maintenance in progress. Please try again later.
+
+Otherwise it will return 503 with Error message (see the details below). You can also use **gdc/ping** resource to check the Platform availability.
+
+
+## /gdc/ping
+### POST
+Resource for checking the Platform availability.
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
+
++ Response 204
+    
++ Response 503
+
+    + Headers
+    
+            Content-Type: application/json
+        
+    + Body 
+    
+            {"error":{
+                "message": "Internal server error. Please fill in bug report with request_id='{error-id}'"
+            }}
+    
+
 # Group Login 
 <a id="login" ></a>
 
