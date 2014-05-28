@@ -574,6 +574,39 @@ To GET details about specific project role, use this API call.
                 }
             }
         }
+        
+
+## /gdc/md/{project-id}/service/timezone
+### POST
+To change the Project timezone. Find more information [in the article](https://developer.gooddata.com/article/setting-a-custom-time-zone-for-your-project). Use [Olson DB timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) identifiers.
+
++ Request (application/json)
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+             "service": {
+                "timezone": "UTC"
+                        }
+            }
+
++ Response 200
+
+    + Headers
+    
+            Content-Type: application/json
+            
+    + Body
+    
+            {
+             "service": {
+                "timezone": "UTC"
+                        }
+            }
+            
 
 # Group User
 <a id="user" ></a>
@@ -958,38 +991,6 @@ Use this request to delete User
 
 + Response 200
 
-
-## /gdc/md/{project-id}/service/timezone
-### POST
-To change the Project timezone. Find more information [in the article](https://developer.gooddata.com/article/setting-a-custom-time-zone-for-your-project). Use [Olson DB timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) identifiers.
-
-+ Request (application/json)
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-             "service": {
-                "timezone": "UTC"
-                        }
-            }
-
-+ Response 200
-
-    + Headers
-    
-            Content-Type: application/json
-            
-    + Body
-    
-            {
-             "service": {
-                "timezone": "UTC"
-                        }
-            }
-            
 
 # Group Project Model
 <a id="data-model" ></a>
