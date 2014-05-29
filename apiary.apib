@@ -3481,7 +3481,7 @@ You have to archive (.zip) whole CloudConnect Project and send both metadata (js
         
 ## Process [/gdc/projects/{project-id}/dataload/processes/{process-id}]
 
-### Get Process metatada [GET]
+### Get Process information [GET]
 
 + Request
     + Headers
@@ -3753,6 +3753,150 @@ Allows you to download data (both executables and any locally downloaded data) o
     + Headers
     
             Location: {url-from-which-execution-data-can-be-downloaded}
+
+
+## Process Metadata [/gdc/projects/{project-id}/dataload/metadata]
+This API allows you to store key-value pairs in the Project for each Project. You can use those values by calling the individual resources.
+
+### Receive a list of metadata items [GET]
+
++ Response 200
+
+    + Headers
+    
+            Content-Type: application/json
+
+    + Body
+    
+            {
+                "metadataItems": {
+                     "paging": {
+                          "offset": 0,
+                          "count": 2
+             },
+                "links": {
+                "self": "/gdc/projects/{project-id}/dataload/metadata"
+             },
+                "items": [
+                {
+                    "metadataItem": {
+                        "key": "Key",
+                        "value": "Value",
+                        "links": {
+                            "self": "/gdc/projects/{project-id}/dataload/metadata/Key"
+                        }
+                    }
+                },
+            {
+                    "metadataItem": {
+                        "key": "Name",
+                        "value": "Username",
+                        "links": {
+                            "self": "/gdc/projects/{project-id}/dataload/metadata/Name"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+            
+### Create and store new key-value pair [POST]
+
++ Request
+
+    + Headers
+    
+            Content-Type: application/json
+            Accept: application/json
+            
+    + Body
+            
+            {
+                "metadataItem": {
+                    "key": "Test",
+                    "value": "Value"
+                    
+                }
+            }
+            
++ Response 201
+
+    + Headers
+    
+            Content-Type: application/json
+
+    + Body
+    
+            {
+                "metadataItem": {
+                    "key": "Test",
+                    "value": "Value"
+                }
+            }
+
+## Process Metadata Item [/gdc/projects/{project-id}/dataload/metadata/{key}]
+Resource you can use to GET/UPDATE/DELETE individual metadata item
+
+### Receive single metadata item [GET]
+
++ Response 200
+
+    + Headers
+    
+            Content-Type: application/json
+
+    + Body
+    
+            {
+            "metadataItem": {
+                "key": "Key",
+                "value": "Value",
+                "links": {
+                    "self": "/gdc/projects/{project-id}/dataload/metadata/Key"
+                         }
+                }
+            }
+            
+### Receive single metadata item [PUT]
+
++ Request
+
+    + Headers
+        
+            Content-Type: application/json
+            Accept: application/json
+            
+    + Body
+
+            {
+            "metadataItem": {
+                "key": "Key",
+                "value": "25"
+                }
+            }
+            
++ Response 200
+
+    + Headers
+    
+            Content-Type: application/json
+
+    + Body
+    
+            {
+            "metadataItem": {
+                "key": "Key",
+                "value": "25",
+                "links": {
+                    "self": "/gdc/projects/{project-id}/dataload/metadata/Key"
+                         }
+                }
+            }
+            
+            
+### Delete single metadata item [DELETE]
+
++ Response 204
 
 
 # Group Schedules
