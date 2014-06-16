@@ -3031,7 +3031,12 @@ To DELETE Mandatoy User Filter object
 
 # Group Dependency
 <a id="object-dependency" ></a>
-This API can be used to GET all objects that are used by specific object such as dashboard, report etc.
+This API can be used to GET all objects that are used by specific object such as dashboard, report etc. You can specify 
+
+- used by: to get all objects that use given object
+- using: ti get all objects that are being used by given object
+
+For example one report uses metrics and. If you pass the report object id, the API will give you a list of all objects that are being used by this report. 
 
 ## /gdc/md/{project-id}/usedby/{obj-id}
 ### GET
