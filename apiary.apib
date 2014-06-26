@@ -2143,7 +2143,7 @@ This resource will allow you to save Report Definition as a Report (visible from
 
 ## /gdc/xtab2/executor3
 ### POST
-Use this method to execute selected Report
+Use this method to execute selected Report using the Report Definition URI.
 
 + Request
     + Headers
@@ -2157,6 +2157,7 @@ Use this method to execute selected Report
                     "reportDefinition": "/gdc/md/{project-id}/obj/{obj-id}"
                 }
             }
+            
 
 + Response 201
 
@@ -2241,6 +2242,107 @@ Use this method to execute selected Report
            }
         }
 
+
+## /gdc/xtab2/executor3
+### POST
+Use this method to execute selected Report using the Report URI.
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+                "report_req": {
+                    "report": "/gdc/md/{project-id}/obj/{obj-id}"
+                }
+            }
+            
+
++ Response 201
+
+        {
+           "execResult" : {
+              "reportView" : {
+                 "chart" : {
+                    "styles" : {
+                       "global" : {
+                          "linetype" : "smooth",
+                          "colorMapping" : [
+                             {
+                                "guid" : "guid8",
+                                "uri" : "/gdc/md/{project-id}/obj/{obj-id}"
+                             }
+                          ]
+                       },
+                       "yui_3_7_1_1_1355414802308_16890" : {
+                          "axis" : {
+                             "limits" : {
+                                "min" : 0,
+                                "max" : 75
+                             }
+                          }
+                       }
+                    },
+                    "buckets" : {
+                       "y" : [
+                          {
+                             "id" : "yui_3_7_1_1_1355414802308_16890",
+                             "uri" : "metric"
+                          }
+                       ],
+                       "color" : [],
+                       "x" : [
+                          {
+                             "id" : "yui_3_7_1_1_1355414981915_32707",
+                             "uri" : "/gdc/md/{project-id}/obj/{obj-id}"
+                          }
+                       ],
+                       "angle" : []
+                    },
+                    "type" : "area"
+                 },
+                 "reportName" : "Mean temperature by date",
+                 "columnWidths" : [],
+                 "filters" : [],
+                 "rows" : [],
+                 "sort" : {
+                    "columns" : [],
+                    "rows" : []
+                 },
+                 "oneNumber" : {
+                    "labels" : {}
+                 },
+                 "format" : "chart",
+                 "columns" : [
+                    {
+                       "drillDownStepAttributeDF" : "/gdc/md/{project-id}/obj/{obj-id}",
+                       "sort" : "pk",
+                       "displayFormId" : "/gdc/md/{project-id}/obj/{obj-id}",
+                       "attributeTitle" : "Month (Date)",
+                       "baseElementURI" : "/gdc/md/{project-id}/obj/{obj-id}/elements?id=",
+                       "title" : "Month (Date)",
+                       "attributeId" : "/gdc/md/{project-id}/obj/{obj-id}",
+                       "totals" : [
+                          []
+                       ]
+                    },
+                    "metricGroup"
+                 ],
+                 "metrics" : [
+                    {
+                       "format" : "#,##0.00",
+                       "title" : "Mean Temperature [Min]",
+                       "metricId" : "/gdc/md/{project-id}/obj/{obj-id}"
+                    }
+                 ]
+              },
+              "reportDefinition" : "/gdc/md/{project-id}/obj/{obj-id}",
+              "dataResult" : "/gdc/md/{project-id}/dataResult/{result-id}"
+           }
+        }
 
 ## /gdc/exporter/executor
 ### POST
