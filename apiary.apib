@@ -5014,13 +5014,13 @@ To Update current Whitelabeling settings
 + Response 204
 
 
-# Group Data Storage Service
-<a id="dss"></a>
-DSS is a Data Warehouse as a Service fully hosted by GoodData. Using the DSS API you are able to list, create and update the DSS Instances.
-Remember that you need a special `authorization token` to create new DSS instance.
+# Group Agile Data Warehousing Service
+<a id="ads"></a>
+ADS is an Agile Data Warehousing Service fully hosted by GoodData. Using the ADS API you are able to list, create and update the ADS Instances.
+Remember that you need a special `authorization token` to create new ADS instance.
 
 ## GET /gdc/dss/instances
-API resource for retrieving the list of all available DSS instances.
+API resource for retrieving the list of all available ADS instances.
 
 + Request 
       
@@ -5082,7 +5082,7 @@ API resource for retrieving the list of all available DSS instances.
 
 
 ## POST /gdc/dss/instances
-Resource to create new DSS Instance. Use the following payload. You need to have DSS Token that allows you to create a DSS Instance.
+Resource to create new ADS Instance. Use the following payload. You need to have ADS Token that allows you to create a DSS Instance.
 
 + Request 
       
@@ -5095,9 +5095,9 @@ Resource to create new DSS Instance. Use the following payload. You need to have
 
               {
                 "dssInstance": {
-                    "title": "New DSS",
-                    "authorizationToken": "Your-DSS-Token",
-                    "description": "DSS Description"
+                    "title": "New ADS",
+                    "authorizationToken": "Your-ADS-Token",
+                    "description": "ADS Description"
                 }
                 }
 
@@ -5119,7 +5119,7 @@ Resource to create new DSS Instance. Use the following payload. You need to have
 
 
 ## GET /gdc/dss/instances/{instance-id}
-Retrieve details about specific DSS instance.
+Retrieve details about specific ADS instance.
 
 + Request
 
@@ -5158,7 +5158,7 @@ Retrieve details about specific DSS instance.
 
 
 ## PUT /gdc/dss/instances/{instance-id}
-Resource for updating the DSS Instance.
+Resource for updating the ADS Instance.
 
 + Request
 
@@ -5192,7 +5192,7 @@ Resource for updating the DSS Instance.
 
 
 ## DELETE /gdc/dss/instances/{instance-id}
-Use this resource to DELETE given DSS Instance 
+Use this resource to DELETE given ADS Instance 
 
 + Request 
     + Headers
