@@ -186,6 +186,324 @@ For logout the user
 
 + Response 200 
 
+
+# Group Objects 
+Objects are the main entities in the GoodData Project. Imagine Dashboard, Report, Metric, User Filter, etc. All of these objects are being manipulated using this set of resources.
+
+## Object Creation [/gdc/md/{project-id}/obj{?createAndGet=true}]
+### Create New Object [POST]
+Use this call to create new object. In this example you create a new metric. 
+
+**Without the createAndGet parameter.**
+
++ Request
+    + Headers
+
+            Content-Type: application/json
+            Accept: application/json
+
+    + Body
+
+            {
+                "metric": {
+                    "meta": {
+                        "title": "My new metric",
+                        "summary": "",
+                        "tags": "",
+                        "deprecated": 0,
+                        "unlisted": 1
+                    },
+                    "content": {
+                        "expression": "SELECT SUM([/gdc/md/{project-id}/obj/{object-id}])",
+                        "format": "#,##0.00",
+                        "folders": []
+                    }
+                }
+            }
+
++ Response 200
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "uri": "/gdc/md/{project-id}/obj/{object-id}"
+            }
+            
+### Create & Retrieve New Object [POST]
+Use this call to create new object. In this example you create a new metric and receive the complete object instead of link to it.
+
+**With the createAndGet=true parameter.**
+
++ Request
+    + Headers
+
+            Content-Type: application/json
+            Accept: application/json
+
+    + Body
+
+            {
+                "metric": {
+                    "meta": {
+                        "title": "My new metric",
+                        "summary": "",
+                        "tags": "",
+                        "deprecated": 0,
+                        "unlisted": 1
+                    },
+                    "content": {
+                        "expression": "SELECT SUM([/gdc/md/{project-id}/obj/{object-id}])",
+                        "format": "#,##0.00",
+                        "folders": []
+                    }
+                }
+            }
+
++ Response 200
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "metric": {
+                    "content": {
+                        "format": "#,##0.00",
+                        "tree": {
+                            "content": [
+                                {
+                                    "content": [
+                                        {
+                                            "value": "SUM",
+                                            "content": [
+                                                {
+                                                    "value": "/gdc/md/{project-id}/obj/{object-id}",
+                                                    "position": {
+                                                        "column": 12,
+                                                        "line": 2
+                                                    },
+                                                    "type": "fact object"
+                                                }
+                                            ],
+                                            "position": {
+                                                "column": 8,
+                                                "line": 2
+                                            },
+                                            "type": "function"
+                                        }
+                                    ],
+                                    "position": {
+                                        "column": 8,
+                                        "line": 2
+                                    },
+                                    "type": "expression"
+                                }
+                            ],
+                            "position": {
+                                "column": 1,
+                                "line": 2
+                            },
+                            "type": "metric"
+                        },
+                        "expression": "SELECT SUM([/gdc/md/{project-id}/obj/{object-id}])"
+                    },
+                    "meta": {
+                        "author": "/gdc/account/profile/{user-id}",
+                        "uri": "/gdc/md/{project-id}/obj/{object-id}",
+                        "tags": "",
+                        "created": "2014-07-07 10:02:54",
+                        "identifier": "arFtGnK2gysS",
+                        "deprecated": "0",
+                        "summary": "",
+                        "unlisted": 1,
+                        "title": "My new metric",
+                        "category": "metric",
+                        "updated": "2014-07-07 10:02:54",
+                        "contributor": "/gdc/account/profile/{user-id}"
+                    }
+                }
+            }
+          
+## Existing Object Manipulation [/gdc/md/{project-id}/obj/{object-id}]
+### Retrieve Object [GET]
+Use this call to retrieve an object from the API.
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
++ Response 200
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "metric": {
+                    "content": {
+                        "format": "#,##0.00",
+                        "tree": {
+                            "content": [
+                                {
+                                    "content": [
+                                        {
+                                            "value": "SUM",
+                                            "content": [
+                                                {
+                                                    "value": "/gdc/md/{project-id}/obj/{object-id}",
+                                                    "position": {
+                                                        "column": 12,
+                                                        "line": 2
+                                                    },
+                                                    "type": "fact object"
+                                                }
+                                            ],
+                                            "position": {
+                                                "column": 8,
+                                                "line": 2
+                                            },
+                                            "type": "function"
+                                        }
+                                    ],
+                                    "position": {
+                                        "column": 8,
+                                        "line": 2
+                                    },
+                                    "type": "expression"
+                                }
+                            ],
+                            "position": {
+                                "column": 1,
+                                "line": 2
+                            },
+                            "type": "metric"
+                        },
+                        "expression": "SELECT SUM([/gdc/md/{project-id}/obj/{object-id}])"
+                    },
+                    "meta": {
+                        "author": "/gdc/account/profile/{user-id}",
+                        "uri": "/gdc/md/{project-id}/obj/{object-id}",
+                        "tags": "",
+                        "created": "2014-07-07 09:50:49",
+                        "identifier": "adZtDDfkfAHG",
+                        "deprecated": "0",
+                        "summary": "",
+                        "unlisted": 1,
+                        "title": "My new metric",
+                        "category": "metric",
+                        "updated": "2014-07-07 09:50:49",
+                        "contributor": "/gdc/account/profile/{user-id}"
+                    }
+                }
+            }
+            
+### Update Object [PUT]
+Use this call to update existing object. Use the full object body/content with your changes. See the example where we've changed the Metric definition (`SUM` -> `AVG`)
+
++ Request
+    + Headers
+
+            Content-Type: application/json
+            Accept: application/json
+
+    + Body
+    
+            {
+                "metric": {
+                    "content": {
+                        "format": "#,##0.00",
+                        "tree": {
+                            "content": [
+                                {
+                                    "content": [
+                                        {
+                                            "value": "SUM",
+                                            "content": [
+                                                {
+                                                    "value": "/gdc/md/{project-id}/obj/{object-id}",
+                                                    "position": {
+                                                        "column": 12,
+                                                        "line": 2
+                                                    },
+                                                    "type": "fact object"
+                                                }
+                                            ],
+                                            "position": {
+                                                "column": 8,
+                                                "line": 2
+                                            },
+                                            "type": "function"
+                                        }
+                                    ],
+                                    "position": {
+                                        "column": 8,
+                                        "line": 2
+                                    },
+                                    "type": "expression"
+                                }
+                            ],
+                            "position": {
+                                "column": 1,
+                                "line": 2
+                            },
+                            "type": "metric"
+                        },
+                        "expression": "SELECT AVG([/gdc/md/{project-id}/obj/{object-id}])"
+                    },
+                    "meta": {
+                        "author": "/gdc/account/profile/{user-id}",
+                        "uri": "/gdc/md/{project-id}/obj/{object-id}",
+                        "tags": "",
+                        "created": "2014-07-07 09:50:49",
+                        "identifier": "adZtDDfkfAHG",
+                        "deprecated": "0",
+                        "summary": "",
+                        "unlisted": 1,
+                        "title": "My new metric",
+                        "category": "metric",
+                        "updated": "2014-07-07 09:50:49",
+                        "contributor": "/gdc/account/profile/{user-id}"
+                    }
+                }
+            }
+
++ Response 200
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "uri": "/gdc/md/{project-id}/obj/{object-id}"
+            }
+
+### Delete Object [DELETE]
+Use this resource to delete specific objects.
+
++ Request
+    + Headers
+
+            Content-Type: application/json
+            Accept: application/json
+
+    + Body
+    
+    
++ Response 204
+    + Headers
+
+    + Body
+
+
 # Group Project
 <a id="project" ></a>
 
