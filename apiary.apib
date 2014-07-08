@@ -75,18 +75,25 @@ Resource for checking the Platform availability.
 # Group Log In 
 <a id="login" ></a>
 
-To login into the GoodData API, use following calls:  
+GoodData authentication scheme uses two kinds of tokens to keep track of the user session: a long-lived **SST Token**, which you obtain upon login using your credentials and a short-lived **TT Token**, which you obtain from the token resource using your **SST Token**. **TT Token** is cryptographically secure and can be verified by the resource servers very quickly, while the **SST Token** is verified against the session database and can be revoked upon session logout.
 
-- 1. `POST` your credentials in JSON body to the *gdc/account/login* resource. An **SST Token** is returned back in SetCookie header.  
-- 2. `GET` the *gdc/account/token* resource using the **SST Token** in your header to receive a **TT Token**.  
-- 3. Use the **TT Token** in your API calls header:  -cookie  
+To login into the GoodData API, `POST` your credentials in JSON body to the *gdc/account/login* resource. The **SST Token** will be returned back.
 
-Remember that TT Token has **limited validity**. Once you received 401 Unauthorized Response, you need to GET new TT Token in following resource with SST Token specified in call header.
+A subsequent requests to an authorized resource will return a 401 Unauthorized Response with cookie=GDCAuthTT in the challenge and location= set to URI of the token resource. Everytime this happens, you need to issue a GET method against the token resource authenticating with your **SST Token** to obtain a **TT Token** and repeat the original request. Remember that TT Token has **limited validity**, thus you'll be asked to refresh it every once in a while.
+
+There are different ways (controlled by verify_level property upon login) to obtain and use the tokens: HTTP Cookies or custom headers. The advantage of using Cookies (this is what the rich web client does) is that they work without additional non-standard extensions to the HTTP protocol: HTTP Cookies get issued for either of the tokens with appropriate path set. You don't need to specify verify_level if you intend to rely on cookie usage.
+
+Unfortunately, this can not be used accross domains, and thus can not be used with data staging area. In case your client interfaces with the data uploads, you need set the verify_level property to value of 2. You'll get the token values in responses to login and token resources and you'll need to set the X-GDC-AuthSST and X-GDC-AuthTT headers to appropriate token values whenever they are required.
+
+The examples below assume you're relying on HTTP Cookies.
 
 ###Login Properties  
 - login (string)     : User's email  
 - password (string)  : User's password
 - remember (boolean) : Remember user login 
+- verify_level (integer) : Token verification level (optional)
+     - 0 : HTTP Cookies (default)
+     - 2 : Custom HTTP headers
 
 ## /gdc/account/login
 ### POST
