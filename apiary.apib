@@ -75,7 +75,13 @@ Resource for checking the Platform availability.
 # Group Log In 
 <a id="login" ></a>
 
-GoodData authentication scheme uses two kinds of tokens to keep track of the user session: a long-lived **SST Token**, which you obtain upon login using your credentials and a short-lived **TT Token**, which you obtain from the token resource using your **SST Token**. **TT Token** is cryptographically secure and can be verified by the resource servers very quickly, while the **SST Token** is verified against the session database and can be revoked upon session logout.
+GoodData authentication uses two kinds of tokens to keep track of the user session: 
+
+1. long-lived **SST Token**, which you obtain upon login using your credentials  
+1. short-lived **TT Token**, which you obtain from the token resource using your **SST Token**   
+
+
+**TT Token** is cryptographically secure and can be verified by the resource servers very quickly, while the **SST Token** is verified against the session database and can be revoked upon session logout.
 
 To login into the GoodData API, `POST` your credentials in JSON body to the `gdc/account/login` resource. The **SST Token** will be returned back.
 
