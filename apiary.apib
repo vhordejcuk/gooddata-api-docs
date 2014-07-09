@@ -2330,6 +2330,26 @@ To create new Subscription, call this resource and set the timerEvent, condition
 <a id="report" ></a>
 Reports can be also handled via API. You can use following resources for getting list of all report, execute selected reports and export it.
 
+#### Most Common Use Cases:
+
+**Report Export** 
+
+1. Use the **GET** `gdc/md/{project-id}/query/reports`
+1. Identify the report you want to export by report metadata.  
+1. POST the report to `gdc/xtab2/executor3` to compute the latest numbers. Use one of the following option:  
+  - Report Definition URI  
+  - Report URI  
+1. **POST** the JSON response to `gdc/exporter/executor`  
+1. Download the Report file  
+
+**Report Creation** 
+
+1. **POST** the valid Report Definition object to `gdc/md/{project-id}/obj`  
+1. Use returned object URI (report definition) to safe it as a Report by **POST**ing Report JSON to `gdc/md/{project-id}/obj`  
+1. Execute Report by sending **POST** to `gdc/xtab2/executor3` by using
+  - Report Definition URI
+  - Report URI
+
 ##Report Properties
 - link (uri) : Link to specific Report
 - author (uri) : URI of Report author
