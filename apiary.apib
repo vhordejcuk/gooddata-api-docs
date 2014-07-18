@@ -86,14 +86,13 @@ To log in:
 2. `GET` the token resource, and include the SST token in your header. The TT token is returned in the SetCookie header.  
   You are now authenticated. Include this TT token in a -cookie header on all API calls.
 
->**Note:** The TT token has limited validity. If you received the 401 Unauthorized Response, GET a new TT token.
+>**Note:** The TT token has limited validity. If you received a 401 Unauthorized Response, GET a new TT token.
 
 #### Additional Information
 
-There are different ways (controlled by `verify_level` property upon login) to obtain and use the tokens: _HTTP Cookies_ or _custom headers_. The advantage of using Cookies (this is what the rich web client does) is that they work without additional non-standard extensions to the HTTP protocol: HTTP Cookies get issued for either of the tokens with appropriate path set. You don't need to specify verify_level if you intend to rely on cookie usage.
+<!---You can use two methods to obtain and use tokens: _HTTP Cookies_ and _custom headers_. These methods are controlled by `verify_level` property upon login. The advantage of using Cookies (this is what the rich web client does) is that they work without additional non-standard extensions to the HTTP protocol: HTTP Cookies get issued for either of the tokens with appropriate path set. You don't need to specify verify_level if you intend to rely on cookie usage.
 Unfortunately, this can not be used accross domains, and thus can not be used with data staging area. In case your client interfaces with the data uploads, you need set the verify_level property to value of 2. You'll get the token values in responses to login and token resources and you'll need to set the X-GDC-AuthSST and X-GDC-AuthTT headers to appropriate token values whenever they are required.
-
-The examples below assume you're relying on HTTP Cookies.
+-->
 
 ###Login Properties  
 - login (string)     : User's email  
