@@ -95,6 +95,9 @@ Unfortunately, this can not be used accross domains, and thus can not be used wi
 -->
 
 ###Login Properties  
+
+
+
 - login (string)     : User's email  
 - password (string)  : User's password
 - remember (boolean) : Remember user login 
@@ -107,6 +110,12 @@ Unfortunately, this can not be used accross domains, and thus can not be used wi
 This resource is the first that you will need. Use it to log into the API.
 
 `Please use your GoodData account credentials for API calls.`
+
++ Parameters
+    + login (required, string) ... Email address of the user
+    + password (required, string) ... User's password
+    + remember (required, boolean) ... Specifies whether to remember login credentials.
+    + verify_level (optional, integer, `0 specifies HTTP cookies; 2 specifies custom HTTP headers`) ... Verification level of the token
 
 + Request (application/json)
     + Headers
