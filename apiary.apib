@@ -3,41 +3,41 @@ FORMAT: X-1A
 HOST: https://secure.gooddata.com
 
 #GoodData API Documentation
-The GoodData API is based on REST principles, all you need to use it is your GoodData account. You have to be authenticated and call the simple HTTPs request on the URL specified below. 
-The following documentation covers core resources that are used to manipulate with the main entities. First of all, read basic instructions to start using the API.
+The GoodData API is based on REST principles, all you need to use it is your GoodData account. You must be authenticated and call HTTPs requests on the URLs listed below. 
+This documentation covers the core resources you can used to manipulate the main objects. Review the information basic instructions if you are new to APIs.
 
-`Please use your GoodData account credentials for API calls.`
+`Use your GoodData account credentials for API calls.`
 
 ##Allowed HTTPs requests:
 
-- `POST` - To create or update resource
-- `PUT` - To create or update resource
-- `GET` - Get a resource or list of resources
-- `DELETE` - To delete resource
+- `POST` - Creates or updates a resource
+- `PUT` - Updates a resource
+- `GET` - Retrieves a resource or list of resources
+- `DELETE` - Delete a resource
 
-##Description Of Usual Server Responses
+##Description Of Typical Server Responses
 
-- 200 `OK` - the request was successful (some API calls may return 201 instead).
-- 201 `Created` - the request was successful and a resource was created.
-- 204 `No Content` - the request was successful but there is no representation to return (i.e. the response is empty).
-- 400 `Bad Request` - the request could not be understood or was missing required parameters.
-- 401 `Unauthorized` - authentication failed or user doesn't have permissions for requested operation.
-- 403 `Forbidden` - access denied.
-- 404 `Not Found` - resource was not found.
-- 405 `Method Not Allowed` - requested method is not supported for resource.
-- 429 `Too Many Requests` - exceeded GoodData API limits. Pause requests, wait up to one minute, and try again. 
-- 503 `Service Unavailable` - service is temporary unavailable (e.g. scheduled Platform Maintenance). Try again later.
+- 200 `OK` - The request was successful (some API calls may return 201 instead).
+- 201 `Created` - The request was successful and a resource was created.
+- 204 `No Content` - The request was successful but there is no representation to return (that is, the response is empty).
+- 400 `Bad Request` - The request could not be understood or was missing required parameters.
+- 401 `Unauthorized` - Authentication failed or user does not have permissions for the requested operation.
+- 403 `Forbidden` - Access denied.
+- 404 `Not Found` - Resource was not found.
+- 405 `Method Not Allowed` - Requested method is not supported for the specified resource.
+- 429 `Too Many Requests` - Exceeded GoodData API limits. Pause requests, wait one minute, and try again. 
+- 503 `Service Unavailable` - The service is temporary unavailable (e.g. scheduled Platform Maintenance). Try again later.
 
 
 # Group Platform Availability 
 <a id="available" ></a>
 
-If The GoodData Platform is in the scheduled maintenance REST API Returns **503** error code and following message in the response body:
+If The GoodData Platform is in scheduled maintenance, REST API Returns a **503** error code and following message is displayed in the response body:
 
 
     Scheduled maintenance in progress. Please try again later.
 
-Otherwise it will return 503 with Error message (see the details below). You can also use **gdc/ping** resource to check the Platform availability.
+Otherwise it will return 503 with a descriptive error message. Specific errors messages are listed with individual APIs. You can use **gdc/ping** resource to check the Platform availability.
 
 
 ## /gdc/ping
