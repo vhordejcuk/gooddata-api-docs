@@ -77,8 +77,8 @@ Checks Platform availability.
 
 GoodData authentication uses two kinds of tokens to track user sessions: 
 
-- a long-lived **SST token**, which you obtain when you call `/gdc/account/login` 
-- a short-lived **TT token**, which you obtain when you call `gdc/account/token` using your **SST Token**. This token is encrypted, and is quickly verified by the resource servers.
+- A long-lived **SST token**, which you obtain when you call `/gdc/account/login` 
+- A short-lived **TT token**, which you obtain when you call `gdc/account/token` using your **SST Token**. This token is encrypted, and is quickly verified by the resource servers.
 
 To log in:
 
@@ -96,13 +96,11 @@ Unfortunately, this can not be used accross domains, and thus can not be used wi
 
 ## /gdc/account/login
 ### POST
-This resource is the first that you will need. Use it to log into the API.
-
->Use your GoodData account credentials for API calls
+Log in to the API.
 
 + Parameters
-    + login (required, string) ... Email address of the user
-    + password (required, string) ... User's password
+    + login (required, string) ... GoodData login email address
+    + password (required, string) ... GoodData password
     + remember (required, boolean) ... Specifies whether to remember login credentials.
     + verify_level (optional, integer, ``) ... Verification level of the token. Specify '0' for HTTP cookies; specify '2' for custom HTTP headers
 
@@ -137,7 +135,7 @@ This resource is the first that you will need. Use it to log into the API.
 
 ## /gdc/account/token
 ### GET
-Request the TT token.
+Request a TT token.
 
 + Request 
     + Headers
