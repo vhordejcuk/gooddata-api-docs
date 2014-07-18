@@ -42,7 +42,7 @@ Otherwise it will return 503 with a descriptive error message. Specific errors m
 
 ## /gdc/ping
 ### GET
-Resource for checking the Platform availability.
+Checks Platform availability.
 
 + Request
 
@@ -75,15 +75,16 @@ Resource for checking the Platform availability.
 # Group Log In 
 <a id="login" ></a>
 
-GoodData authentication uses two kinds of tokens to keep track of the user session: 
+GoodData authentication uses two kinds of tokens to track user sessions: 
 
-1. long-lived **SST Token**, which you obtain upon login using your credentials  
-1. short-lived **TT Token**, which you obtain from the token resource using your **SST Token**   
+- a long-lived **SST Token**, which you obtain when you call '/gdc/account/login' 
+- a short-lived **TT Token**, which you obtain when you call 'gdc/account/token' using your **SST Token**   
 
 
-**TT Token** is cryptographically secure and can be verified by the resource servers very quickly, while the **SST Token** is verified against the session database and can be revoked upon session logout.
+**TT Token**--This token is cryptographically secure and is quickly verified by the resource servers.
 
-To login into the GoodData API, `POST` your credentials in JSON body to the `gdc/account/login` resource. The **SST Token** will be returned back.
+To log in into the GoodData API:
+1. `POST` your credentials in JSON body to the `gdc/account/login` resource. The **SST Token** is returned.
 
 A subsequent requests to an authorized resource will return a 401 Unauthorized Response with cookie=GDCAuthTT in the challenge and location= set to URI of the token resource. Everytime this happens, you need to issue a GET method against the token resource authenticating with your **SST Token** to obtain a **TT Token** and repeat the original request. Remember that TT Token has **limited validity**, thus you'll be asked to refresh it every once in a while.
 
