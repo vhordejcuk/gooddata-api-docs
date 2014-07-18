@@ -94,28 +94,17 @@ To log in:
 Unfortunately, this can not be used accross domains, and thus can not be used with data staging area. In case your client interfaces with the data uploads, you need set the verify_level property to value of 2. You'll get the token values in responses to login and token resources and you'll need to set the X-GDC-AuthSST and X-GDC-AuthTT headers to appropriate token values whenever they are required.
 -->
 
-###Login Properties  
-
-
-
-- login (string)     : User's email  
-- password (string)  : User's password
-- remember (boolean) : Remember user login 
-- verify_level (integer) : Token verification level (optional)
-     - 0 : HTTP Cookies (default)
-     - 2 : Custom HTTP headers
-
 ## /gdc/account/login
 ### POST
 This resource is the first that you will need. Use it to log into the API.
 
-`Please use your GoodData account credentials for API calls.`
+>Use your GoodData account credentials for API calls
 
 + Parameters
     + login (required, string) ... Email address of the user
     + password (required, string) ... User's password
     + remember (required, boolean) ... Specifies whether to remember login credentials.
-    + verify_level (optional, integer, `0 specifies HTTP cookies; 2 specifies custom HTTP headers`) ... Verification level of the token
+    + verify_level (optional, integer, ``) ... Verification level of the token. Specify '0' for HTTP cookies; specify '2' for custom HTTP headers
 
 + Request (application/json)
     + Headers
@@ -148,7 +137,7 @@ This resource is the first that you will need. Use it to log into the API.
 
 ## /gdc/account/token
 ### GET
-You'll get the authentication token on this resource.
+Request the TT token.
 
 + Request 
     + Headers
@@ -164,7 +153,7 @@ You'll get the authentication token on this resource.
 
 ## /gdc/account/profile/{user-id}
 ### GET
-You can GET your user details using this resource. It is returned after successful authentication.
+Retrieves details of your user account, including email addresses, phone number, and authentication provider. This information is also returned after successful authentication. 
 
 + Request 
     + Headers
@@ -200,7 +189,7 @@ You can GET your user details using this resource. It is returned after successf
 
 ## /gdc/account/login/{user-id}
 ### DELETE
-For logout the user
+Log out.
 
 + Request 
     + Headers
@@ -211,13 +200,26 @@ For logout the user
 
 
 # Group Objects 
-Objects are the main entities in the GoodData Project. Imagine Dashboard, Report, Metric, User Filter, etc. All of these objects are being manipulated using this set of resources.
+Objects are the entities in the GoodData Platform. For example, Dashboards, Reports, Metrics, and User Filter are objects. 
 
 ## Object Creation [/gdc/md/{project-id}/obj{?createAndGet=true}]
 ### Create New Object [POST]
-Use this call to create new object. In this example you create a new metric. 
+Create a new object. The example below creates a new metric. 
+>**Note:** This example does not include the `createAndGet` parameter. 
 
-**Without the createAndGet parameter.**
+<!---
++ Parameters
+    + title (required, string) ... Name of the new object
+    + summary (optional, string) ... Object description
+    + tags (optional, boolean) ... Tags to associate with the object. Separate tags with a space.
+    + deprecated (optional, integer, ``) ... Verification level of the token. Specify '0' for HTTP cookies; specify '2' for custom HTTP headers
+    + unlisted (boolean,
+    + expression ( ) specifies the MAQL for the object. 
+    +format (???, ??? ) Specifies the format that metrics are calculated in. Do not use 
+    +folders (???, ???? ) The folder to include the object in.
+    -->
+
+
 
 + Request
     + Headers
