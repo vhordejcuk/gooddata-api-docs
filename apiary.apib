@@ -80,7 +80,7 @@ GoodData authentication uses two kinds of tokens to track user sessions:
 - A long-lived **SST token**, which you obtain when you call `/gdc/account/login` 
 - A short-lived **TT token**, which you obtain when you call `gdc/account/token` using your **SST Token**. This token is encrypted, and is quickly verified by the resource servers.
 
-To log in:
+**Steps:**
 
 1. `POST` your credentials to the login resource. The SST token is returned in the SetCookie header.
 2. `GET` the token resource, and include the SST token in your header. The TT token is returned in the SetCookie header.  
