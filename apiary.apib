@@ -1437,84 +1437,133 @@ Poll to obtain assembled project model.
         + Body
 
                 {
-                    "projectModelView" : {
+                    "projectModelView": {
                         "model": {
-                            "projectModel": {
-                                "datasets": [
-                                    {
-                                        "dataset": {
-                                            "identifier": "dataset.employee",
-                                            "title": "Employee",
-                                            "anchor": {
-                                                "attribute": {
-                                                    "identifier": "attr.employee.employee",
-                                                    "title": "Employee",
-                                                    "folder": "Employee",
-                                                    "labels": [
-                                                        {
-                                                            "label": {
-                                                                "identifier": "label.employee.employee",
-                                                                "title": "Employee",
-                                                                "dataType": "INT",
-                                                                "type": "GDC.text"
-                                                            }
-                                                        },
-                                                        {
-                                                            "label": {
-                                                                "identifier": "label.employee.employee.name",
-                                                                "title": "Employee Name",
-                                                                "dataType": "VARCHAR(128)",
-                                                                "type": "GDC.text"
-                                                            }
-                                                        },
-                                                        "defaultLabel": "label.employee.employee.name",
-                                                        "sortOrder": { 
-                                                            "attributeSortOrder" : { 
-                                                                "label" : "label.employee.employee.name",
-                                                                "direction" : "ASC"
-                                                            }
-                                                        }
-                                                    ]
-                                                }
+                    "projectModel": {
+                     "datasets": [
+                      {
+                        "dataset": {
+                            "identifier": "dataset.salary",
+                            "title": "Payments",
+                            "anchor": {
+                                "attribute": {
+                                    "identifier": "attr.salary.salary",
+                                    "title": "Salary ID",
+                                    "labels": [
+                                        {
+                                            "label": {
+                                                "identifier": "label.salary.salary",
+                                                "title": "Salary ID",
+                                                "type": "GDC.text",
+                                                "dataType": "VARCHAR(128)"
                                             }
                                         }
-                                    },
-                                    {
-                                        "dataset": {
-                                            "identifier": "dataset.salary",
-                                            "title": "Salary",
-                                            "anchor": {
-                                                "attribute": {
-                                                    "identifier": "attr.salary.factsof",
-                                                    "title": "Records of Salary",
-                                                    "folder": "Salary"
-                                                }
-                                            },
-                                            "facts": [
-                                                {
-                                                    "fact": {
-                                                        "identifier": "fact.salary.payment",
-                                                        "title": "Payment",
-                                                        "folder": "Salary",
-                                                        "dataType": "DECIMAL(12,2)"
-                                                    }
-                                                }
-                                            ],
-                                            "references": ["dataset.employee", "payment"]
-                                        }
+                                    ],
+                                    "defaultLabel": "label.salary.salary"
+                                }
+                            },
+                            "facts": [
+                                {
+                                    "fact": {
+                                        "identifier": "fact.salary.payment",
+                                        "title": "Payment",
+                                        "dataType": "DECIMAL(12,2)"
                                     }
-                                ],
-                                "dateDimensions": [
-                                    {
-                                        "dateDimension": {
-                                            "name": "payment",
-                                            "title": "Payment"
+                                }
+                            ],
+                            "references": [
+                                "dataset.employee",
+                                "salary"
+                            ]
+                        }
+                    },
+                    {
+                        "dataset": {
+                            "identifier": "dataset.employee",
+                            "title": "Employee",
+                            "anchor": {
+                                "attribute": {
+                                    "identifier": "attr.employee.employee",
+                                    "title": "Employee ID",
+                                    "labels": [
+                                        {
+                                            "label": {
+                                                "identifier": "label.employee.employee",
+                                                "title": "Employee ID",
+                                                "type": "GDC.text",
+                                                "dataType": "VARCHAR(128)"
+                                            }
                                         }
+                                    ],
+                                    "defaultLabel": "label.employee.employee"
+                                }
+                            },
+                            "attributes": [
+                                {
+                                    "attribute": {
+                                        "identifier": "attr.employee.name",
+                                        "title": "Name",
+                                        "labels": [
+                                            {
+                                                "label": {
+                                                    "identifier": "label.employee.name",
+                                                    "title": "Name",
+                                                    "type": "GDC.text",
+                                                    "dataType": "VARCHAR(128)"
+                                                }
+                                            }
+                                        ],
+                                        "defaultLabel": "label.employee.name"
                                     }
-                                ]
+                                }
+                            ],
+                            "references": [
+                                "dataset.department"
+                            ]
+                        }
+                    },
+                    {
+                        "dataset": {
+                            "identifier": "dataset.department",
+                            "title": "Department",
+                            "anchor": {
+                                "attribute": {
+                                    "identifier": "attr.department.department",
+                                    "title": "Department ID",
+                                    "labels": [
+                                        {
+                                            "label": {
+                                                "identifier": "label.department.department",
+                                                "title": "Department ID",
+                                                "type": "GDC.text",
+                                                "dataType": "VARCHAR(128)"
+                                            }
+                                        },
+                                        {
+                                            "label": {
+                                                "identifier": "label.department.department.name",
+                                                "title": "Name",
+                                                "type": "GDC.text",
+                                                "dataType": "VARCHAR(128)"
+                                            }
+                                        }
+                                    ],
+                                    "defaultLabel": "label.department.department"
+                                }
                             }
-                        },
-                        "validationErrors": []
+                        }
+                    }
+                ],
+                "dateDimensions": [
+                    {
+                        "dateDimension": {
+                            "name": "salary",
+                            "title": "Pay Date"
+                          }
+                        }
+                      ]
+                     }
+                     }
                     }
                 }
                 
