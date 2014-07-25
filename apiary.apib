@@ -201,7 +201,7 @@ Log out.
 Objects are the entities in the GoodData Platform. For example, Dashboards, Reports, Metrics, and User Filter are objects. 
 
 ## Object Creation [/gdc/md/{project-id}/obj{?createAndGet=true}]
-### Create New Object [POST]
+### Create a New Object [POST]
 Create a new object. The example below creates a new metric. 
 >**Note:** This example does not include the `createAndGet` parameter. 
 
@@ -255,7 +255,7 @@ Create a new object. The example below creates a new metric.
                 "uri": "/gdc/md/{project-id}/obj/{object-id}"
             }
             
-### Create & Retrieve New Object [POST]
+### Create and Retrieve a New Object [POST]
 Use this call to create new object. In this example you create a new metric and receive the complete object instead of link to it.
 
 **With the createAndGet=true parameter.**
@@ -352,7 +352,7 @@ Use this call to create new object. In this example you create a new metric and 
             }
           
 ## Existing Object Manipulation [/gdc/md/{project-id}/obj/{object-id}]
-### Retrieve Object [GET]
+### Retrieve an Object [GET]
 Use this call to retrieve an object from the API.
 
 + Request
@@ -428,7 +428,7 @@ Use this call to retrieve an object from the API.
                 }
             }
             
-### Update Object [PUT]
+### Update an Object [PUT]
 Use this call to update existing object. Use the full object body/content with your changes. See the example where we've changed the Metric definition (`SUM` -> `AVG`)
 
 + Request
@@ -509,7 +509,7 @@ Use this call to update existing object. Use the full object body/content with y
                 "uri": "/gdc/md/{project-id}/obj/{object-id}"
             }
 
-### Delete Object [DELETE]
+### Delete an Object [DELETE]
 Use this resource to delete specific objects.
 
 + Request
@@ -530,8 +530,8 @@ Use this resource to delete specific objects.
 # Group Project
 <a id="project" ></a>
 
-Project is one of the key entities inside GoodData. When working with GoodData, you basically create projects (datamarts). Metrics, Reports and Dashboards
-are then created inside Projects. Project may be in one of the following states. First two states are key for you and your integrations:
+Projects are one of the key objects in the GoodData platform. When working with GoodData, you basically create projects (datamarts). Metrics, Reports and Dashboards
+are then created inside Projects. The following two states are key for you and your integrations:
 
 - **ENABLED** - project is ready and available
 - **DELETED** - something is wrong
