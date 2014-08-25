@@ -6,7 +6,7 @@ HOST: https://secure.gooddata.com
 The GoodData API is based on REST principles, all you need to use it is your GoodData account. You must be authenticated and call HTTPs requests on the URLs listed below. 
 This documentation covers the core resources you can used to manipulate objects on the GoodData Platform. Review the information basic instructions if you are new to APIs.
 
->**Note:** Use your GoodData account credentials for API calls.
+>**Note:** Use your GoodData TESTING account credentials for API calls.
 
 ##Allowed HTTPs requests:
 
@@ -198,7 +198,7 @@ Log out.
 
 
 # Group Objects 
-Objects are the entities in the GoodData Platform. For example, Dashboards, Reports, Metrics, and User Filter are objects. 
+Objects are the entities in the GoodData Platform. For example, Dashboards, Reports, Metrics, and Data Permissions are objects. 
 
 ## Object Creation [/gdc/md/{project-id}/obj{?createAndGet=true}]
 ### Create a New Object [POST]
@@ -3366,24 +3366,24 @@ If you lock Dashboard, the lock will be applied also for all Reports and Metrics
             }
 
 
-# Group Mandatory User Filters
+# Group Data Permissions
 <a id="mufs" ></a>
-Mandatory User Filters (A.K.A MUFs) are the way how you can filter specific data for specific user. It is based on attribute value identifiers and every MUF 
+You can use data permission (formerly Mandatory User Filters or MUFs) to filter specific data for specific user. A data permission is based on attribute value identifiers. Data permissions 
 can be assigned to multiple users.
 
-##MUF Properties
-- userFilter : Specifies the user filter object
-- expression : Defines user filter 
+##Data Permission Properties
+- userFilter : Specifies the data permission object
+- expression : Defines data permission 
 - category : Object category
-- title : Specific filter title
-- user (uri) : URI of user, on which filter was defined
-- userFiltersUpdateResult : Successful/Failed user filters
-- created (date) : User Filter object created date
-- updated (date) : User Filter object update date
+- title : data permission title
+- user (uri) : URI of user where the  was defined
+- userFiltersUpdateResult : Successful/Failed permissions
+- created (date) : object creation date
+- updated (date) : date of last update
 
 ## /gdc/md/{project-id}/obj
 ### POST
-Use this method to create new Mandatory User Filter
+Use this method to create a new data permission object.
 
 + Request
     + Headers
@@ -3408,7 +3408,7 @@ Use this method to create new Mandatory User Filter
 
 ## /gdc/md/{project-id}/userfilters
 ### POST
-Use this method to assign Filter to a User
+Use this method to assign a data permission to a user.
 
 + Request
     + Headers
@@ -3423,7 +3423,7 @@ Use this method to assign Filter to a User
                         {
                             "user": "/gdc/account/profile/{user-id}",
                             "userFilters": [
-                                "/gdc/md/{project-id}/obj/{user-filter-id}"
+                                "/gdc/md/{project-id}/obj/{data-permission-id}"
                             ]
                         }
                     ]
@@ -3443,7 +3443,7 @@ Use this method to assign Filter to a User
 
 ## /gdc/md/{project-id}/query/userfilters
 ### GET
-Use this method to get a list of Mandatory User Filters
+Use this method to get a list of data permission objects for a project.
 
 + Request
     + Headers
@@ -3456,7 +3456,7 @@ Use this method to get a list of Mandatory User Filters
             "query": {
                 "entries": [
                     {
-                        "link": "/gdc/md/{project-id}/obj/{filter-object-id}",
+                        "link": "/gdc/md/{project-id}/obj/{data-permission-id}",
                         "author": "/gdc/account/profile/{user-id}",
                         "tags": "",
                         "created": "2012-01-16 11:08:13",
@@ -3478,7 +3478,7 @@ Use this method to get a list of Mandatory User Filters
 
 ## /gdc/md/{project-id}/userfilters?users={user-URI}
 ### GET
-To list Mandatory User Filters for selected users, use this API call. You can use multiple user URIs as a parameter. So that you can filter using ...userFilters={user-uri}&{user-uri}&...
+To list data permissions for selected users, use this API call. You can use multiple user URIs as a parameter. So that you can filter using ...userFilters={user-uri}&{user-uri}&...
 
 + Request
     + Headers
@@ -3503,9 +3503,9 @@ To list Mandatory User Filters for selected users, use this API call. You can us
             }
         }
 
-## /gdc/md/{project-id}/userfilters?userFilters={MUF-URI}
+## /gdc/md/{project-id}/userfilters?userFilters={data-permission-URI}
 ### GET
-To list Users for selected Mandatory User Filters, use this API call. You can use multiple MUF URIs as a parameter. So that you can use ...userFilters={muf-uri}&{muf-uri}&...
+To list Users for a specific data permission, use this API call. You can use multiple data permission URIs as a parameter. For example...userFilters={data-permission-uri}&{data-permission-uri}&...
 
 + Request
     + Headers
@@ -3530,9 +3530,9 @@ To list Users for selected Mandatory User Filters, use this API call. You can us
             }
         }
 
-## /gdc/md/{project-id}/obj/{muf-object-id}
+## /gdc/md/{project-id}/obj/{data-permission-object-id}
 ### DELETE
-To DELETE Mandatoy User Filter object
+To DELETE a data permission object.
 
 + Request
     + Headers
