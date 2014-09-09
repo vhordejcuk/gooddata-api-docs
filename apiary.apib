@@ -90,9 +90,8 @@ GoodData authentication uses two kinds of tokens to track user sessions:
 
 #### Additional Information
 
-<!---You can use two methods to obtain and use tokens: _HTTP Cookies_ and _custom headers_. These methods are controlled by `verify_level` property upon login. The advantage of using Cookies (this is what the rich web client does) is that they work without additional non-standard extensions to the HTTP protocol: HTTP Cookies get issued for either of the tokens with appropriate path set. You don't need to specify verify_level if you intend to rely on cookie usage.
-Unfortunately, this can not be used accross domains, and thus can not be used with data staging area. In case your client interfaces with the data uploads, you need set the verify_level property to value of 2. You'll get the token values in responses to login and token resources and you'll need to set the X-GDC-AuthSST and X-GDC-AuthTT headers to appropriate token values whenever they are required.
--->
+You can use two methods to obtain and use tokens: _HTTP Cookies_ and _custom headers_. These methods are controlled by `verify_level` property when you log in.  The advantage of using Cookies is that most client libraries are able to use them automatically without a need to write a custom code (store and send them with the follow up API requests based on the URI path).
+You do not need to specify verify_level if you intend to rely on cookie usage. Unfortunately, this cannot be used across domains, and thus cannot be used in the data staging area. If your client interfaces with the data uploads, you must specify the verify_level property to a value of 2. You will get the token values in responses to login and token resources and you'll need to set the X-GDC-AuthSST and X-GDC-AuthTT headers to appropriate token values whenever they are required.
 
 ## /gdc/account/login
 ### POST
