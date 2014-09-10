@@ -2757,7 +2757,131 @@ Use this method to execute selected Report using the Report URI.
            }
         }
 
-## /gdc/exporter/executor
+## Export a report [/gdc/exporter/executor]
+
+<!---
+
+* scaling (optional) - Specifies scaling for exported PDFs. Scaling applies to both landscape and portrait orientations.  
+    * pageScaleFactor (optional, number) - Specifies a percentage to scale exported PDFs. Cannot be used with other scaling keywords. **Default:** 100 
+    * scaleToPages (optional, number) - Specifies a maximum number of pages for exported PDFs. Cannot be used with other scaling keywords. 
+    * scaleToPagesX (optional, number) -  Shrinks the horizontal content of exported PDFs to a maximum of this number of pages. Often used with the scaleToPagesY keyword. Cannot be combined with the pageScaleFactor or scaleToPages keywords.
+    * scaleToPagesY (optional, number) - Shrinks the vertical content of exported PDFs to a maximum of this number of pages. Often used with the scaleToPagesX keyword. Cannot be combined with the pageScaleFactor or scaleToPages keywords.
+
+
+### Export a report [POST]
+
+The content of the **result** section is **execResult** JSON (which is returned after report computation).
+
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+                 "result_req" : {
+                    "format" : "pdf",
+                    "exportOptions" : {
+                        "scaling" : {
+                            "scaleToPagesX" : 1
+                        },
+                        "pageOrientation" : "landscape",
+                        "optimalColumnWidth" : "yes"
+                    },
+                    "result" : {
+                        "execResult": {
+                            "reportView": {
+                                "chart": {
+                                    "styles": {
+                                        "global": {
+                                            "linetype": "smooth",
+                                            "colorMapping": [
+                                                {
+                                                    "guid": "guid8",
+                                                    "uri": "/gdc/md/{project_id}/obj/{object_id}"
+                                                }
+                                            ]
+                                        },
+                                        "yui_3_7_1_1_1355414802308_16890": {
+                                            "axis": {
+                                                "limits": {
+                                                    "min": 0,
+                                                    "max": 75
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "buckets": {
+                                        "y": [
+                                            {
+                                                "id": "yui_3_7_1_1_1355414802308_16890",
+                                                "uri": "metric"
+                                            }
+                                        ],
+                                        "color": [],
+                                        "x": [
+                                            {
+                                                "id": "yui_3_7_1_1_1355414981915_32707",
+                                                "uri": "/gdc/md/{project_id}/obj/{object_id}"
+                                            }
+                                        ],
+                                        "angle": []
+                                    },
+                                    "type": "area",
+                                    "axes": []
+                                },
+                                "reportName": "Mean temperature by date",
+                                "columnWidths": [],
+                                "filters": [],
+                                "rows": [],
+                                "sort": {
+                                    "columns": [],
+                                    "rows": []
+                                },
+                                "oneNumber": {
+                                    "labels": {}
+                                },
+                                "format": "chart",
+                                "columns": [
+                                    {
+                                        "drillDownStepAttributeDF": "/gdc/md/{project_id}/obj/{object_id}",
+                                        "sort": "pk",
+                                        "displayFormId": "/gdc/md/{project_id}/obj/{object_id}",
+                                        "attributeTitle": "Month (Date)",
+                                        "baseElementURI": "/gdc/md/{project_id}/obj/{object_id}/elements?id=",
+                                        "title": "Month (Date)",
+                                        "attributeId": "/gdc/md/{project_id}/obj/{object_id}",
+                                        "totals": [
+                                            []
+                                        ]
+                                    },
+                                    "metricGroup"
+                                ],
+                                "metrics": [
+                                    {
+                                        "format": "#,##0.00",
+                                        "title": "Mean Temperature [Min]",
+                                        "metricId": "/gdc/md/{project_id}/obj/{object_id}"
+                                    }
+                                ]
+                            },
+                            "reportDefinition": "/gdc/md/{project_id}/obj/{object_id}",
+                            "dataResult": "/gdc/md/{project_id}/dataResult/{result_id}"
+                        }
+                    }
+                }
+            }
+
++ Response 201
+
+        {
+        "uri":"/gdc/exporter/result/{project_id}/{result_id}"
+        }
+
+-->
+
 ### POST
 This method can be used for exporting Report. The content of **result** part is **execResult** JSON (it has been returned after report computation)
 
