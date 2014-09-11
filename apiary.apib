@@ -3814,6 +3814,93 @@ Use this method transform **identifier** to **URI**. See the proper payload.
 Using this API, you can easily schedule the Email, that will be sent to you with a defined Reports and/or Dashboards as an attachment.
 
 ## /gdc/md/{project-id}/obj
+
+<!--
+
+Schedule an email. Scheduled emails can include reports and dashboards as attachments.
+
+* scaling (optional) - Specifies scaling when you export a tabular report to PDF format. Scaling applies to both landscape and portrait orientations.  
+
+    * pageScalePercentage (optional, integer) - Specifies a percentage to scale the exported PDF. Cannot be used with other scaling keywords. **Default:** 100 
+    * scaleToPages (optional, integer) - Specifies a maximum number of pages for the exported PDF. Cannot be used with other scaling keywords. 
+    * scaleToPagesX (optional, integer) -  Shrinks the horizontal content of the exported PDF to a maximum of this number of pages. Often used with the scaleToPagesY keyword. Cannot be combined with the pageScalePercentage or scaleToPages keywords.
+    * scaleToPagesY (optional, integer) - Shrinks the vertical content of the exported PDFs to a maximum number of pages. Often used with the scaleToPagesX keyword. Cannot be combined with the pageScalePercentage or scaleToPages keywords.
+
++ Parameters
+    + project_id (string,required)...The ID of the project where you want to schedule an email.
+
+### Schedule an email [POST]
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+                "scheduledMail": {
+                    "meta": {
+                        "title": "Scheduled report example",
+                        "summary": "Daily at 12:00pm PT",
+                        "tags": "",
+                        "deprecated": 0
+                    },
+                    "content": {
+                        "when": {
+                            "recurrency": "0:0:0:1*12:0:0",
+                            "startDate": "2012-06-05",
+                            "timeZone": "America/Los_Angeles"
+                        },
+                        "to": [
+                            "email@company.com"
+                        ],
+                        "bcc": [
+                            "secret-email@company.com"
+                        ],
+                        "subject": "Scheduled report",
+                        "body": "Hey, I'm sending you new Reports and Dashboards!",
+                        "attachments": [
+                            {
+                                "reportAttachment": {
+                                    "uri": "/gdc/md/{project_id}/obj/{object_id}",
+                                    "formats": [
+                                        "pdf",
+                                        "xls"
+                                    ],
+                                    "exportOptions":{
+                                        "pageOrientation":"landscape"
+                                    }
+                                }
+                            },
+                            {
+                                "dashboardAttachment":{
+                                    "uri":"/gdc/md/{project_id}/obj/{dashboard_id}",
+                                    "allTabs":1,
+                                    "tabs":[
+                                     ]
+                                 }
+                            },
+                            {
+                           "dashboardAttachment":{
+                              "uri":"/gdc/md/{project_id}/obj/{dashboard_id}",
+                              "allTabs":0,
+                              "tabs":[
+                                 "abcdefg"
+                              ]
+                           }
+                        }                
+                        ]
+                    }
+                }
+            }
+
++ Response 200
+
+        {"uri":"/gdc/md/{project_id}/obj/{object_id}"}
+
+-->
+
 ### POST
 Create new scheduleMail object with following this request
 
