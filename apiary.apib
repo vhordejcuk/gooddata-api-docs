@@ -3015,6 +3015,19 @@ This is API resource for Export big Reports that cannot be computed on the UI.
 <a id="dashboard" ></a>
 Following resources cover Project Dashboard operation. You can list all Dashboards in Project, GET Dashboard content and update it.
 
+<!--
+## Drill into a dashboard reportItem
+
+You can define a drill for a `reportItem` on a dashboard. See the example in the JSON of Create a dashboard.
+
+* `drills` (optional) - Specifies that you can drill into the object.
+    * `target` (required) - Specifies the type of drill. If the target value is export, you must also include the `export` object.  
+    **Values:** pop-up | in-place | new-window | export  
+    * `export` (optional) - Configures the export. Include this object only if you specified a `target` value of `export`. 
+        * `format` (required) - Specifies the format of the export.   
+        **Values:** csv | xlsx
+    * `definition` (required) - Defines the drill object relationships. You can also define the drill from the GoodData Portal. -->
+
 ## /gdc/md/{project-id}/query/projectdashboards
 ### GET
 Use this method to list of all Dashboards in given Project
@@ -3216,6 +3229,198 @@ Use this method to GET dashboard object content
         }
 
 ### POST
+
+<!--
+
+### Create a dashboard object [POST]
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+                "projectDashboard": {
+                    "content": {
+                        "filters": [],
+                        "tabs": [
+                            {
+                                "title": "Dashboard Name",
+                                "identifier": "abcdefg",
+                                "items": [
+                                    {
+                                        "reportItem": {
+                                            "positionX": 410,
+                                            "positionY": 0,
+                                            "sizeX": 530,
+                                            "sizeY": 310,
+                                            "style": {
+                                                "background": {
+                                                    "opacity": 0
+                                                }
+                                            },
+                                            "obj": "/gdc/md/{project_id}/obj/{object_id}",
+                                            "visualization": {
+                                                "oneNumber": {
+                                                    "labels": {}
+                                                },
+                                                "grid": {
+                                                    "columnWidths": []
+                                                }
+                                            },
+                                            "filters": []
+                                            "drills" : [
+                                                {
+                                                    "target" : "export",
+                                                    "export": { 
+                                                        "format": "csv" 
+                                                    },
+                                                    "definition" : {
+                                                        "drillToAttributeDFs" : {
+                                                            "fromAttributes" : [],
+                                                            "toDisplayForms" : [
+                                                                "/gdc/md/{project_id}/obj/{object_id}"
+                                                            ],
+                                                            "fromMetrics" : [
+                                                                "/gdc/md/{project_id}/obj/{object_id}"
+                                                            ]
+                                                        }       
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "headlineItem": {
+                                            "positionX": 0,
+                                            "positionY": 0,
+                                            "sizeX": 380,
+                                            "sizeY": 80,
+                                            "title": "Sales",
+                                            "metric": "/gdc/md/{project_id}/obj/{object_id}",
+                                            "format": "#,##0.00 Kc \n",
+                                            "filters": [],
+                                            "filterAttributeDF": "/gdc/md/{project_id}/obj/{object_id}",
+                                            "linkedWithExternalFilter": 0,
+                                            "constraint": {
+                                                "to": 0,
+                                                "from": 0,
+                                                "type": "floating"
+                                            },
+                                            "trendlineConfig": {
+                                                "autoGranularity": 0,
+                                                "granularityAttributeDF": "/gdc/md/{project_id}/obj/{object_id}"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "reportItem": {
+                                            "positionX": 0,
+                                            "positionY": 350,
+                                            "sizeX": 940,
+                                            "sizeY": 360,
+                                            "style": {
+                                                "background": {
+                                                    "opacity": 0
+                                                }
+                                            },
+                                            "obj": "/gdc/md/{project_id}/obj/{object_id}",
+                                            "visualization": {
+                                                "oneNumber": {
+                                                    "labels": {}
+                                                },
+                                                "grid": {
+                                                    "columnWidths": []
+                                                }
+                                            },
+                                            "filters": []
+                                        }
+                                    },
+                                    {
+                                        "lineItem": {
+                                            "positionX": 30,
+                                            "positionY": 320,
+                                            "sizeX": 880,
+                                            "sizeY": 10
+                                        }
+                                    },
+                                    {
+                                        "lineItem": {
+                                            "positionX": 390,
+                                            "positionY": 0,
+                                            "sizeX": 9,
+                                            "sizeY": 310
+                                        }
+                                    },
+                                    {
+                                        "textItem": {
+                                            "positionX": 100,
+                                            "positionY": 130,
+                                            "sizeX": 170,
+                                            "sizeY": 30,
+                                            "style": {
+                                                "background": {
+                                                    "opacity": 0
+                                                }
+                                            },
+                                            "textSize": "middle",
+                                            "text": "# Customers"
+                                        }
+                                    },
+                                    {
+                                        "reportItem": {
+                                            "positionX": 80,
+                                            "positionY": 160,
+                                            "sizeX": 210,
+                                            "sizeY": 140,
+                                            "style": {
+                                                "background": {
+                                                    "opacity": 0
+                                                }
+                                            },
+                                            "obj": "/gdc/md/{project_id}/obj/{object_id}",
+                                            "visualization": {
+                                                "oneNumber": {
+                                                    "labels": {
+                                                        "description": ""
+                                                    }
+                                                },
+                                                "grid": {
+                                                    "columnWidths": []
+                                                }
+                                            },
+                                            "filters": []
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "meta": {
+                        "uri": "/gdc/md/{project_id}/obj/{object_id}",
+                        "created": "2012-08-15 19:41:07",
+                        "updated": "2012-09-03 16:37:57",
+                        "author": "/gdc/account/profile/{profile_id}",
+                        "contributor": "/gdc/account/profile/{profile_id}",
+                        "summary": "",
+                        "title": "Overview",
+                        "category": "projectDashboard",
+                        "tags": "",
+                        "deprecated": "0",
+                        "identifier": "abcdefg"
+                    }
+                }
+            }
+
++ Response 200
+
+        {
+          "uri": "/gdc/md/{project_id}/obj/{object_id}"
+        }
+
+ -->
 Use this method to create Dashboard object. To Update the Dashboard object, use `PUT` with the same payload which represents the final state.
 
 + Request
