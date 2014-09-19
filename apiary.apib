@@ -2759,8 +2759,6 @@ Use this method to execute selected Report using the Report URI.
 
 ## /gdc/exporter/executor
 
-<!---
-
 * scaling (optional) - Specifies scaling when you export a tabular report to PDF format. Scaling applies to both landscape and portrait orientations.  
     * pageScalePercentage (optional, integer) - Specifies a percentage to scale the exported PDF. Cannot be used with other scaling keywords. **Default:** 100 
     * scaleToPages (optional, integer) - Specifies a maximum number of pages for the exported PDF. Cannot be used with other scaling keywords. 
@@ -2881,112 +2879,7 @@ The content of the **result** section is **execResult** JSON (which is returned 
         "uri":"/gdc/exporter/result/{project_id}/{result_id}"
         }
 
--->
 
-### POST
-This method can be used for exporting Report. The content of **result** part is **execResult** JSON (it has been returned after report computation)
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-                "result_req": {
-                    "format": "csv",
-                    "pageOrientation":"portrait | landscape",
-                    "optimalColumnWidth":"no | yes",
-                    "result": {
-                        "execResult": {
-                            "reportView": {
-                                "chart": {
-                                    "styles": {
-                                        "global": {
-                                            "linetype": "smooth",
-                                            "colorMapping": [
-                                                {
-                                                    "guid": "guid8",
-                                                    "uri": "/gdc/md/{project-id}/obj/{obj-id}"
-                                                }
-                                            ]
-                                        },
-                                        "yui_3_7_1_1_1355414802308_16890": {
-                                            "axis": {
-                                                "limits": {
-                                                    "min": 0,
-                                                    "max": 75
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "buckets": {
-                                        "y": [
-                                            {
-                                                "id": "yui_3_7_1_1_1355414802308_16890",
-                                                "uri": "metric"
-                                            }
-                                        ],
-                                        "color": [],
-                                        "x": [
-                                            {
-                                                "id": "yui_3_7_1_1_1355414981915_32707",
-                                                "uri": "/gdc/md/{project-id}/obj/{obj-id}"
-                                            }
-                                        ],
-                                        "angle": []
-                                    },
-                                    "type": "area",
-                                    "axes": []
-                                },
-                                "reportName": "Mean temperature by date",
-                                "columnWidths": [],
-                                "filters": [],
-                                "rows": [],
-                                "sort": {
-                                    "columns": [],
-                                    "rows": []
-                                },
-                                "oneNumber": {
-                                    "labels": {}
-                                },
-                                "format": "chart",
-                                "columns": [
-                                    {
-                                        "drillDownStepAttributeDF": "/gdc/md/{project-id}/obj/{obj-id}",
-                                        "sort": "pk",
-                                        "displayFormId": "/gdc/md/{project-id}/obj/{obj-id}",
-                                        "attributeTitle": "Month (Date)",
-                                        "baseElementURI": "/gdc/md/{project-id}/obj/{obj-id}/elements?id=",
-                                        "title": "Month (Date)",
-                                        "attributeId": "/gdc/md/{project-id}/obj/{obj-id}",
-                                        "totals": [
-                                            []
-                                        ]
-                                    },
-                                    "metricGroup"
-                                ],
-                                "metrics": [
-                                    {
-                                        "format": "#,##0.00",
-                                        "title": "Mean Temperature [Min]",
-                                        "metricId": "/gdc/md/{project-id}/obj/{obj-id}"
-                                    }
-                                ]
-                            },
-                            "reportDefinition": "/gdc/md/{project-id}/obj/{obj-id}",
-                            "dataResult": "/gdc/md/{project-id}/dataResult/{result-id}"
-                        }
-                    }
-                }
-            }
-
-+ Response 201
-
-        {
-        "uri":"/gdc/exporter/result/{project-id}/{result-id}"
-        }
 
 ## /gdc/app/projects/{project-id}/execute/raw/
 ### POST
@@ -3015,7 +2908,7 @@ This is API resource for Export big Reports that cannot be computed on the UI.
 <a id="dashboard" ></a>
 Following resources cover Project Dashboard operation. You can list all Dashboards in Project, GET Dashboard content and update it.
 
-<!--
+
 ## Drill into a dashboard reportItem
 
 You can define a drill for a `reportItem` on a dashboard. See the example in the JSON of Create a dashboard.
@@ -3026,7 +2919,7 @@ You can define a drill for a `reportItem` on a dashboard. See the example in the
     * `export` (optional) - Configures the export. Include this object only if you specified a `target` value of `export`. 
         * `format` (required) - Specifies the format of the export.   
         **Values:** csv | xlsx
-    * `definition` (required) - Defines the drill object relationships. You can also define the drill from the GoodData Portal. -->
+    * `definition` (required) - Defines the drill object relationships. You can also define the drill from the GoodData Portal.
 
 ## /gdc/md/{project-id}/query/projectdashboards
 ### GET
@@ -3228,9 +3121,6 @@ Use this method to GET dashboard object content
             }
         }
 
-### POST
-
-<!--
 
 ### Create a dashboard object [POST]
 
@@ -3420,175 +3310,7 @@ Use this method to GET dashboard object content
           "uri": "/gdc/md/{project_id}/obj/{object_id}"
         }
 
- -->
-Use this method to create Dashboard object. To Update the Dashboard object, use `PUT` with the same payload which represents the final state.
 
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-                "projectDashboard": {
-                    "content": {
-                        "filters": [],
-                        "tabs": [
-                            {
-                                "title": "Dashboard Name",
-                                "identifier": "abcdefg",
-                                "items": [
-                                    {
-                                        "reportItem": {
-                                            "positionX": 410,
-                                            "positionY": 0,
-                                            "sizeX": 530,
-                                            "sizeY": 310,
-                                            "style": {
-                                                "background": {
-                                                    "opacity": 0
-                                                }
-                                            },
-                                            "obj": "/gdc/md/{project-id}/obj/{obj-id}",
-                                            "visualization": {
-                                                "oneNumber": {
-                                                    "labels": {}
-                                                },
-                                                "grid": {
-                                                    "columnWidths": []
-                                                }
-                                            },
-                                            "filters": []
-                                        }
-                                    },
-                                    {
-                                        "headlineItem": {
-                                            "positionX": 0,
-                                            "positionY": 0,
-                                            "sizeX": 380,
-                                            "sizeY": 80,
-                                            "title": "Sales",
-                                            "metric": "/gdc/md/{project-id}/obj/{obj-id}",
-                                            "format": "#,##0.00 Kc \n",
-                                            "filters": [],
-                                            "filterAttributeDF": "/gdc/md/{project-id}/obj/{obj-id}",
-                                            "linkedWithExternalFilter": 0,
-                                            "constraint": {
-                                                "to": 0,
-                                                "from": 0,
-                                                "type": "floating"
-                                            },
-                                            "trendlineConfig": {
-                                                "autoGranularity": 0,
-                                                "granularityAttributeDF": "/gdc/md/{project-id}/obj/{obj-id}"
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "reportItem": {
-                                            "positionX": 0,
-                                            "positionY": 350,
-                                            "sizeX": 940,
-                                            "sizeY": 360,
-                                            "style": {
-                                                "background": {
-                                                    "opacity": 0
-                                                }
-                                            },
-                                            "obj": "/gdc/md/{project-id}/obj/{obj-id}",
-                                            "visualization": {
-                                                "oneNumber": {
-                                                    "labels": {}
-                                                },
-                                                "grid": {
-                                                    "columnWidths": []
-                                                }
-                                            },
-                                            "filters": []
-                                        }
-                                    },
-                                    {
-                                        "lineItem": {
-                                            "positionX": 30,
-                                            "positionY": 320,
-                                            "sizeX": 880,
-                                            "sizeY": 10
-                                        }
-                                    },
-                                    {
-                                        "lineItem": {
-                                            "positionX": 390,
-                                            "positionY": 0,
-                                            "sizeX": 9,
-                                            "sizeY": 310
-                                        }
-                                    },
-                                    {
-                                        "textItem": {
-                                            "positionX": 100,
-                                            "positionY": 130,
-                                            "sizeX": 170,
-                                            "sizeY": 30,
-                                            "style": {
-                                                "background": {
-                                                    "opacity": 0
-                                                }
-                                            },
-                                            "textSize": "middle",
-                                            "text": "# Customers"
-                                        }
-                                    },
-                                    {
-                                        "reportItem": {
-                                            "positionX": 80,
-                                            "positionY": 160,
-                                            "sizeX": 210,
-                                            "sizeY": 140,
-                                            "style": {
-                                                "background": {
-                                                    "opacity": 0
-                                                }
-                                            },
-                                            "obj": "/gdc/md/{project-id}/obj/{obj-id}",
-                                            "visualization": {
-                                                "oneNumber": {
-                                                    "labels": {
-                                                        "description": ""
-                                                    }
-                                                },
-                                                "grid": {
-                                                    "columnWidths": []
-                                                }
-                                            },
-                                            "filters": []
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "meta": {
-                        "uri": "/gdc/md/{project-id}/obj/{obj-id}",
-                        "created": "2012-08-15 19:41:07",
-                        "updated": "2012-09-03 16:37:57",
-                        "author": "/gdc/account/profile/{user-id}",
-                        "contributor": "/gdc/account/profile/{user-id}",
-                        "summary": "",
-                        "title": "Overview",
-                        "category": "projectDashboard",
-                        "tags": "",
-                        "deprecated": "0",
-                        "identifier": "abcdefg"
-                    }
-                }
-            }
-
-+ Response 200
-
-        {
-          "uri": "/gdc/md/{project-id}/obj/{obj-id}"
-        }
 
 # Group Metadata 
 <a id="metadata" ></a>
