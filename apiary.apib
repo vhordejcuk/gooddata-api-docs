@@ -685,7 +685,85 @@ To list all existing projects
               } ]
         }
 
-## /gdc/md/{project-id}/maintenance/export
+## Export a complete project [/gdc/md/{project_id}/maintenance/export]
+
+<!-- CS-1681, October 16
+
++ Parameters
+  + project_id (required,string)...The ID of the project you want to export.
+
+### Export a complete project [POST]
+
+* `exportUsers` (required, boolean) - Specifies whether to include users in the export.  
+**Default:** 1
+* `exportData ` (required, boolean) - Specifies whether to include project data in the export.  
+**Default:** 1
+* `authorizedUsers` (optional, string) - Comma-separated list of email addresses of users authorized to import the project. Surround email addresses with double quotes.
+* `excludeSchedule` (optional, boolean) - Specifies whether to include scheduled Emails in the export.  
+**Default:** 0
+
+**Response** 
+* `status` (uri) - URI where you can poll for the status of the export.
+* `token` (string) - Token to use to import the exported metadata.
+
++ Request (application/json)
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            { "exportProject" : {
+                 "exportUsers" : "1 | 0",
+                 "exportData" : "1 | 0",
+                 "excludeSchedules" "1 | 0"
+              }
+            }
+
++ Response 200 (application/json)
+
+        {
+           "exportArtifact" : {
+              "status" : {
+                 "uri" : "/gdc/md/{project_id}/etltask/{task_id}"
+              },
+              "token" : "EXPORT_TOKEN"
+           }
+        }
+
+### Import a complete project [/gdc/md/{project_id}/maintenance/import]
+
++ Parameters
+  + project_id (required,string)...The ID of the project where you want to import the project token.
+
+#### Import a complete project [POST]
+
+* `token` (required, string) - Token to use to import the exported metadata. This token is created during export.
+* `turnOffSchedules` (optional, boolean) - Specifies whether imported scheduled emails are active. If value is 0, sending of scheduled emails continues uninterrupted. If value is 1, schedules are imported but no emails are sent until you schedule an email. When you schedule any email, all email schedules become active.  
+**Default:** 0
+
++ Request (application/json)
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            { 
+            "importProject" : {
+              "token" : "TOKEN_STRING",
+              "turnOffSchedules" : " 1 | 0 "
+              }
+            }
+
++ Response 200 (application/json)
+
+        {
+        "uri" : "/gdc/md/{project_id}/etltask/{task_id}"
+        }
+
+
+-->
 ### POST
 To Export selected Project - exportUsers and exportData field are not mandatory. You receive Export token that is valid for **48 hours**.
 
