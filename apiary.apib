@@ -739,7 +739,7 @@ To list all existing projects
 #### Import a complete project [POST]
 
 * `token` (required, string) - Token to use to import the exported metadata. This token is created during export.
-* `turnOffSchedules` (optional, boolean) - Specifies whether imported scheduled emails are active. If value is 0, sending of scheduled emails continues uninterrupted. If value is 1, schedules are imported but no emails are sent until you schedule an email. When you schedule any email, all email schedules become active.  
+
 **Default:** 0
 
 + Request (application/json)
@@ -752,7 +752,6 @@ To list all existing projects
             { 
             "importProject" : {
               "token" : "TOKEN_STRING",
-              "turnOffSchedules" : " 1 | 0 "
               }
             }
 
@@ -762,6 +761,80 @@ To list all existing projects
         "uri" : "/gdc/md/{project_id}/etltask/{task_id}"
         }
 
+
+
+## Export part of a project [/gdc/md/{project_id}/maintenance/partialmdexport]
+
++ Parameters
+  + project_id (required,string)...The ID of the project whose metadata you want to export.
+
+### Export partial metadata [POST]
+
+**Response**
+* `status` (uri) - URI where you can poll for the status of the export.  
+* `token` (string) - Token to use to import the exported metadata.
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {
+                "partialMDExport": {
+                    "uris": [
+                        "/gdc/md/{project_id}/obj/{obj-id}"
+                    ]
+                }
+            }
+
++ Response 200
+
+        {
+            "partialMDArtifact": {
+                "status": {
+                    "uri": "/gdc/md/{project_id}/tasks/{task_id}/status"
+                },
+                "token": "TOKEN_STRING"
+            }
+        }
+
+## Import part of a project [/gdc/md/{project_id}/maintenance/partialmdimport]
+
++ Parameters
+  + project_id (required,string)...The ID of the project where you want to import metadata.
+
+### Import partial metadata [POST]
+
+* `token` (string, required) - The project token you want to import. This token is created during export of partial metadata.
+* `overwriteNewer` (optional, boolean) - Specifies whether imported objects should overwrite newer versions of those objects.  
+**Default:** 0
+* `updateLDMObjects` (optional, boolean) - Specifies whether to update logical data model objects.  
+**Default:** 0
+
+
++ Request
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            { 
+            "partialMDImport" : {
+              "token" : "TOKEN_STRING",
+               "overwriteNewer" : "1|0",
+               "updateLDMObjects" : "1|0",
+              }
+            }
+
++ Response 200
+
+        {
+        "uri" : "/gdc/md/{project_id}/etltask/{task_id}"
+        }
+ 
 
 -->
 ### POST
