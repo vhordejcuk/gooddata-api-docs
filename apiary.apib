@@ -699,7 +699,7 @@ To list all existing projects
 * `exportData ` (required, boolean) - Specifies whether to include project data in the export.  
 **Default:** 1
 * `authorizedUsers` (optional, string) - Comma-separated list of email addresses of users authorized to import the project. Surround email addresses with double quotes.
-* `excludeSchedule` (optional, boolean) - Specifies whether to include scheduled Emails in the export.  
+* `excludeSchedule` (optional, boolean) - Specifies whether to include scheduled Emails in the export. All schedules you import to a project are enabled, even if they were disabled when exported. 
 **Default:** 0
 
 **Response** 
@@ -739,6 +739,8 @@ To list all existing projects
 #### Import a complete project [POST]
 
 * `token` (required, string) - Token to use to import the exported metadata. This token is created during export.
+
+**NOTE:** All schedules you import to a project are enabled, even if they were disabled when exported.
 
 **Default:** 0
 
