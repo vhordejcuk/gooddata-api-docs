@@ -3076,8 +3076,57 @@ You can define a drill for a `reportItem` on a dashboard. See the example in the
     * `definition` (required) - Defines the drill object relationships. You can also define the drill from the GoodData Portal.
 
 ## /gdc/md/{project-id}/query/projectdashboards
+
+<!-- WA-3619 List hidden dashboards, release date TBD
+
+## List project dashboards [/gdc/md/{project-id}/query/projectdashboards?showAll=0]
+
++ Parameters
+   + project_id (string, required)...ID of the project whose dashboards you want to list.
+   + showAll (boolean, optional)...Specifies whether to list hidden dashboards. If value is `0`, dashboards that you cannot see are not returned. If value is `1`, dashboards you cannot see are returned. **Default:** 0
+
+### List all dashboards for a project [GET]
+
+
+
++ Request
+    + Headers
+
+            Accept: application/json
+
++ Response 200
+
+        {
+          "query": {
+            "entries": [
+              {
+                "link": "/gdc/md/{project_id}/obj/{object_id}",
+                "author": "/gdc/account/profile/{profile_id}",
+                "tags": "",
+                "created": "2012-08-15 19:41:07",
+                "deprecated": "0",
+                "summary": "",
+                "category": "projectDashboard",
+                "title": "Overview",
+                "updated": "2012-09-04 15:56:36",
+                "contributor": "/gdc/account/profile/{profile_id}
+              }
+            ],
+            "meta": {
+              "summary": "Metadata Query Resources for project '{project_id}'",
+              "title": "List of projectdashboards",
+              "category": "query"
+            }
+          }
+        }
+
+
+
+-->
 ### GET
 Use this method to list of all Dashboards in given Project
+
+
 
 + Request
     + Headers
