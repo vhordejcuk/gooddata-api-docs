@@ -6168,6 +6168,90 @@ Use this resource to DELETE given ADS Instance
 + Response 204
 
 
+## List Schemas per ADS [/gdc/dss/instances/{instance_id}/schemas]
+
++ Parameters
+    + instance_id (string,required)...The ID of the ADS instance you want to list schemas for.
+
+### List all schemas for a specific ADS instance [GET]
+
+**Response**
+* `name` -  The name of the schema.
+* `description` - The description of the schema.
+* `self` - The URI of the schema.
+* `parent` - the URI of the parent page of the schema. You can see all schemas for ADS on this page.
+* `dssInstance` - the URI of the ADS instance the schema belongs to.
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "schemas" : {
+                "items" : [ {
+                  "schema" : {
+                    "name" : "default",
+                    "description" : "Default schema for new ADS instance",
+                    "links" : {
+                      "self" : "/gdc/dss/instances/{instance_id}/schemas/default",
+                      "parent" : "/gdc/dss/instances/{instance_id}/schemas",
+                      "dssInstance" : "/gdc/dss/instances/{instance_id}"
+                    }
+                  }
+                } ],
+                "links" : {
+                  "self" : "/gdc/dss/instances/{instance_id}/schemas",
+                  "parent" : "/gdc/dss/instances/{instance_id}"
+                }
+              }
+            }
+
+
+## Get Schema Info [/gdc/dss/instances/{instance_id}/schemas/{schema_name}]
+
++ Parameters
+    + instance_id (required,string)...The ID of the schema you want info about.
+    + schema_name (required,string)...The name of the schema you want info about.
+
+### Get info about a schema [GET]
+
+**Response**
+* `name` -  The name of the schema.
+* `description` - The description of the schema.
+* `self` - The URI of the schema.
+* `parent` - the URI of the parent page of the schema. You can see all schemas for ADS on this page.
+* `dssInstance` - the URI of the ADS instance the schema belongs to.
+
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "schema" : {
+                "name" : "default",
+                "description" : "Default schema for new ADS instance",
+                "links" : {
+                  "self" : "/gdc/dss/instances/{instance_id}/schemas/default",
+                  "parent" : "/gdc/dss/instances/{instance_id}/schemas",
+                  "dssInstance" : "/gdc/dss/instances/{instance_id}"
+                }
+              }
+            }
+
+
 ## GET /gdc/dss/executions/{taskId}
 Poll this resource to GET the ADS instance creation task detail
 
