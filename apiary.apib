@@ -6214,3 +6214,83 @@ Poll this resource to GET the ADS instance creation task detail
                      }
               } 
 
+<!-- WA-3505
+
+## Manage Default Embedded Objects [/gdc/account/profile/{profile_id}/settings/defaults]
+
+Use default embedding values to direct a user to an embedded project without specifying its project ID in the URL.  
+When a user navigates to `https://secure.gooddata.com/dashboard.html`, the objects you specified using this resource are loaded (as if the parameter values are appended to `https://secure.gooddata.com/dashboard.html`). These settings are typically set up during user provisioning.
+
+Default embedded object settings are part of a user's profile. Organizational admins can manage default embedded objects for any user in their organization.
+
+**Note:** If no default embedded objects are specified, the user is directed to the first project, dashboard and tab in their profile.
+
+**Steps:**
+
+1. Set up the default embedded objects for a using this resource.
+2. The user navigates to `https://secure.gooddata.com/dashboard.html`.  
+3. The project, dashboard, and optionally tab specified as default embedded objects are loaded.
+
+
++ Parameters
+    + profile_id (string, required)...The ID of the user you are managing default embedded objects for. 
+
+### Create or update default embedded objects [PUT]
+
+* `projectUri` (required, URI) -  the URI of the project to be displayed.
+* `dashboardUri` (optional, URI) -  the URI of the dashboard to be displayed. This dashboard must be part of the project specified in `projectUri`.
+* `tabId` (optional, string) - The ID of the tab to be displayed. This tab must be part of the dashboard specified in `dashboardUri`.  
+**Default:** When no tab is specified, and first tab in the dashboard is loaded.
+
++ Request (application/json)
+
+
+    + Body
+
+            {
+              "defaults" : {
+                "projectUri" : "/gdc/projects/GoodSalesDemo",
+                "dashboardUri" : "/gdc/md/GoodSalesDemo/obj/{dashboard_id}",
+                "tabId" : null
+                }
+              }
+            }
+
++ Response 204 (application/json)
+
+
+###  Get default embedded objects [GET]
+
+**Response**
+
+* `projectUri` -  the URI of the project to be displayed.
+* `dashboardUri` -  the URI of the dashboard to be displayed. This dashboard must be part of the project specified in `projectUri`.
+* `tabId` - The ID of the tab to be displayed. This tab must be part of the dashboard specified in `dashboardUri`.  
+**Default:** When no tab is specified, and first tab in the dashboard is loaded.
+* `self` - The URI of the user the default embedded objects apply to.
+
++ Request (application/json)
+
+        
++ Response 200 (application/json)
+
+           {
+              "defaults" : {
+                "projectUri" : "/gdc/projects/GoodSalesDemo",
+                "dashboardUri" : "/gdc/md/GoodSalesDemo/obj/{dashboard_id}",
+                "tabId" : {tab_id}, 
+                "links" : {
+                  "self" : "/account/profile/{profile_id}/settings/defaults"
+                }
+              }
+            }
+
+### Delete default embedded objects [DELETE]
+
++ Request (application/json)
+
+
+
++ Response 204 (application/json)
+
+-->
