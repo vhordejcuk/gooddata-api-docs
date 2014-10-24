@@ -3484,8 +3484,6 @@ project.
 
 ## Export part of a project [/gdc/md/{project_id}/maintenance/partialmdexport]
 
-<!-- CS-1681, October 16
-
 + Parameters
   + project_id (required,string)...The ID of the project whose metadata you want to export.
 
@@ -3557,64 +3555,6 @@ project.
         {
         "uri" : "/gdc/md/{project_id}/etltask/{task_id}"
         }
- 
-
-        -->
-
-### POST
-This method is used for partial metadata export
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-                "partialMDExport": {
-                    "uris": [
-                        "/gdc/md/{project-id}/obj/{obj-id}"
-                    ]
-                }
-            }
-
-+ Response 200
-
-        {
-            "partialMDArtifact": {
-                "status": {
-                    "uri": "/gdc/md/{project-id}/tasks/{task-id}/status"
-                },
-                "token": "TOKEN_STRING"
-            }
-        }
-
-## /gdc/md/{project-id}/maintenance/partialmdimport
-### POST
-Use this method to import exported metadata
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            { 
-            "partialMDImport" : {
-              "token" : "TOKEN_STRING",
-               "overwriteNewer" : "1|0"
-               "updateLDMObjects" : "1|0"
-              }
-            }
-
-+ Response 200
-
-        {
-        "uri" : "/gdc/md/{project-id}/etltask/{task-id}"
-        }
-        
         
 ## /gdc/internal/projects/{project-id}/objects/setPermissions
 ### POST
