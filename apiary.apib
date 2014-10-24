@@ -2989,9 +2989,13 @@ The content of the **result** section is **execResult** JSON (which is returned 
 
 
 
-## /gdc/app/projects/{project-id}/execute/raw/
-### POST
-This is API resource for Export big Reports that cannot be computed on the UI. 
+## Export a large report [/gdc/app/projects/{project_id}/execute/raw/]
+
++ Parameters
+    + project_id (string,required)...ID of the project where you want to execute a report.
+
+### Export a large report [POST]
+Use this resource to export reports that are too large to be computed on the UI. It executes in raw form.
 
 + Request
     + Headers
@@ -3002,15 +3006,16 @@ This is API resource for Export big Reports that cannot be computed on the UI.
 
             {
                 "report_req": {
-                    "reportDefinition":"/gdc/md/{project-id}/obj/{obj-id}"
+                    "reportDefinition":"/gdc/md/{project_id}/obj/{object_id}"
                     }
             }
 
 + Response 201
 
         {
-            "uri":"/gdc/projects/{project-id}/execute/raw/{id-of-your-report}"
+            "uri":"/gdc/projects/{project_id}/execute/raw/{report_id}"
         }
+
 
 # Group Dashboard
 <a id="dashboard" ></a>
