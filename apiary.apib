@@ -5173,6 +5173,226 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
         }
 
 
+# Group CloudConnect Notifications
+
+## List or create a CloudConnect notification [/gdc/projects/{project_id}/dataload/processes/{process_id}/notificationRules]
+
+CloudConnect notifications generate an email when a CC event, such as a data loading process failure, occurs. You set notifications for the scheduling, starting, successful completion, and unsuccessful completion of loading processes.
+ 
+
++ Parameters
+    + project_id (string,required)...The ID of the project where the process you want notifications about resides.
+    + process_id (string,required)...The ID of the process you want to list or create notifications for.
+
+ 
+### List all CC notifications for a process [GET]
+
+**Response:**
+
+* `email` - The email address that generated emails are sent to. Specify only one email address per notification.
+* `subject` - The subject of the generated email.
+* `body` - The body of the generated email.
+* `events` -  The IDs of events that trigger the notification. 
+* `self` - The URI of this notification rule.
+* `subscription` - The URI of the email notification subscription.
+* `channel` - The URI of the email channel associated with this rule. This channel is created when you create the subscription.
+
++ Request (application/json)
+    
+
+    + Body
+
+            
++ Response 200 (application/json)
+           
+    + Body
+
+            {
+            "notificationRules" : {
+                "items" : [ {
+                    "notificationRule": {
+                        "email": "kurt@yourock.com",
+                        "subject": "Your rockin' notification",
+                        "body": "The body text included in the generated email. Rock on.",
+                        "events": [
+                           "process.start",
+                           "process.end"
+                         ],
+                         "links" : {
+                            "self" : "/gdc/projects/{project_id}/dataload/processes/{process_id}/notificationRules/{rule_id}",
+                            "subscription" : "/gdc/projects/{project_id}/users/{user_id}/subscriptions/{subscription_id}",
+                            "channels" : [ "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}" ]
+                        }
+                    }
+                }, 
+                {                             
+                    "notificationRule": {
+                        "email": "wolfie@salzburg.com",
+                        "subject": "symphony sales figures",
+                        "body": "This month's symphony sales figures.",
+                        "events": [
+                            "process.start",
+                            "process.end"
+                        ],
+                        "links" : {
+                            "self" : "/gdc/projects/{project_id}/dataload/processes/{process_id}/notificationRules/{rule_id}",
+                            "subscription" : "/gdc/projects/{project_id}/users/{user_id}/subscriptions/{subscription_id}",
+                            "channels" : [ "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}" ]
+                        }
+                    }
+                }],
+                "links" : {
+                    "self" : "/gdc/projects/{project_id}/dataload/processes/{process_id}/notificationRules"
+                 }
+            }
+
+
+### Create a CC notification [POST] 
+
+* `email` (required, string) - The email address generated emails are sent to. Specify only one email address per notification.
+* `subject` (required, string) - The subject of the generated email.
+* `body` (required, string) - The body of the generated email.
+* `events` (required, array) -  The IDs of events that trigger the notification. Specify at least one.  
+**Values:**  `dataload.process.schedule`, `dataload.process.start`, `dataload.process.finish.ok`, `dataload.process.finish.error`
+
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept: application/json
+
+    + Body
+
+              {
+                "notificationRule": {
+                    "email": "kurt@yourock.com",
+                    "subject": "Your rockin' notification",
+                    "body": "The body text included in the generated email. Rock on.",
+                    "events": [
+                        "process.start",
+                        "process.end"
+                    ]
+                }
+          
+          
+            
++ Response 200 (application/json)
+
+
+           
+    + Body
+    
+
+## Manage a CloudConnect notification [/gdc/projects/{project_id}/dataload/processes/{process_id}/notificationRules/{notification_id}]
+
+Manage a specific CloudConnect email notification.
+ 
++ Parameters
+    + project_id (string,required)...The ID of the project where the process you want notifications about resides.
+    + process_id (string,required)...The ID of the process you want to list or create notifications.
+    + notification_id (string,required)...The ID of the notification you want to manage.
+    
+ 
+### Get info about a CC notification [GET]
+
+**Response:**
+
+* `email` - The email address generated emails are sent to.
+* `subject` - The subject of the generated email.
+* `body` - The body of the generated email.
+* `events` -  The IDs of events that trigger the notification.
+* `self` - The URI to this notification rule.
+* `subscription` - The URI of email notification subscription.
+* `channel` - The URI of the associated email channel. This channel is created when you create the subscription.
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept: application/json
+
+    + Body
+
+
+
+            
++ Response 200 (application/json)
+
+
+           
+    + Body
+
+                  {
+                "notificationRule": {
+                    "email": "kurt@yourock.com",
+                    "subject": "Your rockin' notification",
+                    "body": "The body text included in the generated email. Rock on.",
+                    "events": [
+                        "process.start",
+                        "process.end"
+                    ]
+                    "links" : {
+                            "self" : "/gdc/projects/{project_id}/dataload/processes/{process_id}/notificationRules/{rule_id}",
+                            "subscription" : "/gdc/projects/{project_id}/users/{user_id}/subscriptions/{subscription_id}",
+                            "channels" : [ "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}" ]
+                    }
+                }
+
+
+### Update a CC notification [POST] 
+
+* `email` (required, string) - The email address that generated emails are sent to. Specify only one email address per subscription.
+* `subject` (required, string) - The subject of the generated email.
+* `body` (required, string) - The body of the generated email.
+* `events` (required, array) -  The IDs of events that trigger the notification. Specify at least one.  
+**Values:**  `dataload.process.schedule`, `dataload.process.start`, `dataload.process.finish.ok`, `dataload.process.finish.error`
+
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept: application/json
+
+    + Body
+
+                  {
+                "notificationRule": {
+                    "email": "kurt@yourock.com",
+                    "subject": "The rock stops here",
+                    "body": "New email body text. You don't rock, dude.",
+                    "events": [
+                        "process.start",
+                        "process.end"
+                    ]
+                }
+
+            
++ Response 200 (application/json)
+
+           
+    + Body
+
+    
+### Delete a CC notification [DELETE]
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept: application/json
+
+    + Body
+
+            
++ Response 204 (application/json)
+
+           
+    + Body
+
+
+
 # Group CloudConnect Zendesk Connector
 <a id="cc-zendesk-connector" ></a>
 ### Download task properties
