@@ -6033,15 +6033,14 @@ Organization administrators and owners can use the following resources to custom
 
 
 
-# Group Agile Data Warehousing Service
+# Group Data Warehouse
+
+<!--- former called "Agile Data Warehousing Service" -->
 <a id="ads"></a>
-ADS is an Agile Data Warehousing Service fully hosted by GoodData. Using the ADS API you are able to list, create and update the ADS Instances.
-Remember that you need a special `authorization token` to create new ADS instance.
+The Agile Data Warehousing service is fully hosted by GoodData. 
 
-## /gdc/dss/instances
-
-### GET
-API resource for retrieving the list of all available ADS instances.
+## List DWs or create a DW [/gdc/datawarehouse/instances]
+### List DW instances [GET]
 
 + Request 
       
@@ -6058,52 +6057,52 @@ API resource for retrieving the list of all available ADS instances.
     + Body
 
             {
-              "dssInstances" : {
+              "instances" : {
                 "items" : [ {
-                  "dssInstance" : {
+                  "instance" : {
                     "title" : "Storage",
                     "description" : "Testing Storage",
                     "status" : "ENABLED",
                     "authorizationToken" : “token",
                     "created" : "2014-03-17T13:02:39.000Z",
                     "updated" : "2014-03-17T13:02:41.000Z",
-                    "createdBy" : "/gdc/account/profile/{profile-id}",
-                    "updatedBy" : "/gdc/account/profile/{profile-id}",
+                    "createdBy" : "/gdc/account/profile/{profile_id}",
+                    "updatedBy" : "/gdc/account/profile/{profile_id}",
                     "links" : {
-                      "self" : "/gdc/dss/instances/{instance-id}",
-                      "parent" : "/gdc/dss/instances",
-                      "users" : "/gdc/dss/instances/{instance-id}/users",
-                      "jdbc" : "/gdc/dss/instances/{instance-id}/jdbc"
+                      "self" : "/gdc/datawarehouse/instances/{instance_id}",
+                      "parent" : "/gdc/datawarehouse/instances",
+                      "users" : "/gdc/datawarehouse/instances/{instance_id}/users",
+                      "jdbc" : "/gdc/datawarehouse/instances/{instance_id}/jdbc"
                     }
                   }
                 }, {
-                  "dssInstance" : {
+                  "instance" : {
                     "title" : "Salesforce",
                     "description" : "Test",
                     "status" : "ENABLED",
                     "authorizationToken" : “token",
                     "created" : "2014-04-09T22:10:26.000Z",
                     "updated" : "2014-04-09T22:10:26.000Z",
-                    "createdBy" : "/gdc/account/profile/{profile-id}",
-                    "updatedBy" : "/gdc/account/profile/{profile-id}",
+                    "createdBy" : "/gdc/account/profile/{profile_id}",
+                    "updatedBy" : "/gdc/account/profile/{profile_id}",
                     "links" : {
-                      "self" : "/gdc/dss/instances/{instance-id}",
-                      "parent" : "/gdc/dss/instances",
-                      "users" : "/gdc/dss/instances/{instance-id}/users",
-                      "jdbc" : "/gdc/dss/instances/{instance-id}/jdbc"
+                      "self" : "/gdc/datawarehouse/instances/{instance_id}",
+                      "parent" : "/gdc/datawarehouse/instances",
+                      "users" : "/gdc/datawarehouse/instances/{instance_id}/users",
+                      "jdbc" : "/gdc/datawarehouse/instances/{instance_id}/jdbc"
                     }
                   }
                 } ],
                 "links" : {
-                  "parent" : "/gdc/dss",
-                  "self" : "/gdc/dss/instances"
+                  "parent" : "/gdc/datawarehouse",
+                  "self" : "/gdc/datawarehouse/instances"
                 }
               }
             }
 
 
-### POST
-Resource to create new ADS Instance. Use the following payload. You need to have ADS Token that allows you to create a ADS Instance.
+### Create a data warehouse[POST]
+> **NOTE:** You must have data warehouse token to create a data warehouse instance.
 
 + Request 
       
@@ -6115,10 +6114,10 @@ Resource to create new ADS Instance. Use the following payload. You need to have
      + Body
 
               {
-                "dssInstance": {
-                    "title": "New ADS",
-                    "authorizationToken": "Your-ADS-Token",
-                    "description": "ADS Description"
+                "instance": {
+                    "title": "New Data Warehouse",
+                    "authorizationToken": "Your-DW-Token",
+                    "description": "DW Description"
                 }
                 }
 
@@ -6133,14 +6132,19 @@ Resource to create new ADS Instance. Use the following payload. You need to have
                      {
               "asyncTask" : {
                 "links" : {
-                  "poll" : "/gdc/dss/executions/{execution-id}"
+                  "poll" : "/gdc/datawarehouse/executions/{execution_id}"
                     }
                     }
                     }
 
 
-## GET /gdc/dss/instances/{instance-id}
-Retrieve details about specific ADS instance.
+## Manage an data warehouse [/gdc/datawarehouse/instances/{instance_id}]
+
+
++ Parameters
+    + instance_id (string,required)...The data warehouse instance you want to manage.
+    
+### Get info about a DW [GET] 
 
 + Request
 
@@ -6159,27 +6163,26 @@ Retrieve details about specific ADS instance.
     + Body
     
                 {
-                  "dssInstance" : {
+                  "instance" : {
                     "title" : "Test",
                     "description" : "Storage",
                     "status" : "ENABLED",
                     "authorizationToken" : "{Token}",
                     "created" : "2014-05-05T08:27:33.000Z",
                     "updated" : "2014-05-05T08:27:34.000Z",
-                    "createdBy" : "/gdc/account/profile/{profile-id}",
-                    "updatedBy" : "/gdc/account/profile/{profile-id}",
+                    "createdBy" : "/gdc/account/profile/{profile_id}",
+                    "updatedBy" : "/gdc/account/profile/{profile_id}",
                     "links" : {
-                      "self" : "/gdc/dss/instances/{instance-id}",
-                      "parent" : "/gdc/dss/instances",
-                      "users" : "/gdc/dss/instances/{instance-id}/users",
-                      "jdbc" : "/gdc/dss/instances/{instance-id}/jdbc"
+                      "self" : "/gdc/datawarehouse/instances/{instance_id}",
+                      "parent" : "/gdc/datawarehouse/instances",
+                      "users" : "/gdc/datawarehouse/instances/{instance_id}/users",
+                      "jdbc" : "/gdc/datawarehouse/instances/{instance_id}/jdbc"
                     }
                   }
                 }
 
 
-## PUT /gdc/dss/instances/{instance-id}
-Resource for updating the ADS Instance.
+### Update a DW [PUT] 
 
 + Request
 
@@ -6191,20 +6194,20 @@ Resource for updating the ADS Instance.
     + Body
     
             {
-              "dssInstance" : {
+              "instance" : {
                 "title" : "Test",
                 "description" : "Storage",
                 "status" : "ENABLED",
                 "authorizationToken" : "{Token}",
                 "created" : "2014-05-05T08:27:33.000Z",
                 "updated" : "2014-05-05T08:27:34.000Z",
-                "createdBy" : "/gdc/account/profile/{profile-id}",
-                "updatedBy" : "/gdc/account/profile/{profile-id}",
+                "createdBy" : "/gdc/account/profile/{profile_id}",
+                "updatedBy" : "/gdc/account/profile/{profile_id}",
                 "links" : {
-                  "self" : "/gdc/dss/instances/{instance-id}",
-                  "parent" : "/gdc/dss/instances",
-                  "users" : "/gdc/dss/instances/{instance-id}/users",
-                  "jdbc" : "/gdc/dss/instances/{instance-id}/jdbc"
+                  "self" : "/gdc/datawarehouse/instances/{instance_id}",
+                  "parent" : "/gdc/datawarehouse/instances",
+                  "users" : "/gdc/datawarehouse/instances/{instance_id}/users",
+                  "jdbc" : "/gdc/datawarehouse/instances/{instance_id}/jdbc"
                 }
               }
             }
@@ -6212,8 +6215,8 @@ Resource for updating the ADS Instance.
 + Response 204
 
 
-## DELETE /gdc/dss/instances/{instance-id}
-Use this resource to DELETE given ADS Instance 
+### Delete a DW [DELETE]
+
 
 + Request 
     + Headers
@@ -6223,92 +6226,12 @@ Use this resource to DELETE given ADS Instance
 + Response 204
 
 
-## List schemas per ADS [/gdc/dss/instances/{instance_id}/schemas]
+## Poll to get DW creation info [/gdc/datawarehouse/executions/{task_id}]
 
 + Parameters
-    + instance_id (string,required)...The ID of the ADS instance you want to list schemas for.
+    + task_id (string,required)...The ID fo the task you want information about.
 
-### List all schemas for a specific ADS instance [GET]
-
-**Response**
-* `name` -  The name of the schema.
-* `description` - The description of the schema.
-* `self` - The URI of the schema.
-* `parent` - the URI of the parent page of the schema. You can see all schemas for ADS on this page.
-* `dssInstance` - the URI of the ADS instance the schema belongs to.
-
-+ Request
-
-    + Headers
-
-            Accept: application/json
-
-+ Response 200 (application/json)
-
-    + Body
-
-            {
-              "schemas" : {
-                "items" : [ {
-                  "schema" : {
-                    "name" : "default",
-                    "description" : "Default schema for new ADS instance",
-                    "links" : {
-                      "self" : "/gdc/dss/instances/{instance_id}/schemas/default",
-                      "parent" : "/gdc/dss/instances/{instance_id}/schemas",
-                      "dssInstance" : "/gdc/dss/instances/{instance_id}"
-                    }
-                  }
-                } ],
-                "links" : {
-                  "self" : "/gdc/dss/instances/{instance_id}/schemas",
-                  "parent" : "/gdc/dss/instances/{instance_id}"
-                }
-              }
-            }
-
-
-## Get Schema Info [/gdc/dss/instances/{instance_id}/schemas/{schema_name}]
-
-+ Parameters
-    + instance_id (required,string)...The ID of the schema you want info about.
-    + schema_name (required,string)...The name of the schema you want info about.
-
-### Get info about a schema [GET]
-
-**Response**
-* `name` -  The name of the schema.
-* `description` - The description of the schema.
-* `self` - The URI of the schema.
-* `parent` - the URI of the parent page of the schema. You can see all schemas for ADS on this page.
-* `dssInstance` - the URI of the ADS instance the schema belongs to.
-
-
-+ Request
-
-    + Headers
-
-            Accept: application/json
-
-+ Response 200 (application/json)
-
-    + Body
-
-            {
-              "schema" : {
-                "name" : "default",
-                "description" : "Default schema for new ADS instance",
-                "links" : {
-                  "self" : "/gdc/dss/instances/{instance_id}/schemas/default",
-                  "parent" : "/gdc/dss/instances/{instance_id}/schemas",
-                  "dssInstance" : "/gdc/dss/instances/{instance_id}"
-                }
-              }
-            }
-
-
-## GET /gdc/dss/executions/{taskId}
-Poll this resource to GET the ADS instance creation task detail
+### Poll to get DW creation info [GET]
 
 
 + Request
@@ -6328,7 +6251,7 @@ Poll this resource to GET the ADS instance creation task detail
             {
               "asyncTask" : {
                 "links" : {
-                  "poll" : "/gdc/dss/executions/{execution-id}"
+                  "poll" : "/gdc/datawarehouse/executions/{execution_id}"
                 }
               }
             }
@@ -6346,11 +6269,94 @@ Poll this resource to GET the ADS instance creation task detail
             {
                 "asyncTask": {
                             "links": {
-                                "dssInstance": "/gdc/dss/instances/{instance-id}”,
+                                "instance": "/gdc/datawarehouse/instances/{instance_id}”,
                                 “user”: “user URI”,
-                                “users”: “URI of users in DSS Instance"
+                                “users”: “URI of users in the DW instance"
                             }
                      }
               } 
 
+
+## List schemas per DW [/gdc/datawarehouse/instances/{instance_id}/schemas]
+
++ Parameters
+    + instance_id (string,required)...The ID of the DW instance you want to list schemas for.
+
+### List all schemas for a specific DW instance [GET]
+
+**Response**
+* `name` -  The name of the schema.
+* `description` - The description of the schema. 
+* `self` - The URI of the schema.
+* `parent` - the URI of the parent page of the schema. You can see all schemas for a DW on this page.
+* `instance` - the URI of the DW instance the schema belongs to.
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "schemas" : {
+                "items" : [ {
+                  "schema" : {
+                    "name" : "default",
+                    "description" : "Default schema for new data warehouse instance",
+                    "links" : {
+                      "self" : "/gdc/datawarehouse/instances/{instance_id}/schemas/default",
+                      "parent" : "/gdc/datawarehouse/instances/{instance_id}/schemas",
+                      "instance" : "/gdc/datawarehouse/instances/{instance_id}"
+                    }
+                  }
+                } ],
+                "links" : {
+                  "self" : "/gdc/datawarehouse/instances/{instance_id}/schemas",
+                  "parent" : "/gdc/datawarehouse/instances/{instance_id}"
+                }
+              }
+            }
+
+
+## Get schema info [/gdc/datawarehouse/instances/{instance_id}/schemas/{schema_name}]
+
++ Parameters
+    + instance_id (required,string)...The ID of the schema you want info about.
+    + schema_name (required,string)...The name of the schema you want info about.
+
+### Get info about a schema [GET]
+
+**Response**
+* `name` -  The name of the schema.
+* `description` - The description of the schema. 
+* `self` - The URI of the schema.
+* `parent` - the URI of the parent page of the schema. You can see all schemas for an DW on this page.
+* `instance` - the URI of the DW instance the schema belongs to.
+
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "schema" : {
+                "name" : "default",
+                "description" : "Default schema for new DW instance",
+                "links" : {
+                  "self" : "/gdc/datawarehouse/instances/{instance_id}/schemas/default",
+                  "parent" : "/gdc/datawarehouse/instances/{instance_id}/schemas",
+                  "instance" : "/gdc/datawarehouse/instances/{instance_id}"
+                }
+              }
+            }
 
