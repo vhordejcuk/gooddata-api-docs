@@ -2995,13 +2995,13 @@ The content of the **result** section is **execResult** JSON (which is returned 
 
 ## Export a raw report [/gdc/app/projects/{project_id}/execute/raw/]
 
-**NOTE:** Maximum export size for raw reports is 10GB. Exporting a report of this size may take 20 minutes.
-
 + Parameters
     + project_id (string,required)...ID of the project where you want to execute a report.
 
 ### Export a raw report [POST]
-Use this resource to export reports that are too large to be computed on the UI. It executes in raw form.
+Use this resource to export reports that are too large to be computed on the UI. It exports in raw form.
+
+**NOTE:** Maximum export size for raw reports is 10GB. Exporting a report of this size may take 20 minutes.
 
 + Request
     + Headers
