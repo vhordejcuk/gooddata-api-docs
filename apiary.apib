@@ -2361,147 +2361,691 @@ This resource helps you identify datasets in your project. You can easily identi
 
 # Group Notifications
 <a id="notifications" ></a>
-Notifications allow users to be informed about some specific events in the Project. Notifications are based on Channel Configuration, where user specifies
-what is the channel, where he wants to send the notification. Second step is a Subscription settings, that will subscribe the user to a specific channel
-with specific condition for triggering the notification.
 
-## Notifications properties  
-- channelConfiguration : Specifies the channel configuration configuration
-- username (string) : User's channel login for specific channel
-- password (string) : User's password for specific configuration
-- title (string) : Title of channel configuration
-- author (uri) : URI of user who creates the notification channel
-- created (date) : Date of channel configuration creation
-- updated (date) : Date of channel configuration update
-- from : Phone number of notification sender (for Twillio Channel)
-- to : Phone number of notification recipient (for Twillio Channel)
-- timerEvent (cron Expression) : Specifies the interval for notification check
-- condition : Condition that must be fulfil to send the notification
-- message : Message that is sent via specific channel as notification
 
-## /gdc/account/profile/{profile-id}/channelConfigurations
-### POST
-To create new Salesforce Notifications channel use this method
 
-+ Request
-    + Headers
+
+## Create or get channels for a user [/gdc/account/profile/{profile_id}/channelConfigurations]
+
+Create a notification channel before you create a subscription. A _subscription_ tracks events on the GoodData Platform and sends a notification if a trigger condition occurs in the GoodData Portal. The subscription sends its notification through the channel. For example, if you work in sales you could create an email notification channel, and set a subscription that generates an email every time a new sales opportunity occurs.  
+
+
+**Note:** You can also set up a simple notification in one step. See [Create a CC notification](http://docs.apirefreshconcatentated.apiary.io/reference/scheduling-and-notifications/list-or-create-a-cloudconnect-notification/create-a-cc-notification) for more information.
+
++ Parameters
+    + profile_id (string,required)...The ID of the user profile where the notification channel exists or will exist.
+    
+
+### Create a notification channel [POST]
+
+* `to` (string, required) - The email address notifications will be sent to.
+* `title` (string, required) - The name of the channel.
+
+**NOTE:** This JSON body creates an email channel. You can also create Twilio, Salesforce, and REST channels. For information on creating these channels, see [this article](https://developer.gooddata.com/article/setting-up-the-notifications-using-api).
+
++ Request (application/json)
+    + Headers 
 
             Accept: application/json
 
     + Body
+
+             {
+               "channelConfiguration":{
+                  "configuration":{
+                     "emailConfiguration":{
+                        "to":"your@email.com"
+                     }
+                  },
+                  "meta":{
+                     "title":"Channel title"
+                  }
+               }
+            }
+
++ Response 201
 
             {
                "channelConfiguration":{
                   "configuration":{
-                     "sfdcChatterConfiguration":{
-                        "username":"your@email",
-                        "password":"passwordSecurityToken"
+                     "emailConfiguration":{
+                        "to":"your@email.com"
                      }
                   },
                   "meta":{
-                     "title":"SFDC Channel"
-                  }
-               }
-            }
-
-+ Response 201
-
-        {
-            "channelConfiguration": {
-                "configuration": {
-                    "sfdcChatterConfiguration": {
-                        "username": "USERNAME@DOMAIN.COM"
-                    }
-                },
-                "meta": {
-                    "title": "Channel Name",
-                    "author": "/gdc/account/profile/{user-id}",
+                    "title":"Channel title",
+                    "author": "/gdc/account/profile/{profile_id}",
                     "category": "channelConfiguration",
                     "updated": "2011-12-20 13:43:17",
                     "created": "2011-12-20 13:43:17",
-                    "uri": "/gdc/account/profile/{user-id}/channelConfigurations/{channel-id}"
+                    "uri": "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
                 }
             }
         }
 
-## /gdc/projects/{project-id}/users/{user-id}/subscriptions
-### POST
-To create new Subscription, call this resource and set the timerEvent, condition expression and message that will be sent
+### Get channels for a user [GET]
 
-+ Request
+* `disabled` - Specifies that there is an error in channel configuration and the channel is disabled. Review your channel configuration.
+
+**NOTES:**
+* See **Create a notification channel** for additional JSON description.
+* This example gets email and Salesforce channels. For information on Twilio and REST channels, see [this article](https://developer.gooddata.com/article/setting-up-the-notifications-using-api).
+
+
+
+
++ Request (application/json)
+    + Headers 
+
+            Accept: application/json
+            
+    + Body
+
+            
++ Response 200 (application/json)
+           
+            {
+              "channelConfigurations" : {
+                "items" : [ {
+                  "channelConfiguration" : {
+                    "configuration" : {
+                      "emailConfiguration" : {
+                        "to" : "email@gooddata.com"
+                      }
+                    },
+                    "meta" : {
+                      "created" : "2013-01-23 08:38:47",
+                      "updated" : "2013-01-23 08:38:47",
+                      "category" : "channelConfiguration",
+                      "author" : "/gdc/account/profile/{profile_id}",
+                      "title" : "email channel 2",
+                      "uri" : "/gdc/account/profile/{profile_id}channelConfigurations/{channel_id}"
+                    }
+                  }
+                }, {
+                  "channelConfiguration" : {
+                    "configuration" : {
+                      "emailConfiguration" : {
+                        "to" : "recipient@gooddata.com"
+                      }
+                    },
+                    "meta" : {
+                      "created" : "2013-01-18 08:51:55",
+                      "updated" : "2013-01-18 08:51:55",
+                      "category" : "channelConfiguration",
+                      "author" : "/gdc/account/profile/{profile_id}",
+                      "title" : "email channel 1",
+                      "uri" : "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
+                    }
+                  }
+                }, {
+                  "channelConfiguration" : {
+                    "disabled" : true,
+                    "configuration" : {
+                      "sfdcChatterConfiguration" : {
+                        "username" : "email@yourcompany.com"
+                         "password":"passwordSecurityToken"
+                      }
+                    },
+                    "meta" : {
+                      "created" : "2012-02-17 15:02:11",
+                      "updated" : "2012-05-10 14:35:11",
+                      "category" : "channelConfiguration",
+                      "author" : "/gdc/account/profile/{profile_id}",
+                      "title" : "SFDC channel",
+                      "uri" : "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
+                    }
+                  }
+                } ]
+              }
+            }
+
+
+
+
+## Manage channel configuration [/gdc/account/profile/{profile_id}/channelConfigurations/{configuration_id}]
+ 
++ Parameters
+    + profile_id (string,required)...The ID of the user whose channel you want to GET, UPDATE, or DELETE.
+    + configuration_id (string,required)...The ID of the channel that you want to GET, UPDATE, or DELETE.
+
+ 
+### Get channel info [GET]
+
+**NOTE:** This example gets a SalesForce channel. We also support Twilio, email, and REST channels. For more information, see [this article](https://developer.gooddata.com/article/setting-up-the-notifications-using-api).
+
+
++ Request (application/json)
+    
+
+    + Header
+    
+            Accept: application/json
+
+    + Body
+    
+            
++ Response 200 (application/json)
+           
+    + Body
+    
+             {
+                "channelConfiguration": {
+                    "configuration": {
+                        "sfdcChatterConfiguration": {
+                            "username": "USERNAME@DOMAIN.COM",
+                            "password":"passwordSecurityToken"
+                        }
+                    },
+                    "meta": {
+                        "title": "Channel Name",
+                        "author": "/gdc/account/profile/{profile_id}",
+                        "category": "channelConfiguration",
+                        "updated": "2011-12-20 13:43:17",
+                        "created": "2011-12-20 13:43:17",
+                        "uri": "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
+                    }
+                }
+            }
+
+
+
+### Update channel configuration [PUT] 
+
+**SalesForce configuration**
+* `username` (string, required) - User's Salesforce login email address.
+* `password` (string, required) - Concatenation of user's salesforce.com password and security token.
+* `title` (string, required) - The channel name.
+
+**NOTE:** This example updates a SalesForce channel. We also support Twilio, email, and REST channels. For information on how to update these types of channels, see [this article](https://developer.gooddata.com/article/setting-up-the-notifications-using-api).
+
++ Request (application/json)
+
     + Headers
+    
+            Accept: application/json
+
+    + Body
+
+             {
+                "channelConfiguration": {
+                    "configuration": {
+                        "sfdcChatterConfiguration": {
+                            "username": "USERNAME@DOMAIN.COM",
+                            "password":"passwordSecurityToken"
+                        }
+                    },
+                    "meta": {
+                        "title": "Is this thing on?"
+                    }
+                }
+            }
+            
++ Response 200 (application/json)
+           
+    + Body
+    
+             {
+                "channelConfiguration": {
+                    "configuration": {
+                        "sfdcChatterConfiguration": {
+                            "username": "USERNAME@DOMAIN.COM",
+                            "password":"passwordSecurityToken"
+                        }
+                    },
+                    "meta": {
+                        "title": "Is this thing on?",
+                        "author": "/gdc/account/profile/{profile_id}",
+                        "category": "channelConfiguration",
+                        "updated": "2011-12-20 13:43:17",
+                        "created": "2011-12-20 13:43:17",
+                        "uri": "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
+                    }
+                }
+            }
+    
+### Delete a channel [DELETE] 
+
+
++ Request (application/json)
+
+    + Headers
+    
+
+    + Body
+    
+            
++ Response 204 (application/json)
+
+
+           
+    + Body
+    
+  
+
+## Create or get subscriptions for a user [/gdc/projects/{project_id}/users/{profile_id}/subscriptions]
+
+**Note:** You can also set up a simple notification in one step. See [Create a CC notification](http://docs.apirefreshconcatentated.apiary.io/reference/scheduling-and-notifications/list-or-create-a-cloudconnect-notification/create-a-cc-notification) for more information.
+
+A _subscription_ tracks events on the GoodData Platform and sends a notification if a trigger condition occurs. A subscription sends information via a channel, which must be set up separately. For example, if you work in sales you could create an email notification channel, and set a subscription that generates an email every time a new sales opportunity occurs.
+
+
++ Parameters
+    + project_id (string,required)...The ID of the project where you want to create a subscription.
+    + profile_id (string,required)...The ID of the user you want to create or get subscriptions for.
+
+### Create a subscription [POST]
+
+* `triggers` (object, required) - Set the conditions that trigger a notification for this subscription. You can set multiple triggers for a subscription.  
+* `timerEvent`- (object, optional) - Set trigger for a specific time or time interval.
+* `cronEvent` - Specify a [CRON expression](http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html) for `timerEvent` triggers. Notifications can be sent a minimum of 30 minutes apart because of GoodData Platform settings.
+* `timezone` (string, optional) - Optionally specify a timezone for `timerEvent` objects. Timezone format is described [here](http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html).
+* `projectEventTrigger` - Specify a GoodData Platform event as a trigger. You can also create custom triggers in CloudConnect.  
+**Values:**  `dataload.process.schedule`, `dataload.process.start`, `dataload.process.finish.ok`, `dataload.process.finish.error`
+* `condition expression` - The specific conditions of the trigger. Specify a [JEXL expression](http://commons.apache.org/jexl/) that results in a true/false value.
+* `message expression` (string, required) - The message of the generated notifiation. The message template is a JEXL template.
+* `subject expression` (string, optional) - The subject of the generated email. Used only for email subscriptions.
+* `channels` (array, required) - The channels notifications are sent through. List the URI for each channel.
+* `title` (string, required) - Name of the subscription.
+
++ Request (application/json)
+
+    + Headers 
 
             Accept: application/json
 
     + Body
 
-            {
-               "subscription":{
-                  "triggers":[
-                     {
-                        "timerEvent":{
-                           "cronExpression":"0 0/5 * * * *"
+            { 
+               "subscription":{ 
+                  "triggers":[ 
+                     { 
+                        "timerEvent":{ 
+                           "cronExpression":"0 0 9 * * *",
+                           "timezone":"America/Los_Angeles"
+                        }
+                     },
+                     { 
+                        "timerEvent":{ 
+                           "cronExpression":"0 0 14 25 12 ?",
+                           "timezone":"America/Los_Angeles"
+                        }
+                     },
+                     { 
+                        "projectEventTrigger":{ 
+                           "types":[ 
+                              "type1",
+                              "type2"
+                           ]
                         }
                      }
                   ],
-                  "condition":{
-                     "condition":{
-                        "expression":"f:executeMetric('METRIC_URI') < 16"
+                  "condition":{ 
+                     "condition":{ 
+                        "expression":"true"
                      }
                   },
-                  "message":{
-                     "template":{
-                        "expression":"Average Chatter posts per Opportunity has fallen to ${f:executeMetric('METRIC_URI')} ..."
+                  "message":{ 
+                     "template":{ 
+                        "expression":"Message"
                      }
                   },
-                  "subject" : {
-                      "template" : {
-                        "expression" : "Message Subject"
-                      }
-                  }, 
-                  "channels":[
-                     "CHANNEL_URI"
+                  "channels":[ 
+                     "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
                   ],
-                  "meta":{
-                     "title":"Avg Posts per Oppty < 16"
+                  "meta":{ 
+                     "title":"Title"
                   }
-               }
+               },
             }
 
 + Response 201
 
-        {
-            "subscription": {
-                "triggers": [
-                    {
-                        "timerEvent": {
-                            "cronExpression": "0 0/5 * * * *"
+         { 
+               "subscription":{ 
+                  "triggers":[ 
+                     { 
+                        "timerEvent":{ 
+                           "cronExpression":"0 0/5 * * * *",
+                           "timezone":"America/Los_Angeles"
                         }
-                    }
-                ],
-                "condition": {
-                    "condition": {
-                        "expression": "f:executeMetric('/gdc/md/{project-id}/obj/{obj-id}') < 0.99"
-                    }
-                },
-                "message": {
-                    "template": {
-                        "expression": "Custom message % ${f:executeMetric('/gdc/md/{project-id}/obj/{obj-id}')} ..."
-                    }
-                },
-                "channels": [
-                    "/gdc/account/profile/{user-id}/channelConfigurations/{channel-id}"
-                ],
-                "meta": {
-                    "title": "TEST%",
-                    "author": "/gdc/account/profile/{user-id}",
-                    "category": "subscription",
-                    "updated": "2011-12-20 13:59:23",
-                    "created": "2011-12-20 13:59:23",
-                    "uri": "/gdc/projects/{project-id}/users/{user-id}/subscriptions/{subscription-id}"
-                }
+                     },
+                     { 
+                        "timerEvent":{ 
+                           "cronExpression":"0 0 14 25 12 ?",
+                           "timezone":"America/Los_Angeles"
+                        }
+                     },
+                     { 
+                        "projectEventTrigger":{ 
+                           "types":[ 
+                              "type1",
+                              "type2"
+                           ]
+                        }
+                     }
+                  ],
+                  "condition":{ 
+                     "condition":{ 
+                        "expression":"true"
+                     }
+                  },
+                  "message":{ 
+                     "template":{ 
+                        "expression":"Message"
+                     }
+                  },
+                  "channels":[ 
+                     "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
+                  ],
+                  "meta":{ 
+                     "title":"Title",
+                      "author": "/gdc/account/profile/{profile_id}",
+                     "category": "subscription",
+                     "updated": "2011-12-20 13:59:23",
+                     "created": "2011-12-20 13:59:23",
+                     "uri": "/gdc/projects/{project_id}/users/{profile_id}/subscriptions/{subscription_id}"
+                  }
+               },
             }
-        }
+
+### User subscriptions by project [GET]
+
+Gets all subscriptions for a user for the specified project. See **Create a subscription** for JSON description.
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept: application/json 
+            
+
+    + Body
+
+            
++ Response 200 (application/json)
+           
+    + Body
+    
+            {
+              "subscriptions" : {
+                "items" : [ {
+                  "subscription" : {
+                    "meta" : {
+                      "title" : "email@gooddata.com",
+                      "author" : "/gdc/account/profile/{profile_id}",
+                      "category" : "subscription",
+                      "updated" : "2013-06-13 14:24:26",
+                      "created" : "2013-06-13 14:24:26",
+                      "uri" : "/gdc/projects/{project_id}/users/{profile_id}/subscriptions/{subscription_id}"
+                    },
+                    "triggers" : [ {
+                      "projectEventTrigger" : {
+                        "types" : [ "dataload.process.finish.error" ]
+                      }
+                    } ],
+                    "message" : {
+                      "template" : {
+                        "expression" : "This @#$#@ didn't work."
+                      }
+                    },
+                    "subject" : {
+                      "template" : {
+                        "expression" : "Problem!"
+                      }
+                    },
+                    "condition" : {
+                      "condition" : {
+                        "expression" : "params.PROCESS_ID=='c13ba63f-d7f1-4c52-8988-1a2702dba8af'"
+                      }
+                    },
+                    "channels" : [ "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}" ]
+                  }
+                }, {
+                  "subscription" : {
+                    "triggers" : [ {
+                      "projectEventTrigger" : {
+                        "types" : [ "dataload.process.schedule" ]
+                      }
+                    } ],
+                    "condition" : {
+                      "condition" : {
+                        "expression" : "true"
+                      }
+                    },
+                    "message" : {
+                      "template" : {
+                        "expression" : "loading started."
+                      }
+                    },
+                    "channels" : [ "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}" ],
+                    "meta" : {
+                      "title" : "Test",
+                      "author" : "/gdc/account/profile/{profile_id}",
+                      "category" : "subscription",
+                      "updated" : "2014-06-30 09:15:05",
+                      "created" : "2014-06-30 09:15:05",
+                      "uri" : "/gdc/projects/{project_id}/subscriptions/{subscription_id}"
+                    }
+                  }
+                } ]
+              }
+            }
+
+ 
+
+
+## Manage a project subscription [/projects/{project_id}/users/{profile_id}/subscriptions/{subscription_id}]
+ 
++ Parameters
+    + project_id (string,required)...The ID of the project where the process you want notifications about resides.
+    + profile_id (string,required)...The ID of the user who owns the subscription.
+    + subscription_id (string,required)...The ID of the subscription that you want to get, update, or delete.
+
+**NOTE:** For JSON descriptions see the previous resource, Create or get subscriptions for a user.
+
+### Get subscription information [GET]
+
+See **Create a subscription** for JSON description.
+
+
++ Request (application/json)
+
+    + Headers
+        
+            Accept: application/json
+    
+
+    + Body
+
+            
++ Response 200 (application/json)
+           
+    + Body
+    
+             { 
+                   "subscription":{ 
+                      "triggers":[ 
+                         { 
+                            "timerEvent":{ 
+                               "cronExpression":"0 0/5 * * * *",
+                               "timezone":"America/Los_Angeles"
+                            }
+                         },
+                         { 
+                            "timerEvent":{ 
+                               "cronExpression":"0 0 14 25 12 ?",
+                               "timezone":"America/Los_Angeles"
+                            }
+                         },
+                         { 
+                            "projectEventTrigger":{ 
+                               "types":[ 
+                                  "type1",
+                                  "type2"
+                               ]
+                            }
+                         }
+                      ],
+                      "condition":{ 
+                         "condition":{ 
+                            "expression":"true"
+                         }
+                      },
+                      "message":{ 
+                         "template":{ 
+                            "expression":"Message"
+                         }
+                      },
+                      "channels":[ 
+                         "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
+                      ],
+                      "meta":{ 
+                         "title":"Title",
+                          "author": "/gdc/account/profile/{profile_id}",
+                         "category": "subscription",
+                         "updated": "2011-12-20 13:59:23",
+                         "created": "2011-12-20 13:59:23",
+                         "uri": "/gdc/projects/{project_id}/users/{profile_id}/subscriptions/{subscription_id}"
+                      }
+                   },
+                }
+
+
+### Update a subscription [PUT] 
+
+See **Create a subscription** for JSON description.
+
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept: application/json
+
+    + Body
+    
+             { 
+                       "subscription":{ 
+                          "triggers":[ 
+                             { 
+                                "timerEvent":{ 
+                                   "cronExpression":"0 0/5 * * * *",
+                                   "timezone":"America/Los_Angeles"
+                                }
+                             },
+                             { 
+                                "timerEvent":{ 
+                                   "cronExpression":"0 0 14 25 12 ?",
+                                   "timezone":"America/Los_Angeles"
+                                }
+                             },
+                             { 
+                                "projectEventTrigger":{ 
+                                   "types":[ 
+                                      "type1",
+                                      "type2"
+                                   ]
+                                }
+                             }
+                          ],
+                          "condition":{ 
+                             "condition":{ 
+                                "expression":"true"
+                             }
+                          },
+                          "message":{ 
+                             "template":{ 
+                                "expression":"Message"
+                             }
+                          },
+                          "channels":[ 
+                             "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
+                          ],
+                          "meta":{ 
+                             "title":"Title"
+                          }
+                       },
+                    }
+
+          
+            
++ Response 200 (application/json)
+           
+    + Body
+    
+            { 
+                       "subscription":{ 
+                          "triggers":[ 
+                             { 
+                                "timerEvent":{ 
+                                   "cronExpression":"0 0/5 * * * *",
+                                   "timezone":"America/Los_Angeles"
+                                }
+                             },
+                             { 
+                                "timerEvent":{ 
+                                   "cronExpression":"0 0 14 25 12 ?",
+                                   "timezone":"America/Los_Angeles"
+                                }
+                             },
+                             { 
+                                "projectEventTrigger":{ 
+                                   "types":[ 
+                                      "type1",
+                                      "type2"
+                                   ]
+                                }
+                             }
+                          ],
+                          "condition":{ 
+                             "condition":{ 
+                                "expression":"true"
+                             }
+                          },
+                          "message":{ 
+                             "template":{ 
+                                "expression":"Message"
+                             }
+                          },
+                          "channels":[ 
+                             "/gdc/account/profile/{profile_id}/channelConfigurations/{channel_id}"
+                          ],
+                          "meta":{ 
+                            "title":"Title",
+                            "author": "/gdc/account/profile/{profile_id}",
+                            "category": "subscription",
+                            "updated": "2011-12-20 13:59:23",
+                            "created": "2011-12-20 13:59:23",
+                            "uri": "/gdc/projects/{project_id}/users/{profile_id}/subscriptions/{subscription_id}"
+ 
+                          }
+                       },
+                    }
+
+    
+### Delete a subscription [DELETE] 
+
+
++ Request (application/json)
+
+    + Headers
+    
+            Accept: application/json
+
+    + Body
+
+
+          
+            
++ Response 204 (application/json)
+
+
+           
+    + Body
+    
+    
+
 
 # Group Report
 <a id="report" ></a>
