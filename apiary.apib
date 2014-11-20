@@ -6932,12 +6932,11 @@ Poll the returned URI to check the status of user deletion.
 ## Poll to get status of a DW execution [/gdc/datawarehouse/executions/{execution_id}]
 
 + parameters
-    + execution_id (string, required)...The data warehouse exeuction that you want the status of. This U RI is returned in the response body when you create or delete a user or DW instance.
+    + execution_id (string, required)...The data warehouse exeuction that you want the status of. This URI is returned in the response body when you create or delete a user or DW instance.
 
 ### Poll to get execution status [GET]
 
 If the execution is still in process this method returns Response 202. User creation returns the user's URI. Instance creation returns the instance URI. User deletion returns the URI for all users.
-
 
 + Request (application/json)
     
