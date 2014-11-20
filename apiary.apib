@@ -6532,42 +6532,42 @@ Organization administrators and owners can use the following resources to custom
     + Body
 
 
-        {
-            "settings":{
-                "mailSettings":{
-                    "noReplyEmail":"1noreply@example.com",
-                    "registrationEmail":"2reg@example.com",
-                    "invitationEmail":"3inv@example.com",
-                    "bccEmail":"4bcc@example.com",
-                    "supportEmail":"5support@example.com",
-                    "supportPhone":"+420 123 456 789"
-                },
-                "portalSettings":{
-                    "applicationTitle":"Custom analytics",
-                    "faviconUrl":"/favicon",
-                    "organizationName":"My organization",
-                    "displayFlashNews":false,
-                    "logoUrl":"http://www.website.com/mynewlogo.jpg",
-                    "displayProjects":false,
-                    "displayAccountPage":true,
-                    "supportEmail":"support@example.com",
-                    "supportForumUrl":"/link/to/support/forums",
-                    "privacyPolicyUrl":"/privacyPolicy",
-                    "documentationUrl":"/help/link",
-                    "securityStatementUrl":"/security",
-                    "termsOfUseUrl":"/tos",
-                    "trustUrl":"/trust",
-                    "appleTouchIconUrl":"/icon.png",
-                    "applicationBackgroundColor":"#999",
-                    "hideRegistration":"true | false",
-                    "largeLogoUrl":"http://www.website.com/largelogo.jpg",
-                    "brandColor":"#999",
-                    "headerColor":"#FF0040", 
-                    "activeColor":"#F7FE2E",
-                    "headerTextColor":"#610B38"
-                  }
-             }
-        }
+            {
+                "settings":{
+                    "mailSettings":{
+                        "noReplyEmail":"1noreply@example.com",
+                        "registrationEmail":"2reg@example.com",
+                        "invitationEmail":"3inv@example.com",
+                        "bccEmail":"4bcc@example.com",
+                        "supportEmail":"5support@example.com",
+                        "supportPhone":"+420 123 456 789"
+                    },
+                    "portalSettings":{
+                        "applicationTitle":"Custom analytics",
+                        "faviconUrl":"/favicon",
+                        "organizationName":"My organization",
+                        "displayFlashNews":false,
+                        "logoUrl":"http://www.website.com/mynewlogo.jpg",
+                        "displayProjects":false,
+                        "displayAccountPage":true,
+                        "supportEmail":"support@example.com",
+                        "supportForumUrl":"/link/to/support/forums",
+                        "privacyPolicyUrl":"/privacyPolicy",
+                        "documentationUrl":"/help/link",
+                        "securityStatementUrl":"/security",
+                        "termsOfUseUrl":"/tos",
+                        "trustUrl":"/trust",
+                        "appleTouchIconUrl":"/icon.png",
+                        "applicationBackgroundColor":"#999",
+                        "hideRegistration":"true | false",
+                        "largeLogoUrl":"http://www.website.com/largelogo.jpg",
+                        "brandColor":"#999",
+                        "headerColor":"#FF0040", 
+                        "activeColor":"#F7FE2E",
+                        "headerTextColor":"#610B38"
+                      }
+                 }
+            }
 
 
 
@@ -6646,8 +6646,8 @@ The Agile Data Warehousing service is fully hosted by GoodData.
             }
 
 
-### Create a data warehouse[POST]
-> **NOTE:** You must have data warehouse token to create a data warehouse instance.
+### Create a data warehouse [POST]
+> **NOTE:** You must have a data warehouse token to create a data warehouse instance.
 
 + Request 
       
@@ -6683,8 +6683,7 @@ The Agile Data Warehousing service is fully hosted by GoodData.
                     }
 
 
-## Manage an data warehouse [/gdc/datawarehouse/instances/{instance_id}]
-
+## Manage a data warehouse [/gdc/datawarehouse/instances/{instance_id}]
 
 + Parameters
     + instance_id (string,required)...The data warehouse instance you want to manage.
@@ -6772,15 +6771,147 @@ The Agile Data Warehousing service is fully hosted by GoodData.
 + Response 204
 
 
-## Poll to get DW creation info [/gdc/datawarehouse/executions/{task_id}]
 
-+ Parameters
-    + task_id (string,required)...The ID fo the task you want information about.
+## Manage users for a DW instance [/gdc/datawarehouse/instances/{instance_id}/users]
 
-### Poll to get DW creation info [GET]
++ parameters
+    + instance_id (string,required) - the ID of the data warehouse instance.
+
+### List all users in a data warehouse instance [GET]
+
+**Response**
+* `role` - The user's role.  
+**Values:** admin, dataAdmin
+    * `admin` - Can manage the instance and users within in it.
+    * `dataAdmin` - Can run queries. Cannot manage users.
+* `profile` - URI of the user's profile.
+* `login` - User's GoodData login.
+
++ Request (application/json)
+    
+            Accept: application/json
+
++ Response 200
+    
+        + Headers
+    
+        Content-type: application/json
+    
+    + Body
+    
+            {
+                "items": [
+                    {
+                        "user" : {
+                            "role": "{role_id}"
+                            "profile": "/gdc/account/profile/{profile_id}"
+                            "links": {
+                                "self": "/gdc/datawarehouse/instances/{instance_id}/users/{profile_id}"
+                                "parent": "/gdc/datawarehouse/instances/{instance_id}/users"
+                            }
+                        }
+                    }
+                ]
+            }
+
+### Add users to a data warehouse instance [POST]
+
+Poll to get execution status. 
+
+* `user` - The user you want to add. You must specify `profile` or `login`.  
+    * `role` (string, optional) - The role to assign to the user you add.  
+    **Values:** admin, dataAdmin
+      * `admin` - Manage the instance and users within in it.
+      * `dataAdmin` - Can run queries. Cannot manage users.
+    * `profile` (string, optional)- User profile URI of the user you want to add to the data warehouse.  Specify `profile` or `login`, but not both.
+    * `login` (string, optional) - The login of the user you want to add. Specify `login` or `profile`, but not both.
 
 
-+ Request
++ Request (application/json)
+      
+     + Headers
+          
+            Accept: application/json
+
+     + Body
+
+            {
+                "user" : {
+                    "role": "{role_id}"
+                    "profile": "/gdc/account/profile/{profile_id}"
+                    "login": "{login}"
+                }
+            }
+        
++ Response 202 (application/json)
+
+
+     + Body
+
+             {
+                 "asyncTask" : {
+                     "links" : {
+                         "poll" : "/gdc/datawarehouse/executions/{execution_id}"
+                     }
+                 }
+             }
+             
+             
+
+## Manage a user in a DW instance [/gdc/datawarehouse/instances/{instance_id}/users/{user_id}]
+
++ parameters
+    + instance_id (string,required) - The ID of the data warehouse instance where the user exists.
+    + user_id (string,required) - The ID of the user you want to manage.
+
+### Get info about a user in an DW instance [GET]
+
++ Request (application/json)
+    
+    + Headers
+    
+            Accept: application/json
+
++ Response 200
+    
+    
+    + Body
+
+            {
+                    "user" : {
+                        "role": "{role_id}"
+                        "profile": "/gdc/account/profile/{profile_id}"
+                        "links": {
+                            "self": "/gdc/datawarehouse/instances/{instance_id}/users/{profile_id}"
+                            "parent": "/gdc/datawarehouse/instances/{instance_id}/users"
+                        }
+                    }
+                }
+
+### Update a user's DW role [PUT]
+
++ Request (application/json)
+      
+     + Headers
+          
+            Accept: application/json
+
+     + Body
+
+            {
+                "user" : {
+                    "role": "{role_id}"
+                    "profile": "/gdc/account/profile/{profile_id}"
+                }
+            }
+        
++ Response 204 (application/json)
+
+### Delete a user from an instance [DELETE]
+
+Poll the returned URI to check the status of user deletion.
+
++ Request (application/json)
 
     + Headers
 
@@ -6788,9 +6919,34 @@ The Agile Data Warehousing service is fully hosted by GoodData.
 
 + Response 202 (application/json)
 
+     + Body
+
+             {
+                 "asyncTask" : {
+                     "links" : {
+                         "poll" : "/gdc/datawarehouse/executions/{execution_id}"
+                     }
+                 }
+             }
+             
+## Poll to get status of a DW execution [/gdc/datawarehouse/executions/{execution_id}]
+
++ parameters
+    + execution_id (string, required)...The data warehouse exeuction you want the status of. Returned in the response body when you create or delete a user or DW instance.
+
+### Poll to get execution status [GET]
+
+If execution is still in process this method returns Response 202. User creation returns the user's URI. Instance creation returns the instance URI. User deletion returns the URI for all users.
+
+
++ Request (application/json)
+    
     + Headers
     
-            Content-type: application/json
+            Accept: application/json
+
++ Response 202 (application/json)
+
 
     + Body
 
@@ -6805,22 +6961,38 @@ The Agile Data Warehousing service is fully hosted by GoodData.
 
 + Response 201 (application/json)
 
-    + Headers
+     + Body
 
-            Content-type: application/json
-
-    + Body
-
-
-            {
-                "asyncTask": {
-                            "links": {
-                                "instance": "/gdc/datawarehouse/instances/{instance_id}”,
-                                “user”: “user URI”,
-                                “users”: “URI of users in the DW instance"
-                            }
+             {
+                 "asyncTask" : {
+                     "links" : {
+                         "user" : "/gdc/datawarehouse/instance/{instance_id}/users/{profile_id}"
                      }
-              } 
+                 }
+             }
++ Response 201 (application/json)
+
+     + Body
+
+             {
+                 "asyncTask" : {
+                     "links" : {
+                         "instance" : "/gdc/datawarehouse/instance/{instance_id}"
+                     }
+                 }
+             }
+
++ Response 201 (application/json)
+
+     + Body
+
+             {
+                 "asyncTask" : {
+                     "links" : {
+                         "users" : "/gdc/datawarehouse/instance/{instance_id}/users"
+                     }
+                 }
+             }
 
 
 ## List schemas per DW [/gdc/datawarehouse/instances/{instance_id}/schemas]
@@ -6904,5 +7076,58 @@ The Agile Data Warehousing service is fully hosted by GoodData.
                   "instance" : "/gdc/datawarehouse/instances/{instance_id}"
                 }
               }
+            }
+
+## Get info about a DW [/gdc/datawarehouse]
+
+### Get info about a data warehouse [GET]
+
++ Request  (application/json)
+      
+    + Headers
+          
+            Accept: application/json
+
++ Response 200 (application/json)
+    
+
+    + Body
+        
+            {
+                "datawarehouse" {
+                    "links": {
+                        "self" : "/gdc/datawarehouse",
+                        "parent" : "/gdc",
+                        "dssInstances" : "/gdc/datawarehouse/instances"
+                    }
+                }
+            }
+
+
+## Get DW Connection Info [/gdc/datawarehouse/instances/{instance_id}/jdbc]
+
+### Get JDBC connection info for a DW instance [GET]
+
++ Request (application/json)
+    
+    + Headers
+        
+            Accept: application/json
+    
+
++ Response 200 (application/json)
+    
+    
+    + Body
+    
+            {
+                "jdbcInfo" : {
+                    "host": "server.domain.com"
+                    "port": 5443
+                    "links": {
+                        "self": "/gdc/datawarehouse/instances/{instance_id}/jdbc"
+                        "parent": "/gdc/datawarehouse/instances/{instance_id}"
+                    }
+                }
             }
 
