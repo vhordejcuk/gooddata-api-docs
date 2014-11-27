@@ -1367,7 +1367,7 @@ Use this request to delete User
 Use default embedding values to direct a user to an embedded project without specifying a project, dashboard, or tab ID in the URL.  
 When a user navigates to `https://secure.gooddata.com/dashboard.html`, the objects you specified using this resource are loaded (as if the parameter values are appended to `https://secure.gooddata.com/dashboard.html`). These settings are typically set up during user provisioning.
 
-Default embedded object settings are part of a user's profile. Organizational admins can manage default embedded objects for any user in their organization.
+Default embedded objects settings are part of a user’s profile. Organizational admins can manage default embedded objects for any user in their organization. Admins must have access to the project where an object exists to set is as a default embedded object (that is, the admin must be a member of that project).
 
 **Note:** If no default embedded objects are specified, the user is directed to the first project, dashboard and tab in their profile.
 
