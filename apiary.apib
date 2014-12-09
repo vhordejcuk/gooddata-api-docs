@@ -1444,7 +1444,7 @@ Default embedded objects settings are part of a user’s profile. Organizational
 
 
 # Group Project Model
-<a id="data-model" ></a>
+<a id="projectmodel" ></a>
 The data model is the core concept of GoodData. It can be managed and validated using following API resources. Model is created/managed by using the MAQL language and script.
 
 ##Model properties
@@ -1680,6 +1680,9 @@ Poll to obtain assembled project model.
                 }
                 
 # Group Generate MAQL DDL to update project
+
+<a id="generatemaqlddltoupdateproject" ></a>
+
 Resources to generate MAQL DDL to update project's model to the desired target state. It does not modify the model itself, but gives you MAQL DDL scripts that can be executed via the ``/gdc/md/{project-id}/ldm/manage2`` resource.
 
 ### The result
@@ -1886,6 +1889,9 @@ Poll to get resulting diff & MAQL.
        
        
 # Group Execute MAQL DDL and Project Model Validation
+
+<a id="executemaqlddlandprojectmodelvalidation" ></a>
+
 Resources to execute MAQL DDL to create/update project's model to the desired target state. 
 
 ## POST /gdc/md/{project-id}/ldm/manage
@@ -4147,7 +4153,7 @@ If you lock Dashboard, the lock will be applied also for all Reports and Metrics
 
 
 # Group Data Permissions
-<a id="mufs" ></a>
+<a id="datapermissions" ></a>
 You can use data permission (formerly Mandatory User Filters or MUFs) to filter specific data for specific user. A data permission is based on attribute value identifiers. Data permissions 
 can be assigned to multiple users.
 
@@ -4322,7 +4328,7 @@ To DELETE a data permission object.
 + Response 204
 
 # Group Dependency
-<a id="object-dependency" ></a>
+<a id="dependency" ></a>
 This API can be used to GET all objects that are used by specific object such as dashboard, report etc. You can specify 
 
 - used by: to get all objects that use given object
@@ -5297,7 +5303,7 @@ Resource you can use to GET/UPDATE/DELETE individual metadata item
 
 
 # Group Schedules
-<a id="cc-schedules" ></a>
+<a id="schedules" ></a>
 
 ## Schedules [/gdc/projects/{project-id}/schedules{?offset,limit}]
 ### List Project Schedules [GET]
@@ -5638,6 +5644,8 @@ To schedule Data Loading Process. Learn more about scheduling in [following arti
 
 
 # Group CloudConnect Notifications
+
+<a id="cloudconnectionnotifications" ></a>
 
 ## List or create a CloudConnect notification [/gdc/projects/{project_id}/dataload/processes/{process_id}/notificationRules]
 
@@ -6230,7 +6238,7 @@ To create new integration process
 + Response 201
 
 # Group Zendesk 4 Connector
-<a id="zendesk-4"></a>
+<a id="zendesk4connector"></a>
 
 ## /gdc/projects/{projectName}/connectors/zendesk4/integration
 ### POST
@@ -6572,6 +6580,8 @@ Organization administrators and owners can use the following resources to custom
 
 
 # Group Data Warehouse
+
+<a id="datawarehouse" ></a>
 
 <!--- former called "Agile Data Warehousing Service" -->
 <a id="ads"></a>
