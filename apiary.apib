@@ -1142,9 +1142,10 @@ login: _user@gooddata.com_ will be encoded as _?login=user%40gooddata.com_
 ### GET
 To GET all users in Project
 
-* **Paging:** This resource _optionally_ allows paging. Add _offset_ and _limit_ parameters on the end of the URI. Example: **users?offset=1&limit=3** 
+* **Paging:** This resource optionally allows paging. Add `offset` and `limit` parameters on the end of the URI.  
+**Example:** users?offset=1&limit=3 
 * **User status:** You can optionally return only users of a specifed status with a _status_ parameter at the end of the API.  
-**Values:** enabled|disabled*.  
+**Values:** enabled | disabled.  
 **Example:** /gdc/projects/{project-id}/users?status=enabled
  
 + Request
