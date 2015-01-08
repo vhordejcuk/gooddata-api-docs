@@ -1454,9 +1454,6 @@ The data model is the core concept of GoodData. It can be managed and validated 
 - maql : MAQL script for creating/updating logical data model
 - validateProject : IO - Input/Output, LDM - Logical Data Model, PDM - Physical Data Model
 
-### Limitations
-Most severe limitation of current Project Model API is it's inability to work with projects in which single dataset contains a hierarchy of attributes (other than relation between dataset's anchor and it's other attributes). For the API to work correctly, all datasets in project's logical data model must be loading a single star schema. This is always true for models maintained via cl-tool, CloudConnect or Project Model API, however, this requirement may be easily broken when modyfying project's model directly through MAQL DDL. We'll try to improve the expressiveness of the API (and with this, expanding the set of supported projects) in the future.
-
 ## Project Model Representation
 
 ### Common properties of model objects:
