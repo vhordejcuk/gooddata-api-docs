@@ -4033,7 +4033,193 @@ Use this method to GET dashboard object content
           "uri": "/gdc/md/{project_id}/obj/{object_id}"
         }
 
+<!--
 
+# Group User Access to Dashboards
+
+<a id="useracesstodashboards" ></a>
+
+epic CL-5293
+
+##  Access by dashboard - URIs [/gdc/md/{project_id}/obj/{object_id}/grantees{?permission}]
+
++ Parameters
+    + project_id (string, required)...The ID of the project that the dashboard belongs to.
+    + object_id (string, required)...The ID of dashboard that you want to view access for.
+    + permission (string, optional)...Access level you want to return users for. When not specified, users with all access levels ere returned. 
+    
+        + Values
+            + read
+
+### Get URIs of users who can access a dashboard [GET]
+
++ Request
+    + Headers
+
+            Accept: application/json
+
++ Response 200
+
+        {
+            "granteeURIs": {
+                "items": [
+                    "aclEntryURI": {
+                        "permission": "read",
+                        "grantee": "/gdc/account/profile/{profile_id}"
+                    },
+                    "aclEntryURI": {
+                        "permission": "read",
+                        "grantee": "/gdc/account/profile/{profile_id}"
+                    },
+                ]
+            }
+        }
+        
+## Access by dashboard - user info [/gdc/projects/{project_id}/obj/{object_id}/grantees{?permission}]
+
++ Parameters
+    + project_id (string, required)...The ID of the project that the dashboard belongs to.
+    + object_id (string, required)...The ID of dashboard you want to view user access for.
+    + permission (string, optional, `read`)...Type of permission you want to view user access for. When not specified, all access levels are returned.
+    
+        + Values
+            + read
+
+### Get info about users who can access a dashboard [GET]
+
+Get basic information (status, name, email, login) about all users who can access an dashboard.
+
++ Request
+    + Headers
+
+            Accept: application/json
+
++ Response 200
+
+        {
+            "grantees": {
+                "items": [
+                    "aclEntry": {
+                        "permission": "read",
+                        "grantee": {
+                            "user" : {
+                                "content" : {
+                                    "status" : "ENABLED",
+                                    "firstname" : "John",
+                                    "lastname" : "Doe",
+                                    "email" : "john@doe.com",
+                                    "login" : "john@doe.com"
+                                },
+                                "links" : {
+                                    "self" : "/gdc/account/profile/{profile_id}",
+                                    "roles" : "/gdc/projects/{project_id}/users/{profile_id}/roles",
+                                    "permissions" : "/gdc/projects/{project_id}/users/{profile_id}/permissions",
+                                    "projectRelUri" : "/gdc/projects/{project_id}/users/{profile_id}"
+                                }
+                            }
+                        }
+                    },
+                    "aclEntry": {
+                        "permission": "read",
+                        "grantee": {
+                            "user" : {
+                                "content" : {
+                                    "status" : "ENABLED",
+                                    "firstname" : "Jane",
+                                    "lastname" : "Doe",
+                                    "email" : "jane@doe.com",
+                                    "login" : "jane@doe.com"
+                                },
+                                "links" : {
+                                    "self" : "/gdc/account/profile/{profile_id}",
+                                    "roles" : "/gdc/projects/{project_id}/users/{profile_id}/roles",
+                                    "permissions" : "/gdc/projects/{project_id}/users/{profile_id}/permissions",
+                                    "projectRelUri" : "/gdc/projects/{project_id}/users/{profile_id}"
+                                }
+                            }
+                        }
+                    },
+                ]
+            }
+        }
+        
+## Grant access to a dashboard [/gdc/md/{project_id}/obj/{object_id}/grantees/add]
+
+Give a specific users access to a dashboard.
+
++ Parameters
+    + project_id (string,required)...The ID of the project where the dashboard exists.
+    + object_id (string, required)...The ID of the dashboard you want to give a user access to.
+
+### Grant access to a dashboard for specific users [POST]
+
+* `permission` (string, required) - The type of permission you want to give the user.  
+**Values:** read
+* `grantee` (URI, required) - The URI of the user who will be able to access the dashboard.
+
++ Request (application/json)
+
+    + Body
+    
+            {
+                granteeURIs: {
+                    items: [
+                        {
+                            aclEntryURI: {
+                                permission: "read",
+                                grantee: "/gdc/account/profile/{profile_id}"
+                            }
+                        },
+                        {
+                            aclEntryURI: {
+                                permission: "read",
+                                grantee: "/gdc/account/profile/{profile_id}"
+                            }
+                        }
+                    ]
+                }
+            }
+
++ Response 200
+
+## Remove user access to a dashboard [/gdc/md/{project_id}/obj/{object_id}/grantees/remove]
+
++ Parameters
+    + project_id (string,required)...The ID of the project where the dashboard exists.
+    + object_id (string, required)...The ID of the dashboard where you want to remove user access.
+
+### Remove access to a dashboard for specific users [POST]
+
+* `permission` (string, required) - The type of permission you want to revoke.  
+**Values:** read
+* `grantee` (URI, required) - The URI of the user who will no longer be able to access the dashboard.
+
++ Request (application/json)
+
+    + Body
+    
+            {
+                granteeURIs: {
+                    items: [
+                        {
+                            aclEntryURI: {
+                                permission: "read",
+                                grantee: "/gdc/account/profile/{profile_id}"
+                            }
+                        },
+                        {
+                            aclEntryURI: {
+                                permission: "read",
+                                grantee: "/gdc/account/profile/{profile_id}"
+                            }
+                        }
+                    ]
+                }
+            }
+
++ Response 200
+
+-->
 
 # Group Metadata 
 <a id="metadata" ></a>
