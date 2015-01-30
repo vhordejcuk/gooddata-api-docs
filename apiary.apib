@@ -4628,8 +4628,6 @@ Using this API, you can easily schedule the Email, that will be sent to you with
 
 ## /gdc/md/{project-id}/obj
 
-<!--
-
 * scaling (optional) - Specifies scaling when you export a tabular report to PDF format. Scaling applies to both landscape and portrait orientations.  
 
     * pageScalePercentage (optional, integer) - Specifies a percentage to scale the exported PDF. Cannot be used with other scaling keywords. **Default:** 100 
@@ -4712,74 +4710,7 @@ Schedule an email. Scheduled emails can include reports and dashboards as attach
 
         {"uri":"/gdc/md/{project_id}/obj/{object_id}"}
 
--->
 
-### POST
-Create new scheduleMail object with following this request
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-                "scheduledMail": {
-                    "meta": {
-                        "title": "Scheduled report example",
-                        "summary": "Daily at 12:00pm PT",
-                        "tags": "",
-                        "deprecated": 0
-                    },
-                    "content": {
-                        "when": {
-                            "recurrency": "0:0:0:1*12:0:0",
-                            "startDate": "2012-06-05",
-                            "timeZone": "America/Los_Angeles"
-                        },
-                        "to": [
-                            "email@company.com"
-                        ],
-                        "bcc": [
-                            "secret-email@company.com"
-                        ],
-                        "subject": "Scheduled report",
-                        "body": "Hey, I'm sending you new Reports and Dashboards!",
-                        "attachments": [
-                            {
-                                "reportAttachment": {
-                                    "uri": "/gdc/md/{project-id}/obj/{obj-id}",
-                                    "formats": [
-                                        "pdf",
-                                        "xls"
-                                    ]
-                                }
-                            },{
-                           "dashboardAttachment":{
-                              "uri":"/gdc/md/{project-id}/obj/{dashboard-id}",
-                              "allTabs":1,
-                              "tabs":[
-                              ]
-                           }
-                        },
-                            {
-                           "dashboardAttachment":{
-                              "uri":"/gdc/md/{project-id}/obj/{dashboard-id}",
-                              "allTabs":0,
-                              "tabs":[
-                                 "abcdefg"
-                              ]
-                           }
-                        }                
-                        ]
-                    }
-                }
-            }
-
-+ Response 200
-
-        {"uri":"/gdc/md/{project-id}/obj/{obj-id}"}
 
 ## /gdc/md/{project-id}/query/scheduledmails
 ### GET
