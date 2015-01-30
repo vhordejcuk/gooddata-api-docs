@@ -4002,18 +4002,17 @@ Use this method to GET dashboard object content
 
 ##  Access by dashboard - URIs [/gdc/md/{project_id}/obj/{object_id}/grantees{?permission}]
 
-Get URIs of users who can access a dashboard.
 
 + Parameters
     + project_id (string, required)...The ID of the project that the dashboard belongs to.
     + object_id (string, required)...The ID of dashboard that you want to view access for.
     + permission (string, optional)...Access level you want to return users for. When not specified, users with all access levels ere returned.  
     **Values:** read
-    
-        + Values
-            + read
+
 
 ### Get URIs of users who can access a dashboard [GET]
+
+Get URIs of users who can access a dashboard.
 
 + Request
     + Headers
@@ -4042,10 +4041,8 @@ Get URIs of users who can access a dashboard.
 + Parameters
     + project_id (string, required)...The ID of the project that the dashboard belongs to.
     + object_id (string, required)...The ID of dashboard you want to view user access for.
-    + permission (string, optional, `read`)...Type of permission you want to view user access for. When not specified, all access levels are returned.
-    
-        + Values
-            + read
+    + permission (string, optional, `read`)...Type of permission you want to view user access for. When not specified, all access levels are returned.  
+    **Values:** read
 
 ### Get info about users who can access a dashboard [GET]
 
