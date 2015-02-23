@@ -5948,51 +5948,6 @@ Manage a specific CloudConnect email notification.
            
     + Body
 
-
-
-# Group CloudConnect Zendesk Connector
-<a id="cc-zendesk-connector" ></a>
-### Download task properties
-- startDate (DATETIMEISO), download all tickets from this date on
-- zendeskDomain (uri),  Zendesk's endpoint
-
-## /gdc/projects/{project-id}/dataload/download/zendesk/downloadTasks
-### POST
-To create download task
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {
-                "zendeskDownload": {
-                    "startDate":"2012-03-01T00:00:00.000Z",
-                    "zendeskDomain":"http://somedomain.zendesk.com"
-                }
-            }
-
-+ Response 201
-
-        {"asyncTask":
-            {"link":{
-                "poll":"/gdc/projects/{project-id}/dataload/download/zendesk/downloadTasks/{task-id}"}
-            }
-        }
-
-## /gdc/projects/{project-id}/dataload/download/zendesk/downloadTasks/{task-id}
-### GET
-To get download task (task running)
-
-+ Request
-    + Headers
-
-            Accept: application/json
-
-+ Response 202
-
 # Group CloudConnect Google Analytics Connector
 <a id="cc-google-analytics" ></a>
 ### Download task properties
