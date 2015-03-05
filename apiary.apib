@@ -591,6 +591,8 @@ See the next API call for more details. You can create a maximum of 100 projects
            "uri" : "/gdc/projects/{project-id}"
         }
 
++ Response 429 (application/json)
+
 ## /gdc/projects/{project-id}
 ### GET
 To show the Project information after creation or whenever you need it. While creating a new project, poll this resource until the `state` is **ENABLED** or **DELETED**.
