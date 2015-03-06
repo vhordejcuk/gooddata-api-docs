@@ -1455,6 +1455,263 @@ Default embedded objects settings are part of a user’s profile. Organizational
 + Response 204 (application/json)
 
 
+# Group User Groups
+
+Use user groups to manage user access to dashboards on the GoodData Portal. Create groups to more quickly manage permissions for users with the the same role or who need similar access to dashboards. 
+ Groups can be part of groups. 
+
+
+## Create a User Group [/gdc/internal/usergroups]
+
+### Create a user group [POST]
+
+
++ Request (application/json)
+
+        {
+            "userGroup": {
+                "content": {
+                    "name": "{group_name}",
+                    "description": "{group_description}",
+                    "project": "/gdc/projects/{project_id}"
+                 }
+            }
+        }
+
++ Request (application/json)
+
+        {
+            "userGroup": {
+                 "content": {
+                    "name": "{group_name}",
+                    "description": "{group_description}",
+                    "project": "/gdc/projects/{project_id}"
+                }
+            }
+        }
+
++ Response 201
+
++ Response 409
+
+
+## Manage a User Group [/gdc/internal/usergroups/{group_id}]
+
++ Parameters
+
+    + group_id (required, string) ... The ID of the user group.
+
+### Get user group details [GET]
+
++ Response 200 (application/json)
+
+        {
+            "userGroup": {
+                "content": {
+                    "name": "{group_name}",
+                    "id": "{group_id}",
+                    "description": "The groupiest of groups.",
+                    "domain": "/gdc/account/domains/default",
+                    "project": "/gdc/projects/{project_id}"
+                },
+               "meta": {
+                    "created": "2003-02-01 12:34:56",
+                    "author": "/gdc/account/profile/{profile_id}",
+                    "updated": "2003-02-01 12:34:56",
+                    "contributor": "/gdc/account/profile/{profile_id}"
+                 },
+                "links": {
+                    "self": "/gdc/internal/usergroups/{group_id}",
+                    "members": "/gdc/internal/usergroups/{group_id}/members",
+                    "modifyMembers": "/gdc/internal/usergroups/{group_id}/modifyMembers"
+                }
+            }
+        }
+
+### Update a user group [PUT]
+
++ Request (application/json)
+
+        {
+            "userGroup": {
+                "content": {
+                    "id": "{group_id}",
+                    "name": "{group_name}",
+                    "description": "This group is full of awesome people.",
+                    "project": "/gdc/projects/{project_id}
+                }
+            }
+        }
+
++ Response 204
+
+### Delete a user group [DELETE]
+
++ Response 204
+
+## List User Groups [/gdc/internal/usergroups{?domain,project,user,userGroup,uriOnly,includeImplicit,includeIndirect,includeParent,offset,limit}]
+
++ Parameters
+    + project (optional, string) ... The ID of the project.
+    + user (optional, string) ... The ID of the user you want group membership for.
+    + userGroup (optional, string) ... The ID of a group that you want group membership for (so, what groups is the group part of).
+    + uriOnly = `false` (optional, boolean) ... If true, response will contain URIs only.
+    + includeImplicit = `false` (optional, boolean) ... If true, implicit groups will be included (built-in system groups).
+    + includeIndirect = `false` (optional, boolean) ... If true, indirect groups will be included.
+    + includeParent = `false` (optional, boolean) ... If true, parent groups will be included.
+    + offset (optional, string) ... Offset of the first record.
+    + limit (optional, integer) ... Maximum number of records per page.
+
+### List users groups [GET]
+
+Returns a paged list of user groups. You can specify both filtering and paging. Use only the following filter combinations:
+
++ `project` - List all groups for this project.
++ `project` + `user` - List groups that this user is belongs to for this project. The user must be part of the project.
++ `project` + `userGroup` - List groups that this user group belongs to for this project. The user group must be part of the project.
+
++ Response 200 (application/json)
+
+        {
+            "userGroups": {
+                "paging": {
+                    "offset": "current_offset",
+                    "limit": 3,
+                    "next": "next_page_url"
+                },
+                "items": [
+                    {
+                        "userGroup": {
+                            "content": {
+                                "name": "{group_name_1}"
+                             },
+                            "meta": {
+                                "created": "2001-02-03T04:05:06",
+                                "author": "{uri_created_by_1}",
+                                "updated": "2001-02-03T04:05:06",
+                                "contributor": "{uri_modified_by_1}"
+                            },
+                            "links": {
+                                "self": "{uri_link_self_1}"
+                            }
+                        }
+                    },
+                    {
+                        "userGroup": {
+                            "content": {
+                                "name": "{group_name_2}"
+                            },
+                           "meta": {
+                                "created": "2001-02-03T04:05:06",
+                                "author": "{uri_created_by_2}",
+                                "updated": "2001-02-03T04:05:06",
+                                "contributor": "{uri_modified_by_2}"
+                            },
+                            "links": {
+                                    "self": "{uri_link_self_2}"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+
++ Response 200 (application/json)
+
+        {
+            "uris": {
+                "paging": {
+                    "offset": "some_offset",
+                    "limit": 3,
+                    "next": "/gdc/internal/usergroups?offset=next_offset"
+                },
+                "items": [
+                    "/gdc/internal/usergroups/{group_id1}",
+                    "/gdc/internal/usergroups/{group_id2}",
+                    "/gdc/internal/usergroups/{group_id3}"
+                ]
+            }
+        }
+
+
+
+## List User Group Members [/gdc/internal/usergroups/{group_id}/members{?offset,limit}]
+
++ Parameters
+
+    + group_id (required, string) ... The ID of the user group.
+    + offset (optional, string) ... The offset of the first record (for paging).
+    + limit (optional, integer) ... The maximum number of records per page.
+    
+### List user group members [GET]
+
++ Response 200 (application/json)
+
+        {
+            "userGroupMembers": {
+                "paging": {
+                    "offset": "some_offset",
+                    "limit": 5,
+                    "next": "/gdc/internal/usergroups/id/members?offset=next_offset"
+                },
+                "items": [
+                    {
+                        "userGroup": {
+                            "content": {
+                                "name": "{group_name)",
+                                "id": "{group_id}"
+                            }
+                            "links": {
+                                "self": "/gdc/internal/usergroups/{group_id}"
+                            }
+                        }
+                    },
+                    {
+                        "user": {
+                            "content": {
+                                "firstName": "Leonard",
+                                "lastName": "Nimoy"
+                            }
+                            "links": {
+                                "self": "/gdc/account/profile/{profile_id}"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+
+## Modify User Group Members [/gdc/internal/usergroups/{group_id}/modifyMembers]
+
++ Parameters
+
+    + group_id (required, string) ... The ID of the group whos members you want to modify.
+    
+### Modify user group members [POST]
+
+* `operation` - Specifies how to modify user group members.
+    - `SET`- Removes all existing group members and adds any specified users (replace).
+    - `ADD` - Adds the specified users to the group. If you add a user who already exists in a group, you receive a `200` response.
+    - `REMOVE` - Removes all group members. If you remove a user who is not part of a group, you receive a `200` response.
+
+
++ Request (application/json)
+
+        {
+            "modifyMembers": {
+                "operation": "SET",
+                "items": [
+                    "/gdc/internal/usergroups/{group_id}",
+                    "/gdc/account/profile/{profile_id}",
+                    "/gdc/internal/usergroups/{group_id}",
+                    "/gdc/account/profile/{profile_id}"
+                ]
+            }
+        }
+    
++ Response 200
+
+
 # Group Project Model
 <a id="projectmodel" ></a>
 The data model is the core concept of GoodData. It can be managed and validated using following API resources. Model is created/managed by using the MAQL language and script.
