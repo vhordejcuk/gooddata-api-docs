@@ -1695,8 +1695,8 @@ Returns a paged list of user groups. You can specify both filtering and paging. 
 
 * `operation` - Specifies how to modify user group members.
     - `SET`- Removes all existing group members and adds any specified users (replace).
-    - `ADD` - Adds the specified users to the group. If you add a user who already exists in a group, you receive a `200` response.
-    - `REMOVE` - Removes all group members. If you remove a user who is not part of a group, you receive a `200` response.
+    - `ADD` - Adds the specified users to the group. If you add a user who already exists in a group, you receive a `204` response.
+    - `REMOVE` - Removes all group members. If you remove a user who is not part of a group, you receive a `204` response.
 
 
 + Request (application/json)
@@ -1713,7 +1713,7 @@ Returns a paged list of user groups. You can specify both filtering and paging. 
             }
         }
     
-+ Response 200
++ Response 204
 
 
 # Group Project Model
